@@ -1,0 +1,70 @@
+<template name="users">
+    <div class="page users">
+        {{> nav title='Users' black=false}}
+        <div class="content-scrollable with-top">
+            {{#if isInRole 'admin'}}
+                {{#unless isInRole 'pending'}}
+                <ul class="list-users">
+                    {{#each users}}
+                        <li class="list-user" data-id="{{_id}}">
+                            <div class="user-title">{{emails.[0].address}}</div>
+                            <div class="user-info">
+                                {{#if userIdInRole _id 'admin'}}
+                                    <div class="user-role">Admin</div>
+                                {{/if}}
+                                {{#if userIdInRole _id 'volunteer'}}
+                                    <div class="user-role">Volunteer</div>
+                                {{/if}}
+                                {{#if userIdInRole _id 'agency'}}
+                                    <div class="user-role">Agency</div>
+                                {{/if}}
+                                {{#unless userIsApproved _id}}
+                                    <div class="user-role pending">Pending</div>
+                                {{/unless}}
+
+                                <div class="user-approval-status">
+                                    {{#if profile.food_robot_id}}
+                                        <a href="#" class="js-change-user-robot-connection user-robot-connection">
+                                            <i class="material-icons">cloud_queue</i>
+                                        </a>
+                                    {{else}}
+                                        <a href="#" class="js-connect-user-to-robot user-robot-connection">
+                                            <i class="material-icons">cloud_off</i>
+                                        </a>
+                                    {{/if}}
+                                    {{#unless matchesCurrentUser _id}}
+                                        {{#unless userIsApproved _id}}
+                                            <a href="#" class="js-approve-user user-approval">
+                                                <i class="material-icons">check_box_outline_blank</i>
+                                            </a>
+                                        {{else}}
+                                            <a href="#" class="js-unapprove-user user-approval">
+                                                <i class="material-icons">check_box</i>
+                                            </a>
+                                        {{/unless}}
+                                        <a href="#" class="js-delete-user">
+                                            <i class="material-icons">delete</i>
+                                        </a>
+                                    {{/unless}}
+                                </div>
+                            </div>
+                        </li>
+                    {{/each}}
+                </ul>
+                {{else}}
+                <div class="wrapper-message">
+                    <div class="title-message">Not allowed / approved.</div>
+                    <div class="subtitle-message">
+                        You do not have the permissions to view this page, or your account has not been approved yet.
+                    </div>
+                </div>
+                {{/unless}}
+            {{else}}
+                <div class="wrapper-message">
+                    <div class="title-message">Not allowed.</div>
+                    <div class="subtitle-message">You do not have the permissions to view this page.</div>
+                </div>
+            {{/if}}
+        </div>
+    </div>
+</template>

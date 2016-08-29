@@ -1,0 +1,31 @@
+<template name="inventory">
+	<div class="page inventory">
+		{{#nav title='In Storage' black=false}}
+            {{#if userInRole 'volunteer'}}
+                <!-- only if logged in as a volunteer/admin -->
+                <a href="#" class="nav-item js-add-item"><span class="icon-add"></span></a>
+            {{/if}}
+        {{/nav}}
+		<div class="content-scrollable with-top">
+			<ul class="list-items">
+                {{#each items}}
+                    {{> listItem}}
+                {{/each}}
+			</ul>
+		</div>
+	</div>
+</template>
+
+<template name="listItem">
+    <li class="list-item" data-id="{{_id._str}}" data-editing="false">
+        <div class="item-title">{{name}}</div>
+        {{#if userInRole 'volunteer'}}
+            <a href="#" class="js-delete-item"><span class="icon-close"></span></a>
+            <a href="#" class="js-edit-item"><span class="icon-mode_edit"></span></a>
+        {{/if}}
+        <div class="item-quantity">
+            <span class="item-quantity-amount">{{quantity_amount}}</span>
+            {{quantity_units}}
+        </div>
+    </li>
+</template>

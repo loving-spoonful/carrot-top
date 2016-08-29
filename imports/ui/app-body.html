@@ -1,0 +1,149 @@
+<template name="appBody">
+	<div class="wrapper-welcome">
+		<div class="title-welcome">Loving Spoonful Carrot TOP (Tool for Ordering Produce)</div>
+		<div class="description-welcome">
+			This app is adapted from the open source (MIT licensed)
+			<a href="https://www.meteor.com" target="_blank" class="js-open">Meteor</a> app example
+			<a href="http://percolatestudio.com" target="_blank" class="js-open">Local Market.</a>
+			It consists of an inventory database and will have functionality for agencies to select food items (order)
+			from the inventory of items in storage at various Loving Spoonful facilities.
+		</div>
+
+		<div class="description-welcome">
+            The app is designed to run on a physical device. You can also run it in a simulator, or in a desktop browser
+            as a convenience (what you're looking at right now).
+		</div>
+
+		<div class="description-welcome">
+			This app includes a simple administrative backend that you can use to set welcome text on the app's home
+            screen. Visit <a href="/admin">/admin</a> to log into the backend. The first authenticated user is allowed
+            access.
+		</div>
+	</div>
+
+	<div id="container" class="{{menuOpen}} {{overlayOpen}}">
+		<section id="menu" class="overthrow">
+			<a href="/" class="{{activePage 'home'}}">
+				<span class="wrapper-menu-item">
+					<span class="icon-home"></span>
+					<span class="title-menu">Home</span>
+				</span>
+			</a>
+            {{#if currentUser}}
+                {{#if isInRole 'agency,admin'}}
+                    <div class="nav-spacer"></div>
+                    <a href="/order" class="{{activePage 'order'}}">
+                        <span class="wrapper-menu-item">
+                            <!--<span class="icon-speaker_phone"></span>-->
+                            <i class="material-icons">shopping_basket</i>
+                            <span class="title-menu">Order</span>
+                        </span>
+                    </a>
+                    <a href="/my-pending-orders" class="{{activePage 'my-pending-orders'}}">
+                        <span class="wrapper-menu-item">
+                            <!--<span class="icon-list"></span>-->
+                            <i class="material-icons">update</i>
+                            <span class="title-menu">My Pending Orders</span>
+                        </span>
+                    </a>
+                    {{#if isInRole 'agency'}}
+                        <div class="nav-spacer"></div>
+                    {{/if}}
+                {{/if}}
+                {{#if isInRole 'volunteer,admin'}}
+                    <div class="nav-spacer"></div>
+                    <a href="/pending-packing" class="{{activePage 'pending-packing'}}">
+                        <span class="wrapper-menu-item">
+                            <!--<span class="icon-list"></span>-->
+                            <i class="material-icons">view_quilt</i>
+                            <span class="title-menu">To Be Packed</span>
+                        </span>
+                    </a>
+                    <a href="/pending-delivery" class="{{activePage 'pending-delivery'}}">
+                        <span class="wrapper-menu-item">
+                            <!--<span class="icon-list"></span>-->
+                            <i class="material-icons">drive_eta</i>
+                            <span class="title-menu">To Be Delivered</span>
+                        </span>
+                    </a>
+                    <a href="/my-pending-deliveries" class="{{activePage 'my-pending-deliveries'}}">
+                        <span class="wrapper-menu-item">
+                            <!--<span class="icon-list"></span>-->
+                            <i class="material-icons">watch_later</i>
+                            <span class="title-menu">My Pending Deliveries</span>
+                        </span>
+                    </a>
+                    <div class="nav-spacer"></div>
+                {{/if}}
+            {{/if}}
+
+            <a href="/inventory" class="{{activePage 'inventory'}}">
+                <span class="wrapper-menu-item">
+                    <span class="icon-storage"></span>
+                    <span class="title-menu">Inventory</span>
+                </span>
+            </a>
+
+            {{#if currentUser}}
+                <a href="/categories" class="{{activePage 'categories'}}">
+                    <span class="wrapper-menu-item">
+                        <!--<span class="icon-storage"></span>-->
+                        <i class="material-icons">view_column</i>
+                        <span class="title-menu">Categories</span>
+                    </span>
+                </a>
+                {{#if isInRole 'admin'}}
+                    <div class="nav-spacer"></div>
+                    <a href="/users" class="{{activePage 'users'}}">
+                    <span class="wrapper-menu-item">
+                        <i class="material-icons">group</i>
+                        <span class="title-menu">Users</span>
+                    </span>
+                    </a>
+                {{/if}}
+                <div class="nav-spacer"></div>
+                <a href="#" class="user-item js-user-sign-out">
+                    <span class="wrapper-menu-item">
+                        <i class="material-icons">fullscreen_exit</i>
+                        <span class="title-menu">Sign Out</span>
+                    </span>
+                </a>
+            {{else}}
+                <div class="nav-spacer"></div>
+                <a href="/signin" class="user-item">
+                    <span class="wrapper-menu-item">
+                        <span class="title-menu">Sign In</span>
+                    </span>
+                </a>
+                <a href="/join" class="user-item">
+                    <span class="wrapper-menu-item">
+                        <span class="title-menu">Register</span>
+                    </span>
+                </a>
+            {{/if}}
+		</section>
+
+		<div class="notifications">
+			{{#unless connected}}
+				<div class="notification">
+                    <i class="material-icons">sync</i>
+					<div class="title-notification">Trying to connect</div>
+				</div>
+			{{/unless}}
+			{{#each notifications}}
+				<div class="notification">
+					<a class="btn-primary js-notification-action">{{action}}</a>
+					<div class="title-notification">{{title}}</div>
+				</div>
+			{{/each}}
+		</div>
+
+		{{> overlay}}
+
+		<div class="content-overlay"></div>
+
+		<div id="content-container">
+			{{> Template.dynamic template=main}}
+		</div>
+	</div>
+</template>

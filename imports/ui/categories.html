@@ -1,0 +1,23 @@
+<template name="categories">
+    <div class="page categories">
+        {{#nav title='Item Categories' black=false}}
+            {{#if userInRole 'admin'}}
+                <!-- only if logged in as a admin -->
+                <a href="#" class="nav-item js-add-category"><span class="icon-add"></span></a>
+            {{/if}}
+        {{/nav}}
+        <div class="content-scrollable with-top">
+            <ul class="list-items">
+                {{#each itemCategories}}
+                    <li class="list-item" data-id="{{_id._str}}">
+                        <div class="item-title">{{name}}</div>
+                        {{#if userInRole 'admin'}}
+                            <a href="#" class="js-delete-item-category"><span class="icon-close"></span></a>
+                            <a href="#" class="js-edit-item-category"><span class="icon-mode_edit"></span></a>
+                        {{/if}}
+                    </li>
+                {{/each}}
+            </ul>
+        </div>
+    </div>
+</template>

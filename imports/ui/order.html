@@ -1,0 +1,27 @@
+<template name="order">
+	<div class="page order">
+		{{# nav title='Order' black=false}}
+			<a href="#" class="nav-item js-add-item"><span class="icon-add"></span></a>
+		{{/nav}}
+		<div class="content-scrollable with-top">
+			<ul class="list-items">
+				{{#each currentOrder}}
+					<li class="list-item" data-index="{{@index}}">
+						<div class="item-title">{{name}}</div>
+                        <a href="#" class="js-delete-order-item"><span class="icon-close"></span></a>
+                        <div class="item-quantity item-quantity-ordered">{{fixFloat quantity}} {{quantity_units}}</div>
+                        {{#if instructions}}
+                            <p class="item-description">{{instructions}}</p>
+                        {{/if}}
+					</li>
+                {{else}}
+                    <h3 class="no-items-message">
+                        There are no items currently in your order.
+                        To start, <a href="#" class="js-add-item">add an item</a>.
+                    </h3>
+				{{/each}}
+			</ul>
+		</div>
+		<a href="#" class="btn-primary js-place-order">Place Order</a>
+	</div>
+</template>

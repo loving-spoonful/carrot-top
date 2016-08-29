@@ -1,0 +1,46 @@
+.page.my-pending-orders {
+  .order-status {
+    display: block;
+    clear: both;
+    margin-top: 0.5rem;
+  }
+  .order-status-item {
+    margin-top: 0.3rem;
+    vertical-align: top;
+    .font-s3;
+    color: @color-medium-well;
+
+    &:before {
+      width: 1rem; height: 1rem;
+      margin-right: 0.7rem; margin-top: 0.07rem;
+      display: inline-block;
+      vertical-align: top;
+
+      border-radius: 100%;
+      border: 1px solid @color-medium-rare;
+
+      content: "";
+    }
+  }
+  .order-status-item.complete {
+    &:before {
+      border: 1px solid #8BC34A;
+
+      font-family: 'market' !important;
+      speak: none;
+      font-style: normal;
+      font-weight: normal;
+      font-variant: normal;
+      text-transform: none;
+
+      /* Better Font Rendering =========== */
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+
+      line-height: 1rem;
+      text-align: center;
+      color: #8BC34A;
+      content: "\e5ca";
+    }
+  }
+}

@@ -1,0 +1,35 @@
+<template name="wrappedSelect">
+    <div class="at-input select-wrapper">
+        <label for="at-field-{{_id}}">{{displayName}}</label>
+        <select id="at-field-{{_id}}" name="at-field-{{_id}}">
+            {{#each select}}
+                <option value="{{value}}">{{text}}</option>
+            {{/each}}
+        </select>
+    </div>
+</template>
+<template name="textInputWithHelp">
+    <div class="at-input with-help">
+        <label for="at-field-{{_id}}">{{displayName}}</label>
+        <input id="at-field-{{_id}}" name="at-field-{{_id}}" type="text"
+               value="{{value}}" placeholder="{{placeholder}}">
+        <p class="help-text">{{options.helpText}}</p>
+    </div>
+</template>
+<template name="numberInputWithHelp">
+    <div class="at-input number-input with-help">
+        <label for="at-field-{{_id}}">{{displayName}}</label>
+        <input id="at-field-{{_id}}" name="at-field-{{_id}}" type="number"
+               value="{{value}}" placeholder="{{placeholder}}">
+        <p class="help-text">{{options.helpText}}</p>
+    </div>
+</template>
+
+<template name="authPage">
+    <div class="page auth">
+        <div class="content-scrollable with-top">
+            {{> nav title='' black=false}}
+            {{> atForm}}
+		</div>
+	</div>
+</template>

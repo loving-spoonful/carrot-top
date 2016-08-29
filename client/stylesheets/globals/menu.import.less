@@ -1,0 +1,70 @@
+#menu {
+  .background-image(
+    linear-gradient(top, rgba(85,134,223,.1), rgba(0,0,0,0) 100%),
+    url('img/app/bg-menu-640x1136.jpg')
+  );
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+
+  .nav-spacer {
+    height: 1.5rem;
+    box-shadow: rgba(129,206,200,.1) 0 1px 0 0;
+  }
+
+  a {
+    box-shadow: rgba(129,206,200,.1) 0 1px 0 0;
+    color: rgba(255,255,255,.4);
+    display: block;
+    padding: 0.8rem 1.5rem 0.75rem 1.5rem;
+    //height: 13%;
+    position: relative;
+    text-align: left;
+
+    &:hover,
+    &:active,
+    &.active {
+      color: @color-empty;
+    }
+
+    .wrapper-menu-item {
+      .font-s2;
+      .type-bold;
+      // TODO: This is pretty messed up, should find a more elegant way to position.
+      //.position(absolute, 50%, -25%, auto, 25%);
+      //.transform(translate3d(-25%, -50% ,0));
+      display: block;
+    }
+
+    [class^="icon-"],
+    [class*=" icon-"] {
+      .font-m1;
+      display: inline-block;
+      //margin-bottom: 5%;
+    }
+
+    .material-icons {
+      .font-m1;
+      display: inline-block;
+      margin-top: 0.05rem;
+    }
+
+    .title-menu {
+      //.title-caps;
+      .font-s3;
+      display: inline-block;
+      vertical-align: top;
+      margin-top: 0.1rem;
+      margin-left: 0.3rem;
+    }
+  }
+
+  a.user-item {
+    .wrapper-menu-item {
+      width: 100%;
+    }
+    &.no-menu .title-menu {
+      margin-top: 0;
+      margin-left: 1.58rem;
+    }
+  }
+}

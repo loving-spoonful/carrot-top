@@ -1,0 +1,26 @@
+<template name="home">
+    <div class="page home">
+        {{> nav title='Home' black=true}}
+        <div class="content-scrollable">
+            <div class="bg-image home">
+                <span class="arrow"></span>
+            </div>
+            <div class="callout-news">
+                <span class="title-callout">Hours</span>
+                Order fresh food from Loving Spoonful between 7 am and noon Monday and Friday, for delivery from
+                1 pm – 4 pm.
+            </div>
+            <!--{{> loginButtons}}-->
+            {{#if currentUser }}
+                {{#if isInRole 'volunteer,admin'}}
+                    <a href="/pending-delivery" class="btn-primary js-make-deliveries">Make Some Deliveries!</a>
+                {{/if}}
+                {{#if isInRole 'agency'}}
+                    <a href="/order" class="btn-primary js-place-order">Place An Order Now!</a>
+                {{/if}}
+            {{else}}
+                <a href="/signin" class="btn-primary js-sign-in">Sign In to Order</a>
+            {{/if}}
+        </div>
+    </div>
+</template>

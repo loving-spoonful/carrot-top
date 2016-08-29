@@ -1,0 +1,89 @@
+.page.auth {
+  .content-scrollable { padding-bottom: 4em; }
+
+  .at-btn {
+    .btn-style-inherit;
+
+    background-color: @color-primary;
+    color: @color-empty;
+
+    &:hover { background-color: darken(@color-primary, 5%); }
+    &:active { box-shadow: rgba(0,0,0,.3) 0 1px 3px 0 inset; }
+
+    .position(fixed, auto, 0, 0, 0, 100%, 3rem);
+    .transform(translate3d(0, 0, 0)); //gpu rendering
+  }
+
+  .at-title h3 {
+    .font-s2-alt;
+    .type-secondary;
+    .title-caps;
+    .ellipsized;
+
+    height: 3rem;
+
+    text-align: center;
+    line-height: 3rem;
+
+    margin-left: 25%;
+    .position(absolute, 0, 0, auto, 0, 50%, 3rem);
+    z-index: 999;
+  }
+
+  label {
+    display: none;
+    .font-s3;
+    color: @color-well;
+    margin-left: 1.25rem;
+    margin-top: 1rem;
+  }
+  label[for="at-field-desiredRole"] {
+    display: block;
+  }
+
+  input[type="text"], input[type="password"], input[type="email"], input[type="tel"], input[type="number"] {
+    display: block; width: 100%;
+    border-bottom: 1px solid @color-rare;
+  }
+
+  .with-help input {
+    border-bottom: none;
+  }
+
+  .help-text {
+    .font-s2;
+    color: @color-medium-well;
+    font-style: italic;
+    margin: 0 1.25rem 1rem 1.25rem;
+    line-height: 1.25em;
+  }
+
+  .select-wrapper {
+    padding: 1rem 1.25rem; //total height ~48
+    line-height: 1.5em !important;
+
+    border-bottom: 1px solid @color-rare;
+
+    label {
+      margin: 0 0 0.5rem 0;
+    }
+
+    select {
+      margin: 0;
+      width: 100%;
+    }
+  }
+
+  .with-help {
+    border-bottom: 1px solid @color-rare;
+  }
+
+  .at-signin-link, .at-signup-link {
+    margin-left: 1.25rem;
+    margin-top: 1rem;
+  }
+  .at-pwd-link {
+    margin-left: 1.25rem;
+    margin-top: 1rem;
+  }
+}

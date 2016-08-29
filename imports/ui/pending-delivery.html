@@ -1,0 +1,47 @@
+<template name="pendingDelivery">
+	<div class="page pending-delivery">
+		{{> nav title='Orders To Be Delivered' black=false}}
+		<div class="content-scrollable with-top">
+            {{#if isInRole 'volunteer,admin'}}
+                <ul class="list-orders">
+                    {{#each orders}}
+                        <li class="list-order" data-index="{{@index}}" data-id="{{_id._str}}">
+                            <div class="order-details">
+                                <div class="float-container">
+                                    <a href="#" class="js-cancel-order"><span class="icon-close"></span></a>
+                                    <div class="order-title">Order from {{owner.profile.name}}</div>
+                                    <div class="order-date">{{formattedDate created_at}}</div>
+                                </div>
+                                <div class="order-address">{{{addressForOrder _id._str}}}</div>
+                            </div>
+                            <ul class="order-items">
+                                {{#each orderItems}}
+                                    <li class="order-item" data-index="{{@index}}">
+                                        <div class="item-name">{{name}}</div>
+                                        <div class="item-quantity-ordered">
+                                            {{../orderQuantityForItem @index}} {{quantity_units}}
+                                        </div>
+                                        {{#if ../orderInstructionsForItem @index}}
+                                            <p>
+                                                {{../orderInstructionsForItem @index}}
+                                            </p>
+                                        {{/if}}
+                                    </li>
+                                {{/each}}
+                            </ul>
+                            {{#if userInRole 'volunteer'}}
+                                <a href="#" class="btn-primary js-take-responsibility">Take Responsibility</a>
+                                <!--<a href="#" class="btn-primary js-complete-order">Mark Order as Complete</a>-->
+                            {{/if}}
+                        </li>
+                    {{/each}}
+                </ul>
+            {{else}}
+                <div class="wrapper-message">
+                    <div class="title-message">Not allowed.</div>
+                    <div class="subtitle-message">You do not have the permissions to view this page.</div>
+                </div>
+            {{/if}}
+		</div>
+	</div>
+</template>

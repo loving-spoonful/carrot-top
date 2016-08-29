@@ -1,0 +1,45 @@
+<template name="addItemOverlay">
+	<div class="overlay add-item">
+		<a href="#" class="js-close-overlay overlay-dismiss"><span class="icon-close"></span></a>
+		<div class="title-page">Add Item</div>
+
+		<form class="form-add-item">
+			<div class="form-group">
+				<input type="text" name="item-name" id="item-name" placeholder="Item Name">
+				<hr>
+				<input type="text" name="item-quantity" id="item-quantity" placeholder="Initial Quantity">
+				<hr>
+                <select name="quantity-units" id="quantity-units">
+                    <option value="" disabled selected>Select Quantity Units...</option>
+                    <option value="" disabled>Mass and Weight</option>
+                    <option value="lb">Pounds</option>
+                    <option value="oz">Ounces</option>
+                    <option value="kg">Kilograms</option>
+                    <option value="g">Grams</option>
+                    <option value="" disabled>Volume</option>
+                    <option value="L">Litres</option>
+                    <option value="mL">Millilitres</option>
+                </select>
+                <hr>
+                <!-- SET SOME BASIC HARDCODED DEFAULTS -->
+				<input type="text" name="item-order-minimum" id="item-order-minimum"
+                       placeholder="Order Quantity Minimum" value="1">
+				<hr>
+                <input type="text" name="item-order-maximum" id="item-order-maximum"
+                       placeholder="Order Quantity Maximum" value="50">
+                <hr>
+				<input type="text" name="item-order-increment" id="item-order-increment"
+					   placeholder="Order Quantity Increment" value="1">
+				<hr>
+				<select name="item-category" id="item-category">
+					<option value="" disabled selected>Select An Item Category...</option>
+                    {{#each itemCategories}}
+                        <option value="{{_id._str}}">{{name}}</option>
+                    {{/each}}
+				</select>
+			</div>
+
+			<button class="btn-primary" type="submit">Add</button>
+		</form>
+	</div>
+</template>

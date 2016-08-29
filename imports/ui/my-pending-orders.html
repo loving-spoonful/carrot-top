@@ -1,0 +1,45 @@
+<template name="myPendingOrders">
+	<div class="page my-pending-orders">
+		{{> nav title='My Pending Orders' black=false}}
+		<div class="content-scrollable with-top">
+			<ul class="list-orders">
+				{{#each orders}}
+					<li class="list-order" data-index="{{@index}}" data-id="{{_id._str}}">
+                        <div class="order-details">
+                            <div style="overflow: hidden;">
+                                {{#unless packed}}
+                                    <a href="#" class="js-cancel-order"><span class="icon-close"></span></a>
+                                {{/unless}}
+                                <div class="order-title">Order from {{owner.emails.[0].address}}</div>
+                                <div class="order-date">{{formattedDate created_at}}</div>
+                            </div>
+                            <div class="order-status">
+                                <div class="order-status-item order-status-packed {{#if packed}}complete{{/if}}">
+                                    Packed
+                                </div>
+                                <div class="order-status-item order-status-deliverer {{#if packed}}complete{{/if}}">
+                                    Has a Deliverer
+                                </div>
+                            </div>
+                        </div>
+                        <ul class="order-items">
+                            {{#each orderItems}}
+                                <li class="order-item" data-index="{{@index}}">
+                                    <div class="item-name">{{name}}</div>
+                                    <div class="item-quantity-ordered">
+                                        {{../orderQuantityForItem @index}} {{quantity_units}}
+                                    </div>
+                                    {{#if ../orderInstructionsForItem @index}}
+                                        <p>
+                                            {{../orderInstructionsForItem @index}}
+                                        </p>
+                                    {{/if}}
+                                </li>
+                            {{/each}}
+                        </ul>
+					</li>
+				{{/each}}
+			</ul>
+		</div>
+	</div>
+</template>
