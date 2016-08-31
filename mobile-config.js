@@ -5,7 +5,7 @@ App.info({
   author: 'David Lougheed, adapting open source code from Percolate Studio Team.',
   email: 'info@lovingspoonful.org',
   website: 'http://lovingspoonful.org/',
-  version: '0.1.1'
+  version: '0.1.2'
 });
 
 App.icons({
