@@ -11,14 +11,12 @@
 				<hr>
                 <select name="quantity-units" id="quantity-units">
                     <option value="" disabled selected>Select Quantity Units...</option>
-                    <option value="" disabled>Mass and Weight</option>
-                    <option value="lb">Pounds</option>
-                    <option value="oz">Ounces</option>
-                    <option value="kg">Kilograms</option>
-                    <option value="g">Grams</option>
-                    <option value="" disabled>Volume</option>
-                    <option value="L">Litres</option>
-                    <option value="mL">Millilitres</option>
+                    {{#each itemUnits}}
+                        <option value="" disabled>{{name}}</option>
+                        {{#each units}}
+                            <option value="{{symbol}}">{{name}} ({{symbol}})</option>
+                        {{/each}}
+                    {{/each}}
                 </select>
                 <hr>
                 <!-- SET SOME BASIC HARDCODED DEFAULTS -->

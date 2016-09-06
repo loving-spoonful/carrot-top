@@ -83,3 +83,51 @@ Template.registerHelper('addressForOrder', function (orderID) {
 
 	return owner.profile.address.replace("\n", "<br>");
 });
+
+Template.registerHelper('itemUnits', function () {
+	return [
+		{
+			name: "Mass and Weight",
+			units: [
+				{
+					name: "Pounds",
+					symbol: "lb"
+				},
+				{
+					name: "Ounces",
+					symbol: "oz"
+				},
+				{
+					name: "Kilograms",
+					symbol: "kg"
+				},
+				{
+					name: "Grams",
+					symbol: "g"
+				}
+			]
+		},
+		{
+			name: "Volume",
+			units: [
+				{
+					name: "Litres",
+					symbol: "L"
+				},
+				{
+					name: "Millilitres",
+					symbol: "mL"
+				}
+			]
+		},
+		{
+			name: "Other",
+			units: [
+				{
+					name: "Count",
+					symbol: "items"
+				}
+			]
+		}
+	];
+});
