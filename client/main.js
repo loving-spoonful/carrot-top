@@ -87,45 +87,54 @@ Template.registerHelper('addressForOrder', function (orderID) {
 Template.registerHelper('itemUnits', function () {
 	return [
 		{
-			name: "Mass and Weight",
+			name: 'Mass and Weight',
 			units: [
 				{
-					name: "Pounds",
-					symbol: "lb"
+					name: 'Pounds',
+					symbol: 'lb',
+					options: {
+						selected: 'selected'
+					}
 				},
 				{
-					name: "Ounces",
-					symbol: "oz"
+					name: 'Ounces',
+					symbol: 'oz',
+					options: {}
 				},
 				{
-					name: "Kilograms",
-					symbol: "kg"
+					name: 'Kilograms',
+					symbol: 'kg',
+					options: {}
 				},
 				{
-					name: "Grams",
-					symbol: "g"
+					name: 'Grams',
+					symbol: 'g',
+					options: {}
 				}
 			]
 		},
 		{
-			name: "Volume",
+			name: 'Volume',
 			units: [
 				{
-					name: "Litres",
-					symbol: "L"
+					name: 'Litres',
+					symbol: 'L',
+					options: {}
 				},
 				{
-					name: "Millilitres",
-					symbol: "mL"
+					name: 'Millilitres',
+					symbol: 'mL',
+					options: {}
 				}
 			]
 		},
 		{
-			name: "Other",
+			name: 'Other',
 			units: [
 				{
-					name: "Count",
-					symbol: "items"
+					name: 'Count',
+					symbol: 'items',
+					options: {}
 				}
 			]
 		}
