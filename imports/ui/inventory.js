@@ -29,6 +29,7 @@ Template.inventory.events({
 	},
 	'click .js-edit-item': function (event) {
 		var $item = $(event.target).parents('.list-item').first();
+		var $itemTitle = $item.find('.item-title').first();
 		var $itemAmount = $item.find('.item-quantity-amount').first();
 		var itemAmountValue = parseFloat($itemAmount.html());
 
@@ -37,7 +38,11 @@ Template.inventory.events({
 		if ($item.data('editing') == false) {
 			$item.data('editing', true);
 
-			// Update HTML to include an editable text box...
+			// Update HTML to include editable text boxes
+
+			$itemTitle.replaceWith('<input type="text" class="item-title" value="' + $itemTitle.text() + '">');
+			$itemTitle = $item.find('.item-title').first();
+
 			$itemAmount.replaceWith('<input type="text" class="item-quantity-amount" value="' + itemAmountValue + '">');
 			$itemAmount = $item.find('.item-quantity-amount').first();
 
@@ -58,22 +63,29 @@ Template.inventory.events({
 			});
 		} else if($item.data('editing') == true) {
 			var newItemAmountValue = parseFloat($itemAmount.val());
+			var newItemTitleValue = $itemTitle.val();
 
 			if (newItemAmountValue > 0) {
-				$item.data('editing', false);
+				if (newItemTitleValue.length > 0) {
+					$item.data('editing', false);
 
-				Items.update({ _id: new Mongo.ObjectID($item.data('id')) }, {
-					$set: {
-						quantity_amount: newItemAmountValue,
-						updated_at: Date.now()
-					}
-				});
+					Items.update({_id: new Mongo.ObjectID($item.data('id'))}, {
+						$set: {
+							name: newItemTitleValue,
+							quantity_amount: newItemAmountValue,
+							updated_at: Date.now()
+						}
+					});
 
-				// Update HTML to be read-only.
-				$($itemAmount).replaceWith('<span class="item-quantity-amount">' + newItemAmountValue + '</span>');
-				$(event.target).parent().html('<span class="icon-mode_edit"></span>');
+					// Update HTML to be read-only.
+					$($itemTitle).replaceWith('<span class="item-title">' + newItemTitleValue + '</span>');
+					$($itemAmount).replaceWith('<span class="item-quantity-amount">' + newItemAmountValue + '</span>');
+					$(event.target).parent().html('<span class="icon-mode_edit"></span>');
+				} else {
+					alert('Inventory items must have a title.');
+				}
 			} else {
-				alert('Inventory item cannot have a quantity of below zero.');
+				alert('Inventory items cannot have a quantity of below zero.');
 			}
 		} else {
 			console.error('Invalid value for editing data attribute.');
