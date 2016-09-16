@@ -5,30 +5,32 @@
 
 		<form class="form-add-item">
 			<div class="form-group">
-				<input type="text" name="item-name" id="item-name" placeholder="Item Name">
+                <label for="item-name">Item Name</label>
+				<input type="text" name="item-name" id="item-name" placeholder="Carrots">
 				<hr>
-				<input type="text" name="item-quantity" id="item-quantity" placeholder="Initial Quantity">
+                <label for="item-quantity">Initial Quantity</label>
+				<input type="text" name="item-quantity" id="item-quantity" placeholder="10">
 				<hr>
+                <label for="quantity-units">Quantity Units</label>
                 <select name="quantity-units" id="quantity-units">
-                    <option value="" disabled selected>Select Quantity Units...</option>
                     {{#each itemUnits}}
                         <option value="" disabled>{{name}}</option>
                         {{#each units}}
-                            <option value="{{symbol}}">{{name}} ({{symbol}})</option>
+                            <option value="{{symbol}}" {{options}}>{{name}} ({{symbol}})</option>
                         {{/each}}
                     {{/each}}
                 </select>
                 <hr>
-                <!-- SET SOME BASIC HARDCODED DEFAULTS -->
-				<input type="text" name="item-order-minimum" id="item-order-minimum"
-                       placeholder="Order Quantity Minimum" value="1">
+                <label for="item-order-minimum">Order Quantity Minimum</label>
+				<input type="text" name="item-order-minimum" id="item-order-minimum" placeholder="1">
 				<hr>
-                <input type="text" name="item-order-maximum" id="item-order-maximum"
-                       placeholder="Order Quantity Maximum" value="50">
+                <label for="item-order-maximum">Order Quantity Maximum</label>
+                <input type="text" name="item-order-maximum" id="item-order-maximum" placeholder="50">
                 <hr>
-				<input type="text" name="item-order-increment" id="item-order-increment"
-					   placeholder="Order Quantity Increment" value="1">
+                <label for="item-order-increment">Order Quantity Increment</label>
+				<input type="text" name="item-order-increment" id="item-order-increment" placeholder="1">
 				<hr>
+                <label for="item-category">Item Category</label>
 				<select name="item-category" id="item-category">
 					<option value="" disabled selected>Select An Item Category...</option>
                     {{#each itemCategories}}
