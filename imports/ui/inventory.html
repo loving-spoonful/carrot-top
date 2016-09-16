@@ -20,8 +20,8 @@
     <li class="list-item" data-id="{{_id._str}}" data-editing="false">
         <div class="item-title">{{name}}</div>
         {{#if userInRole 'volunteer'}}
-            <a href="#" class="js-delete-item"><span class="icon-close"></span></a>
-            <a href="#" class="js-edit-item"><span class="icon-mode_edit"></span></a>
+            <a href="#" class="js-delete-item"><i class="material-icons">delete</i></a>
+            <a href="#" class="js-edit-item"><i class="material-icons">mode_edit</i></a>
         {{/if}}
         <div class="item-quantity">
             <span class="item-quantity-amount">{{quantity_amount}}</span>
