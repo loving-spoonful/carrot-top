@@ -12,6 +12,51 @@ Template.addItemOverlay.onCreated(function () {
 });
 
 Template.addItemOverlay.events({
+	'keyup #item-quantity': function (event) {
+		const target = event.target;
+		const $itemOrderMinimumInput = $('#item-order-minimum');
+		const $quantityUnits = $('#quantity-units');
+
+		if (target.value) {
+			const possibleMinimum = Math.round(parseFloat(target.value) / 5);
+			const minimumToSet = possibleMinimum < 1 ? 1 : possibleMinimum;
+
+			if ($itemOrderMinimumInput.data('user-set') != true) {
+				// TODO: If value was not manually set
+
+				if ($quantityUnits.val() == 'lb') {
+					$itemOrderMinimumInput.val(minimumToSet);
+					window.setTimeout(function () {
+						$(this).data('user-set', false);
+					}.bind($itemOrderMinimumInput[0]), 10);
+				}
+			}
+		} else {
+			if ($itemOrderMinimumInput.data('user-set') != true) {
+				$itemOrderMinimumInput.val('');
+			}
+		}
+	},
+	'change #item-order-minimum': function (event) {
+		if (event.target.value.length > 0) {
+			$(event.target).data('user-set', true);
+		} else {
+			$(event.target).data('user-set', false);
+		}
+	},
+	'change #quantity-units': function (event) {
+		const $itemOrderMinimumInput = $('#item-order-minimum');
+
+		if (event.target.value == 'lb' && $itemOrderMinimumInput.data('user-set') != true) {
+			const possibleMinimum = Math.round(parseFloat(target.value) / 5);
+			const minimumToSet = possibleMinimum < 1 ? 1 : possibleMinimum;
+
+			$itemOrderMinimumInput.val(minimumToSet);
+			window.setTimeout(function () {
+				$(this).data('user-set', false);
+			}.bind($itemOrderMinimumInput[0]), 10);
+		}
+	},
 	'submit .form-add-item': function (event) {
 		event.preventDefault();
 
