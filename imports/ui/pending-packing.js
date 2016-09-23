@@ -24,7 +24,6 @@ Template.pendingPacking.onCreated(function bodyOnCreated() {
 	Meteor.subscribe('directory');
 	Meteor.subscribe('items');
 	Meteor.subscribe('orders');
-	console.log(Meteor.users.find().fetch());
 });
 
 Template.pendingPacking.events({

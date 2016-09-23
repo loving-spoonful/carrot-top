@@ -37,8 +37,6 @@ Orders.attachSchema(Orders.schema);
 
 Orders.helpers({
 	owner: function () {
-		console.log(this.owner_id);
-		console.log(Meteor.users.findOne({ _id: this.owner_id }));
 		return Meteor.users.findOne({ _id: this.owner_id });
 	},
 

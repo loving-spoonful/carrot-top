@@ -16,7 +16,6 @@ Template.home.onCreated(function bodyOnCreated() {
 	dataReadyHold.release();
 	this.state = new ReactiveDict();
 	Meteor.subscribe('items');
-	console.log(Roles.getRolesForUser(Meteor.userId()));
 });
 
 Template.appBody.events({
