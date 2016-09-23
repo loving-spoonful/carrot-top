@@ -37,13 +37,13 @@ Template.order.onCreated(function bodyOnCreated() {
 	if (!Session.get(CURRENT_ORDER_KEY)) { Session.set(CURRENT_ORDER_KEY, []); }
 
 	const currentDate = new Date();
-	const currentDay = currentDate.getDate();
+	const currentDay = currentDate.getDay();
 	const currentHours = currentDate.getHours();
 	const currentMinutes = currentDate.getMinutes();
 	const currentTime = currentHours * 100 + currentMinutes; // Quick hack; make a number out of the time.
-
+	
 	if (!((currentDay == 1 || currentDay == 5) && (currentTime <= 1200 && currentTime >= 700))) {
-		alert('Only orders made between 7 am and noon EST will be fulfilled!');
+		alert('Only orders made between 7 am and noon EST on Monday or Friday will be fulfilled!');
 	}
 });
 
