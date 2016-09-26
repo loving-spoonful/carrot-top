@@ -52,7 +52,7 @@ Orders.helpers({
 		return Items.find({ _id: { $in: item_ids } });
 	},
 	orderQuantityForItem: function (index) {
-		return this.requests[index].quantity.toString();
+		return (Math.round(this.requests[index].quantity * 100) / 100).toString();
 	},
 	orderInstructionsForItem: function (index) {
 		return this.requests[index].instructions;
