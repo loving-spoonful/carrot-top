@@ -33,7 +33,8 @@ Template.myPendingDeliveries.events({
 		var $order = $(event.target).parents('.list-order').first();
 		const orderId = $order.data('id');
 
-		if (window.confirm("Are you sure you want to release this order? It will remain in the unowned orders for delivery section.")) {
+		if (window.confirm("Are you sure you want to release this order? It will remain in the unowned orders for " +
+				"delivery section.")) {
 			$order.slideUp(150, function () {
 				// When finished sliding
 
