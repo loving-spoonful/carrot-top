@@ -1,5 +1,4 @@
 import { Template } from 'meteor/templating';
-import { Items } from '../api/items/items.js';
 
 import './home.html'
 
@@ -15,7 +14,6 @@ if (Meteor.isClient) {
 Template.home.onCreated(function bodyOnCreated() {
 	dataReadyHold.release();
 	this.state = new ReactiveDict();
-	Meteor.subscribe('items');
 });
 
 Template.appBody.events({
