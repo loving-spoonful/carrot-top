@@ -36,7 +36,25 @@ Template.myPendingDeliveries.events({
 		if (window.confirm("Are you sure you want to release this order? It will remain in the unowned orders for delivery section.")) {
 			$order.slideUp(150, function () {
 				// When finished sliding
-				// TODO: Remove order from order bundle, delete bundle if no orders are left
+
+				var bundle = OrderBundles.findOne({ order_ids: orderId });
+				const orderObject = Orders.findOne({ _id: new Mongo.ObjectID(orderId) });
+
+				const orderIndex = bundle.order_ids.indexOf(orderId);
+
+				if (orderIndex !== -1) {
+					bundle.order_ids.splice(orderIndex, 1);
+
+					if (bundle.order_ids.length === 0) {
+						OrderBundles.remove({ _id: bundle._id });
+					} else {
+						OrderBundles.update({ _id: bundle._id }, { $set: { order_ids: bundle.order_ids } });
+					}
+
+					Orders.update({ _id: orderObject._id }, { $set: {
+						bundled: false
+					} });
+				}
 			});
 		}
 	},
