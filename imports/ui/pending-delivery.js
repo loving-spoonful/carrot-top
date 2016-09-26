@@ -61,7 +61,7 @@ Template.pendingDelivery.events({
 		var $order = $(event.target).parents('.list-order').first();
 		var orderId = $order.data('id');
 
-		var existingBundle = OrderBundles.findOne({ owner_id: Meteor.userId() });
+		var existingBundle = OrderBundles.findOne({ owner_id: Meteor.userId(), completed: false });
 
 		if (existingBundle) {
 			// Bundle already exists, order should be added to it.
