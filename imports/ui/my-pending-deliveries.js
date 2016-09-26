@@ -31,7 +31,7 @@ Template.myPendingDeliveries.onCreated(function bodyOnCreated() {
 Template.myPendingDeliveries.events({
 	'click .js-cancel-order': function (event) {
 		var $order = $(event.target).parents('.list-order').first();
-		var orderId = $order.data('id');
+		const orderId = $order.data('id');
 
 		if (window.confirm("Are you sure you want to release this order? It will remain in the unowned orders for delivery section.")) {
 			$order.slideUp(150, function () {
@@ -62,7 +62,7 @@ Template.myPendingDeliveries.events({
 	'click .js-mark-complete': function (event) {
 		// Should only ever be one order bundle.
 		var $orderBundle = $('.order-bundle').first();
-		var orderBundleId = $orderBundle.data('id');
+		const orderBundleId = $orderBundle.data('id');
 
 		if (window.confirm('Are you sure you want to mark all your pending deliveries as complete?')) {
 			$orderBundle.slideUp(150, function () {
