@@ -1,49 +1,109 @@
 <template name="myPendingDeliveries">
     <div class="page my-pending-deliveries">
-        {{> nav title='My Pending Deliveries' black=false}}
-        <div class="content-scrollable with-top">
-            <!-- THERE SHOULD TECHNICALLY ONLY BE ONE ORDER BUNDLE -->
-            {{#each orderBundles}}
-                <ul class="list-orders order-bundle" data-id="{{_id._str}}">
-                    {{#each orderObjects}}
-                        <li class="list-order" data-index="{{@index}}" data-id="{{_id._str}}">
-                            <div class="order-details">
-                                <div class="float-container">
-                                    <a href="#" class="js-cancel-order"><span class="icon-close"></span></a>
-                                    <div class="order-title">Order from {{owner.profile.name}}</div>
-                                    <div class="order-date">{{formattedDate created_at}}</div>
-                                </div>
-                                <div class="order-address">{{{addressForOrder _id._str}}}</div>
-                            </div>
-                            <ul class="order-items">
-                                {{#each orderItems}}
-                                    <li class="order-item" data-index="{{@index}}">
-                                        <div class="item-name">{{name}}</div>
-                                        <div class="item-quantity-ordered">
-                                            {{../orderQuantityForItem @index}} {{quantity_units}}
-                                        </div>
-                                        {{#if ../orderInstructionsForItem @index}}
-                                            <p>
-                                                {{../orderInstructionsForItem @index}}
-                                            </p>
-                                        {{/if}}
-                                    </li>
-                                {{/each}}
-                            </ul>
-                        </li>
-                    {{/each}}
-                </ul>
+        {{#if isInRole 'volunteer,admin'}}
+            {{#if isInRole 'admin'}}
+                {{#if deliveryState}}
+                    {{#nav title='All Completed Deliveries' black=false}}
+                    {{/nav}}
+                {{else}}
+                    {{# nav title='All Pending Deliveries' black=false}}
+                    {{/nav}}
+                {{/if}}
             {{else}}
-                <h3 class="no-bundles-message">
-                    You have not taken over delivery responsibilities for any orders.
-                    To do so, visit the <a href="/pending-delivery" class="js-add-item">Orders Pending Delivery</a>
-                    page.
-                </h3>
-            {{/each}}
+                {{#if deliveryState}}
+                    {{#nav title='My Completed Deliveries' black=false}}
+                    {{/nav}}
+                {{else}}
+                    {{# nav title='My Pending Deliveries' black=false}}
+                    {{/nav}}
+                {{/if}}
+            {{/if}}
+        {{/if}}
 
-            {{#if orderBundlesExist}}
-                <a href="#" class="btn-primary js-mark-complete">Mark All Complete</a>
+        <div class="content-scrollable with-top">
+            {{#if isInRole 'volunteer,admin'}}
+
+                {{#if isInRole 'admin'}}
+                    <h3 class="no-items-message">
+                        <label for="deliveriesVolunteer">Select a delivery volunter</label>
+                        <select name="deliveriesVolunteer" id="deliveriesVolunteer" >
+                            <option disabled selected value="">Select Volunteer To View</option>
+                            <option value="All">All</option>
+                            {{#each allVolunteers}}
+                                <option value="{{_id}}">{{profile.name}} - {{firstLetter profile.desired_role}}</option>
+                            {{/each}}
+                        </select>
+                    </h3>
+                {{/if}}
+
+                <!-- THERE SHOULD TECHNICALLY ONLY BE ONE ORDER BUNDLE -->
+                {{#each orderBundles}}
+                    <ul class="list-orders order-bundle" data-id="{{_id._str}}">
+                        {{#each orderObjectsNotCompleted}}
+                            <li class="list-order" data-index="{{@index}}" data-id="{{_id._str}}">
+                                <div class="order-details">
+                                    <div class="float-container">
+                                        {{#if deliveryState}}
+                                        {{else}}
+                                            <a href="#" title="return/cancel order" class="js-cancel-order"><span class="icon-release"></span></a>
+                                            <a href="#" title="Order Info" class="js-info-on-order"><span class="icon-info"></span></a>
+                                            <!--<a href="{{getGoogleMapsLink _id}}"><span class="icon-info"></span></a>-->
+                                            <a target="_blank" class="js-map-on-order" title="Google Maps" href="{{getGoogleMapsLink _id}}"><span class="icon-map"></span></a>
+                                            <a href="#" title="Mark order complete" class="js-mark-one-complete"><span class="icon-mark-one-complete"></span></a>
+                                        {{/if}}
+                                        <div class="order-title">Order from {{getEmail agency_id}}</div>
+                                        <!--{{owner.profile.name}} {{owner.profile.phone}}-->
+
+                                        <div class="order-date">by {{owner.emails.[0].address}}</div>
+                                        <div class="order-date">{{formattedDate created_at}}</div>
+                                    </div>
+                                    <div class="order-address">{{addressForOrder _id._str}}</div>
+                                </div>
+                                <ul class="order-items">
+                                    {{#each orderItems}}
+                                        <li class="order-item" data-index="{{@index}}">
+                                            <div class="item-name">{{name}}</div>
+                                            <div class="item-quantity-ordered">
+                                                {{../orderQuantityForItem @index}} {{quantity_units}}
+                                            </div>
+                                            {{#if deliveryState}}
+                                            {{else}}
+                                                {{#if ../orderInstructionsForItem @index}}
+                                                    <p>
+                                                        {{../orderInstructionsForItem @index}}
+                                                    </p>
+                                                {{/if}}
+                                            {{/if}}
+                                        </li>
+                                    {{/each}}
+                                </ul>
+                            </li>
+                        {{/each}}
+                    </ul>
+                {{else}}
+                    {{#if deliveryState}}
+                    {{else}}
+                        <h3 class="no-bundles-message">
+                            You have not taken over delivery responsibilities for any orders.
+                            To do so, visit the <a href="/pending-delivery" class="js-add-item">Orders Pending Delivery</a>
+                            page.
+                        </h3>
+                    {{/if}}
+                {{/each}}
+
+                <!--{{#if deliveryState}}-->
+                <!--{{else}}-->
+                    <!--{{#if orderBundlesExist}}-->
+                        <!--<a href="#" class="btn-primary js-mark-complete">Mark All Complete</a>-->
+                    <!--{{/if}}-->
+                <!--{{/if}}-->
+            {{else}}
+                <div class="wrapper-message">
+                    <div class="title-message">Not allowed.</div>
+                    <div class="subtitle-message">You do not have the permissions to view this page.</div>
+                </div>
             {{/if}}
         </div>
+
     </div>
 </template>

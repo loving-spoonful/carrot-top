@@ -1,31 +1,34 @@
 <template name="inventory">
 	<div class="page inventory">
 		{{#nav title='In Storage' black=false}}
-            {{#if userInRole 'volunteer'}}
-                <!-- only if logged in as a volunteer/admin -->
-                <a href="#" class="nav-item js-add-item"><span class="icon-add"></span></a>
+            {{#if userInRole 'admin'}}
+                    <!-- only if logged in as a admin -->
+                    <a href="#" class="nav-item js-add-item"><span class="icon-add"></span></a>
             {{/if}}
         {{/nav}}
 		<div class="content-scrollable with-top">
-			<ul class="list-items">
-                {{#each items}}
-                    {{> listItem}}
-                {{/each}}
-			</ul>
+            {{#if isInRole 'volunteer, admin'}}
+                <ul class="list-items">
+                    {{#each items}}
+                        <li class="list-item" data-id="{{_id._str}}" data-editing="false">
+                            <div class="item-title">{{name}}</div>
+                            {{#if userInRole 'admin'}}
+                                <a href="#" class="js-delete-item"><i class="material-icons">delete</i></a>
+                                <a href="#" class="js-edit-item"><i class="material-icons">mode_edit</i></a>
+                            {{/if}}
+                            <div class="item-quantity">
+                                <span class="item-quantity-amount">{{quantity_amount}}</span>
+                                {{quantity_units}}
+                            </div>
+                        </li>
+                    {{/each}}
+                </ul>
+            {{else}}
+                <div class="wrapper-message">
+                    <div class="title-message">Not allowed.</div>
+                    <div class="subtitle-message">You do not have the permissions to view this page.</div>
+                </div>
+            {{/if}}
 		</div>
 	</div>
-</template>
-
-<template name="listItem">
-    <li class="list-item" data-id="{{_id._str}}" data-editing="false">
-        <div class="item-title">{{name}}</div>
-        {{#if userInRole 'volunteer'}}
-            <a href="#" class="js-delete-item"><i class="material-icons">delete</i></a>
-            <a href="#" class="js-edit-item"><i class="material-icons">mode_edit</i></a>
-        {{/if}}
-        <div class="item-quantity">
-            <span class="item-quantity-amount">{{quantity_amount}}</span>
-            {{quantity_units}}
-        </div>
-    </li>
 </template>

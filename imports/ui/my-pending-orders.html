@@ -1,45 +1,87 @@
 <template name="myPendingOrders">
 	<div class="page my-pending-orders">
-		{{> nav title='My Pending Orders' black=false}}
+        {{#if isInRole 'volunteer, agency,admin'}}
+            {{#if isInRole 'volunteer, admin'}}
+                {{#if orderState}}
+                    {{#nav title='All Completed Orders' black=false}}
+                    {{/nav}}
+                {{else}}
+                    {{#nav title='All Pending Orders' black=false}}
+                    {{/nav}}
+                {{/if}}
+            {{else}}
+                {{#if orderState}}
+                    {{#nav title='My Completed Orders' black=false}}
+                    {{/nav}}
+                {{else}}
+                    {{#nav title='My Pending Orders' black=false}}
+                    {{/nav}}
+                {{/if}}
+            {{/if}}
+        {{/if}}
+
 		<div class="content-scrollable with-top">
-			<ul class="list-orders">
-				{{#each orders}}
-					<li class="list-order" data-index="{{@index}}" data-id="{{_id._str}}">
-                        <div class="order-details">
-                            <div style="overflow: hidden;">
-                                {{#unless packed}}
-                                    <a href="#" class="js-cancel-order"><span class="icon-close"></span></a>
-                                {{/unless}}
-                                <div class="order-title">Order from {{owner.emails.[0].address}}</div>
-                                <div class="order-date">{{formattedDate created_at}}</div>
-                            </div>
-                            <div class="order-status">
-                                <div class="order-status-item order-status-packed {{#if packed}}complete{{/if}}">
-                                    Packed
-                                </div>
-                                <div class="order-status-item order-status-deliverer {{#if bundled}}complete{{/if}}">
-                                    Has a Deliverer
-                                </div>
-                            </div>
-                        </div>
-                        <ul class="order-items">
-                            {{#each orderItems}}
-                                <li class="order-item" data-index="{{@index}}">
-                                    <div class="item-name">{{name}}</div>
-                                    <div class="item-quantity-ordered">
-                                        {{../orderQuantityForItem @index}} {{quantity_units}}
-                                    </div>
-                                    {{#if ../orderInstructionsForItem @index}}
-                                        <p>
-                                            {{../orderInstructionsForItem @index}}
-                                        </p>
-                                    {{/if}}
-                                </li>
+            {{#if isInRole 'volunteer, agency,admin'}}
+
+                {{#if isInRole 'volunteer, admin'}}
+                    <h3 class="no-items-message">
+                        <label for="orderAsAgency">Select an Agency to Order for</label>
+                        <select name="orderAsAgency" id="orderAsAgency" >
+                            <option disabled selected value="">Select Agency To View</option>
+                            <option value="All">All</option>
+                            {{#each allAgencies2}}
+                                <option value="{{_id}}">{{name}}</option>
                             {{/each}}
-                        </ul>
-					</li>
-				{{/each}}
-			</ul>
+                        </select>
+                    </h3>
+                {{/if}}
+
+                <ul class="list-orders">
+                    {{#each orders}}
+                        <li class="list-order" data-index="{{@index}}" data-id="{{_id._str}}">
+
+                            <div class="order-details">
+                                <div style="overflow: hidden;">
+                                    {{#unless bundled}}
+                                        <a href="#" class="js-cancel-order"><span class="icon-close"></span></a>
+                                    {{/unless}}
+                                    <div class="order-title">Order from {{getEmail agency_id}}</div>
+                                    <div class="order-title"> by {{owner.emails.[0].address}}</div>
+                                    <div class="order-date">{{formattedDate created_at}}</div>
+                                </div>
+                                <div class="order-status">
+                                    <!--<div class="order-status-item order-status-packed {{#if packed}}complete{{/if}}">-->
+                                        <!--Packed-->
+                                    <!--</div>-->
+                                    <div class="order-status-item order-status-deliverer {{#if bundled}}complete{{/if}}">
+                                        Has been loaded
+                                    </div>
+                                </div>
+                            </div>
+                            <ul class="order-items">
+                                {{#each orderItems}}
+                                    <li class="order-item" data-index="{{@index}}">
+                                        <div class="item-name">{{name}}</div>
+                                        <div class="item-quantity-ordered">
+                                            {{../orderQuantityForItem @index}} {{quantity_units}}
+                                        </div>
+                                        {{#if ../orderInstructionsForItem @index}}
+                                            <p>
+                                                {{../orderInstructionsForItem @index}}
+                                            </p>
+                                        {{/if}}
+                                    </li>
+                                {{/each}}
+                            </ul>
+                        </li>
+                    {{/each}}
+                </ul>
+            {{else}}
+                <div class="wrapper-message">
+                    <div class="title-message">Not allowed.</div>
+                    <div class="subtitle-message">You do not have the permissions to view this page.</div>
+                </div>
+            {{/if}}
 		</div>
 	</div>
 </template>

@@ -1,8 +1,6 @@
 import { Template } from 'meteor/templating';
-
 import { Items } from '../api/items/items.js';
 import { ItemCategories } from '../api/item-categories/item-categories.js';
-
 import './add-item-overlay.html'
 
 Template.addItemOverlay.onCreated(function () {
@@ -11,52 +9,41 @@ Template.addItemOverlay.onCreated(function () {
 	Meteor.subscribe('item-categories');
 });
 
+
+Template.addItemOverlay.rendered = function() {
+    var Id = Session.get('currentOverlayID');
+    if (Id == undefined) {
+        $('button[name="inventory_save_btn"]').text("Add");
+    }
+    else {
+
+        var inventoryObject = Items.findOne({_id: new Mongo.ObjectID(Id)});
+        $('input[name="item-name"]').val(inventoryObject.name);
+        $('input[name="item-quantity"]').val(inventoryObject.quantity_amount);
+        $('select[name="quantity-units"]').val(inventoryObject.quantity_units);
+        $('input[name="item-order-minimum"]').val(inventoryObject.ordering_minimum);
+        $('input[name="item-order-maximum"]').val(inventoryObject.ordering_maximum);
+        $('input[name="item-order-increment"]').val(inventoryObject.ordering_increment);
+        $('select[name="item-category"]').val(inventoryObject.category_id);
+        $('input[name="item-order-increment"]').val(inventoryObject.ordering_increment);
+
+        $('button[name="inventory_save_btn"]').text("Save");
+
+    };
+}
+
 Template.addItemOverlay.events({
-	'keyup #item-quantity': function (event) {
-		const target = event.target;
-		const $itemOrderMinimumInput = $('#item-order-minimum');
-		const $quantityUnits = $('#quantity-units');
 
-		if (target.value) {
-			const possibleMinimum = Math.round(parseFloat(target.value) / 5);
-			const minimumToSet = possibleMinimum < 1 ? 1 : possibleMinimum;
-
-			if ($itemOrderMinimumInput.data('user-set') != true) {
-				// TODO: If value was not manually set
-
-				if ($quantityUnits.val() == 'lb') {
-					$itemOrderMinimumInput.val(minimumToSet);
-					window.setTimeout(function () {
-						$(this).data('user-set', false);
-					}.bind($itemOrderMinimumInput[0]), 10);
-				}
-			}
-		} else {
-			if ($itemOrderMinimumInput.data('user-set') != true) {
-				$itemOrderMinimumInput.val('');
-			}
-		}
-	},
 	'change #item-order-minimum': function (event) {
-		if (event.target.value.length > 0) {
+        event.preventDefault();
+
+        if (event.target.value.length > 0) {
 			$(event.target).data('user-set', true);
 		} else {
 			$(event.target).data('user-set', false);
 		}
 	},
-	'change #quantity-units': function (event) {
-		const $itemOrderMinimumInput = $('#item-order-minimum');
 
-		if (event.target.value == 'lb' && $itemOrderMinimumInput.data('user-set') != true) {
-			const possibleMinimum = Math.round(parseFloat(target.value) / 5);
-			const minimumToSet = possibleMinimum < 1 ? 1 : possibleMinimum;
-
-			$itemOrderMinimumInput.val(minimumToSet);
-			window.setTimeout(function () {
-				$(this).data('user-set', false);
-			}.bind($itemOrderMinimumInput[0]), 10);
-		}
-	},
 	'submit .form-add-item': function (event) {
 		event.preventDefault();
 
@@ -69,27 +56,71 @@ Template.addItemOverlay.events({
 		const itemOrderIncrement = parseFloat(target['item-order-increment'].value.trim());
 		const itemCategory = target['item-category'].value.trim();
 
+		if (itemOrderMinimum > itemOrderMaximum) {
+            sAlert.warning('The maximum must be greater than the minimum. Correct and save again.');
+			return;
+        }
 		if (itemName.length > 0 && !isNaN(itemQuantity) && itemQuantityUnits.length > 0
 			&& !isNaN(itemOrderMinimum) && !isNaN(itemOrderMaximum) && !isNaN(itemOrderIncrement)
 			&& itemCategory.length > 0) {
-			Items.insert({
-				name: itemName,
 
-				quantity_amount: itemQuantity,
-				quantity_units: itemQuantityUnits,
-				ordering_minimum: itemOrderMinimum,
-				ordering_maximum: itemOrderMaximum,
-				ordering_increment: itemOrderIncrement,
+            var Id = Session.get('currentOverlayID');
 
-				category_id: itemCategory,
+            // look to see if this is updating the same inventory item!
+            var inventoryId = Items.findOne({name: itemName}, {fields: {_id: 1}});
+            var inventoryName = Items.findOne({name: itemName});
+			if (Id) {
+				if (Id == inventoryId._id) {
+					Items.update ({ _id: new Mongo.ObjectID(Id) },
+						{ $set:
+							{
+								name: itemName,
 
-				created_at: Date.now(),
-				updated_at: Date.now()
-			});
+								quantity_amount: itemQuantity,
+								quantity_units: itemQuantityUnits,
+								ordering_minimum: itemOrderMinimum,
+								ordering_maximum: itemOrderMaximum,
+								ordering_increment: itemOrderIncrement,
 
-			Overlay.close();
+								category_id: itemCategory,
+
+								updated_at: Date.now()
+							}
+						});
+                    sAlert.info('Saved!');
+                    Session.set('currentOverlayID');
+					Overlay.close();
+				}
+				else {
+					sAlert.warning('This inventory item (' + itemName + ') already exists!');
+				}
+			}
+			else {
+            	if (inventoryName) {
+                    sAlert.warning('This inventory item (' + inventoryName + ') already exists!');
+                }
+				else {
+                    Items.insert({
+                        name: itemName,
+
+                        quantity_amount: itemQuantity,
+                        quantity_units: itemQuantityUnits,
+                        ordering_minimum: itemOrderMinimum,
+                        ordering_maximum: itemOrderMaximum,
+                        ordering_increment: itemOrderIncrement,
+
+                        category_id: itemCategory,
+
+                        created_at: Date.now(),
+                        updated_at: Date.now()
+                    });
+
+                    Overlay.close();
+				}
+
+			}
 		} else {
-			alert('You must fill in all relevant fields in order to create your item.');
+			sAlert.warning('You must fill in all relevant fields in order to create your item.');
 		}
 	},
 });

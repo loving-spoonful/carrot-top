@@ -10,6 +10,7 @@ import { BlazeLayout } from 'meteor/kadira:blaze-layout';
 import { Roles } from 'meteor/alanning:roles';
 
 import './users.html'
+import './modalWindow.js'
 
 if (Meteor.isClient) {
 	FlowRouter.route('/users/', {
@@ -18,6 +19,8 @@ if (Meteor.isClient) {
 			BlazeLayout.render('appBody', { main: 'users' });
 		}
 	});
+
+
 }
 
 Template.users.onCreated(function bodyOnCreated() {
@@ -30,13 +33,34 @@ Template.users.events({
 		var $user = $(event.target).parents('.list-user').first();
 		var userId = $user.data('id');
 
-		if (window.confirm("Are you sure you want to delete this user? You cannot get them back afterwards.")) {
-			$user.slideUp(150, function () {
-				// When finished sliding
-				Meteor.users.remove({ _id: userId });
-				$(this).remove();
-			});
-		}
+
+        var userObject = Meteor.users.findOne({ _id: userId });
+
+        var userName = userObject.profile.name;
+        var email = userObject.emails[0].address;
+
+        var sdi = Meteor.commonFunctions.popupModal("Deleting User",
+            "Are you sure you want to delete user " + userName +" (" + email + ")?  You cannot get them back afterwards."
+        );
+        var modalPopup = ReactiveModal.initDialog(sdi);
+
+        // mcp the action when clicking OK (ie confirming the delete)
+        modalPopup.buttons.ok.on('click', function(button){
+        	//ebugger;
+            // what needs to be done after click ok.
+            sAlert.info ("Deleting " + email);
+
+            // mcp and if doing copy and paste - this is what changes!
+            $user.slideUp(150, function () {
+                // When finished sliding
+                Meteor.users.remove({ _id: userId });
+                $(this).remove();
+            });
+        });
+
+        modalPopup.show();
+
+
 	},
 
 	'click .js-approve-user': function (event) {
@@ -44,20 +68,69 @@ Template.users.events({
 		var userId = $user.data('id');
 		var userObject = Meteor.users.findOne({ _id: userId });
 
-		if (window.confirm('Are you sure you want to approve this user?')) {
-			//noinspection JSUnresolvedVariable
-			Roles.addUsersToRoles(userId, [userObject.profile.desired_role], Roles.GLOBAL_GROUP);
-		}
+
+        var sdi = Meteor.commonFunctions.popupModal("Approving User",
+            "Are you sure you want to approve " + userObject.emails[0].address + "?"
+        );
+        var modalPopup = ReactiveModal.initDialog(sdi);
+
+        // mcp the action when clicking OK (ie confirming the delete)
+        modalPopup.buttons.ok.on('click', function(button){
+            //ebugger;
+            // what needs to be done after click ok.
+            sAlert.info ("Approved and sent approved email to " + userObject.emails[0].address);
+
+            //noinspection JSUnresolvedVariable
+            Roles.addUsersToRoles(userId, [userObject.profile.desired_role], Roles.GLOBAL_GROUP);
+
+            Meteor.call('sendEmail',
+                userObject.emails[0].address,
+                CTOP_REDIRECT_EMAIL_FOR_TESTING,
+                'Approved',
+                'This email is confirming you are approved for Carrottop!');
+
+        });
+
+        modalPopup.show();
+
+        //
 	},
 	'click .js-unapprove-user': function (event) {
 		var $user = $(event.target).parents('.list-user').first();
 		var userId = $user.data('id');
 		var userObject = Meteor.users.findOne({ _id: userId });
 
-		if (window.confirm('Are you sure you want to unapprove this user?')) {
-			//noinspection JSUnresolvedVariable
-			Roles.removeUsersFromRoles(userId, [userObject.profile.desired_role], Roles.GLOBAL_GROUP);
-		}
+        var sdi = Meteor.commonFunctions.popupModal("Approving User",
+            "Are you sure you want to unapprove " + userObject.emails[0].address + "?"
+        );
+        var modalPopup = ReactiveModal.initDialog(sdi);
+
+        // mcp the action when clicking OK (ie confirming the delete)
+        modalPopup.buttons.ok.on('click', function(button){
+            //ebugger;
+            // what needs to be done after click ok.
+            sAlert.info ("Unapproving " + userObject.emails[0].address);
+
+            //noinspection JSUnresolvedVariable
+            Roles.removeUsersFromRoles(userId, [userObject.profile.desired_role], Roles.GLOBAL_GROUP);
+
+        });
+
+        modalPopup.show();
+
+        //
+
+
+	},
+
+	'click .js-edit-user': function (event) {
+    	event.preventDefault();
+        var $user = $(event.target).parents('.list-user').first();
+        var userId = $user.data('id');
+
+
+        Session.set('currentOverlayID', userId);
+		Overlay.open('editUserOverlay', this);
 	},
 
 	'click .js-connect-user-to-robot': function (event) {
@@ -79,8 +152,8 @@ Template.users.events({
 			robotId = "";
 		}
 
-		robotId = window.prompt('What is the robot ID for this user account?', robotId);
-
+		robotId = 1;
+		//window.prompt('What is the robot ID for this user account?', robotId);
 		if (robotId !== null) {
 			robotId = parseInt(robotId);
 			if (!isNaN(robotId)) {
@@ -89,12 +162,13 @@ Template.users.events({
 					if (err) console.error(err);
 					console.log(response);
 				});
-				alert('Food robot ID set successfully!');
+				sAlert.info('Food robot ID set successfully!');
 			} else {
-				alert('An invalid (non-number) input was entered.');
+				sAlert.info('An invalid (non-number) input was entered.');
 			}
 		}
 	},
+
 	'click .js-change-user-robot-connection': function (event) {
 		var $user = $(event.target).parents('.list-user').first();
 		var userId = $user.data('id');
@@ -110,7 +184,8 @@ Template.users.events({
 			robotId = "0";
 		}
 
-		robotId = window.prompt('What is the new robot ID for this user account?', robotId);
+		robotId = 1;
+		//window.prompt('What is the new robot ID for this user account?', robotId);
 
 		if (robotId !== null) {
 			robotId = parseInt(robotId);
@@ -120,9 +195,9 @@ Template.users.events({
 					if (err) console.error(err);
 					console.log(response);
 				});
-				alert('Food robot ID set successfully!');
+				sAlert.info('Food robot ID set successfully!');
 			} else {
-				alert('An invalid (non-number) input was entered.');
+				sAlert.info('An invalid (non-number) input was entered.');
 			}
 		}
 	}

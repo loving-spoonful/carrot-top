@@ -4,7 +4,9 @@ var ANIMATION_DURATION = 200;
 
 Session.setDefault(TEMPLATE_KEY, null);
 
-import './overlay.html'
+import './overlay.html';
+import './const.js';
+
 
 Overlay = {
 	open: function(template, data) {
@@ -64,7 +66,14 @@ Template.overlay.helpers({
 
 Template.overlay.events({
 	'click .js-close-overlay': function(event) {
-		event.preventDefault();
+		// this key is passed around from selecting an item on a list to
+		// bring up the respective edit page.  If the user closes the window without doing
+		// a save, clear it out here
+		Session.set('currentOverlayID');
+
+        Session.set(CURRENT_AGENCY);
+
+        event.preventDefault();
 		Overlay.close()
 	}
 });

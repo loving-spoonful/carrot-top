@@ -1,14 +1,23 @@
 <template name="addItemCategoryOverlay">
-    <div class="overlay add-item-category">
+    <div class="overlay add-item-category ">
+
         <a href="#" class="js-close-overlay overlay-dismiss"><span class="icon-close"></span></a>
-        <div class="title-page">Add Item Category</div>
+        <div class="title-page">
+            {{#if _id}}
+                Update Item Categories
+            {{else}}
+                Add Item Categories
+            {{/if}}
+        </div>
 
         <form class="form-add-item-category">
             <div class="form-group">
-                <input type="text" name="item-category-name" id="item-category-name" placeholder="Item Category Name">
+                <label name="mcp-category-label" id="mcp-category-label" for="item-category-name">Name of Category</label>
+                <input type="text" name="item-category-name" id="item-category-name" placeholder="Item Category Name" required>
             </div>
 
-            <button class="btn-primary" type="submit">Add</button>
+            <button class="btn-primary" type="submit" id="category_save_btn" name="category_save_btn">Add</button>
         </form>
     </div>
 </template>
+

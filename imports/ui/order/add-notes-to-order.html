@@ -1,0 +1,18 @@
+<template name="addNotesToOrderOverlay">
+    <div class="overlay addNotesToOrderOverlay">
+        <a href="#" class="js-close-overlay overlay-dismiss"><span class="icon-close"></span></a>
+        <div class="title-page">
+            Loading Details
+        </div>
+
+        <form class="form-addNotesToOrderOverlay">
+            <div class="form-group">
+                <label for="bundle-notes">Notes on loading</label>
+
+                <textarea style="text-align: left" rows="4" cols="25" title="Please add any pertinant information on fulfilling this order" name="order-notes" id="order-notes" placeholder="Notes" required >
+                </textarea>
+            </div>
+            <button class="btn-primary" type="submit" id="order-save_btn" name="order-save_btn">Save</button>
+        </form>
+    </div>
+</template>

@@ -1,0 +1,31 @@
+<template name="agencies">
+    <div class="page agencies">
+        {{#nav title='Agencies' black=false}}
+            {{#if userInRole 'admin'}}
+                <!-- only if logged in as a admin -->
+                <a href="#" class="nav-item js-add-agency"><span class="icon-add"></span></a>
+            {{/if}}
+        {{/nav}}
+        <div class="content-scrollable with-top">
+            {{#if userInRole 'admin'}}
+
+                <ul class="list-items">
+                    {{#each agencies}}
+                        <li class="list-item" data-id="{{_id._str}}">
+                            <div class="item-title">{{name}}</div>
+                            {{#if userInRole 'admin'}}
+                                <a href="#" class="js-delete-agency"><i class="material-icons">delete</i></a>
+                                <a href="#" class="js-edit-agency"><i class="material-icons">mode_edit</i></a>
+                            {{/if}}
+                        </li>
+                    {{/each}}
+                </ul>
+            {{else}}
+                <div class="wrapper-message">
+                    <div class="title-message">Not allowed.</div>
+                    <div class="subtitle-message">You do not have the permissions to view this page.</div>
+                </div>
+            {{/if}}
+        </div>
+    </div>
+</template>

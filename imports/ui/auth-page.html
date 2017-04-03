@@ -1,7 +1,7 @@
 <template name="wrappedSelect">
-    <div class="at-input select-wrapper">
+    <div class="at-input select-wrapper with-help">
         <label for="at-field-{{_id}}">{{displayName}}</label>
-        <select id="at-field-{{_id}}" name="at-field-{{_id}}">
+        <select id="at-field-{{_id}}" name="at-field-{{_id}}" title="{{options.helpText}}">
             {{#each select}}
                 <option value="{{value}}">{{text}}</option>
             {{/each}}
@@ -9,17 +9,20 @@
     </div>
 </template>
 <template name="textInputWithHelp">
-    <div class="at-input with-help">
+    <div class="at-input number-input with-help">
+        <div data-tip="{{options.helpText}}">
         <label for="at-field-{{_id}}">{{displayName}}</label>
-        <input id="at-field-{{_id}}" name="at-field-{{_id}}" type="text"
+        <input title="{{options.helpText}}" id="at-field-{{_id}}" name="at-field-{{_id}}" type="text"
                value="{{value}}" placeholder="{{placeholder}}">
-        <p class="help-text">{{options.helpText}}</p>
+        <!--<p class="help-text">{{options.helpText}}</p>-->
+        </div>
     </div>
 </template>
+
 <template name="numberInputWithHelp">
     <div class="at-input number-input with-help">
         <label for="at-field-{{_id}}">{{displayName}}</label>
-        <input id="at-field-{{_id}}" name="at-field-{{_id}}" type="number"
+        <input id="at-field-{{_id}}" name="at-field-{{_id}}" type="number" title="{{options.helpText}}"
                value="{{value}}" placeholder="{{placeholder}}">
         <p class="help-text">{{options.helpText}}</p>
     </div>
@@ -32,4 +35,15 @@
             {{> atForm}}
 		</div>
 	</div>
+</template>
+
+<template name="wrappedSelect2">
+    <div class="at-input select-wrapper with-help">
+        <label for="at-field-{{_id}}">{{displayName}}</label>
+        <select id="at-field-{{_id}}" name="at-field-{{_id}}" disabled title="{{options.helpText}}">
+            {{#each select}}
+                <option value="{{value}}">{{text}}</option>
+            {{/each}}
+        </select>
+    </div>
 </template>
