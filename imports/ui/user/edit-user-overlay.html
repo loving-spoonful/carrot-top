@@ -1,0 +1,42 @@
+<template name="editUserOverlay">
+    <div class="overlay edit-user">
+        <a href="#" class="js-close-overlay overlay-dismiss"><span class="icon-close"></span></a>
+        <div class="title-page">
+                {{#if _id}}
+                Update User Information
+                {{/if}}
+        </div>
+
+        <form class="form-edit-user">
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="text" name="email" id="email" required>
+
+                <label for="first_and_last_name">First and Last Name</label>
+                <input type="text" name="first_and_last_name" id="first_and_last_name" required>
+
+                <label for="phone_number">Phone Number</label>
+                <input type="text" name="phone_number" id="phone_number" required>
+
+                <label for="role">CarrotTop Role</label>
+                <select name="role" id="role" required>
+                    <option value="volunteer">Volunteer</option>
+                    <option value="agency">Agency</option>
+                    <option value="admin">Administrator</option>
+                </select>
+
+                <label for="agency">Agency</label>
+                <select name="agency" id="agency">
+                    <option value="" disabled selected>--- Please Select An Agency ---</option>
+                    {{#each AgencyList}}
+                        <option value="{{_id._str}}">{{name}}</option>
+                    {{/each}}
+                </select>
+
+                <label for="robot_id">Robot ID</label>
+                <input type="text" name="robot_id" id="robot_id">
+            </div>
+            <button class="btn-primary" type="submit" id="user_save_btn" name="user_save_btn">Save</button>
+        </form>
+    </div>
+</template>

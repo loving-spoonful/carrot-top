@@ -1,10 +1,9 @@
 import { Template } from 'meteor/templating';
 import { Mongo } from 'meteor/mongo';
-
 import { Items } from '../api/items/items.js';
 import { Orders } from '../api/orders/orders.js';
-
 import './inventory.html'
+import './modalWindow.js'
 
 if (Meteor.isClient) {
 	FlowRouter.route('/inventory/', {
@@ -28,85 +27,54 @@ Template.inventory.events({
 		Overlay.open('addItemOverlay', this);
 	},
 	'click .js-edit-item': function (event) {
-		var $item = $(event.target).parents('.list-item').first();
-		var $itemTitle = $item.find('.item-title').first();
-		var $itemAmount = $item.find('.item-quantity-amount').first();
-		var itemAmountValue = parseFloat($itemAmount.html());
 
-		// TODO: This should really be in reactive Meteor form not jQuery and data attributes...
+        event.preventDefault();
 
-		if ($item.data('editing') == false) {
-			$item.data('editing', true);
+        var $inventory = $(event.target).parents('.list-item').first();
+        var Id = $inventory.data('id');
+        var itemObject = Items.findOne({ _id: new Mongo.ObjectID(Id) });
 
-			// Update HTML to include editable text boxes
+        //mcpmcp wednesday
+        Session.set('currentOverlayID',Id);
 
-			$itemTitle.replaceWith('<input type="text" class="item-title" value="' + $itemTitle.text() + '">');
-			$itemTitle = $item.find('.item-title').first();
+        Overlay.open('addItemOverlay', this);
 
-			$itemAmount.replaceWith('<input type="text" class="item-quantity-amount" value="' + itemAmountValue + '">');
-			$itemAmount = $item.find('.item-quantity-amount').first();
-
-			$itemAmount.focus();
-
-			// ... and a save changes button.
-			$(event.target).parent().html('<span class="icon-check"></span>');
-
-			// Need to encompass in a setTimeout for the Blink rendering engine.
-			window.setTimeout(function () {
-				// Set cursor to be at end of value.
-				if ($itemAmount.setSelectionRange) {
-					$itemAmount.setSelectionRange($itemAmount.val().length * 2, $itemAmount.val().length * 2);
-				} else {
-					// Fallback.
-					$itemAmount.val($itemAmount.val());
-				}
-			});
-		} else if($item.data('editing') == true) {
-			var newItemAmountValue = parseFloat($itemAmount.val());
-			var newItemTitleValue = $itemTitle.val();
-
-			if (newItemAmountValue > 0) {
-				if (newItemTitleValue.length > 0) {
-					$item.data('editing', false);
-
-					Items.update({_id: new Mongo.ObjectID($item.data('id'))}, {
-						$set: {
-							name: newItemTitleValue,
-							quantity_amount: newItemAmountValue,
-							updated_at: Date.now()
-						}
-					});
-
-					// Update HTML to be read-only.
-					$($itemTitle).replaceWith('<span class="item-title">' + newItemTitleValue + '</span>');
-					$($itemAmount).replaceWith('<span class="item-quantity-amount">' + newItemAmountValue + '</span>');
-					$(event.target).parent().html('<span class="icon-mode_edit"></span>');
-				} else {
-					alert('Inventory items must have a title.');
-				}
-			} else {
-				alert('Inventory items cannot have a quantity of below zero.');
-			}
-		} else {
-			console.error('Invalid value for editing data attribute.');
-		}
 	},
 
 	'click .js-delete-item': function (event) {
-		var $item = $(event.target).parents('.list-item').first();
+        event.preventDefault();
+
+        var $item = $(event.target).parents('.list-item').first();
 		var itemId = $item.data('id');
 
-		if (window.confirm("Are you sure you want to delete this item? You cannot get it back afterwards. " +
-				"If it is currently not in stock, just set the quantity to 0. Any orders referring to this item will" +
-				" be broken.")) {
-			$item.slideUp(150, function () {
-				// When finished sliding
+        var itemObject = Items.findOne({ _id: new Mongo.ObjectID(itemId) });
+        var itemName = itemObject.name;
 
-				Items.remove({ _id: new Mongo.ObjectID(itemId) });
+        var sdi = Meteor.commonFunctions.popupModal("Deleting Inventory",
+            "Are you sure you want to delete inventory for '" + itemName + "'? "
+            + "If it is currently not in stock, set the quantity to 0. Any orders referring to this item will"
+            + " be broken."
+		);
+        var modalPopup = ReactiveModal.initDialog(sdi);
 
-				$(this).remove();
-			});
-		}
+
+        // the action when clicking OK (ie confirming the delete)
+        modalPopup.buttons.ok.on('click', function(button){
+            // what needs to be done after click ok.
+            sAlert.info ("Deleting " + itemName);
+
+            // TODO check ORDERS to see if there is something there that uses this inventory
+            // IF so, do not allow the delete and pop up a message.
+            // Probably just do a find, and if it returns something - don't allow the remove
+
+            // mcp and if doing copy and paste - this is what changes!
+            Items.remove({ _id: new Mongo.ObjectID(itemId) });
+
+            $(this).remove();
+        });
+
+        modalPopup.show();
+
 	}
 });
 

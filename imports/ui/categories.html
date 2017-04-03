@@ -2,22 +2,30 @@
     <div class="page categories">
         {{#nav title='Item Categories' black=false}}
             {{#if userInRole 'admin'}}
-                <!-- only if logged in as a admin -->
-                <a href="#" class="nav-item js-add-category"><span class="icon-add"></span></a>
+                    <!-- only if logged in as a admin -->
+                    <a href="#" class="nav-item js-add-category"><span class="icon-add"></span></a>
             {{/if}}
         {{/nav}}
         <div class="content-scrollable with-top">
-            <ul class="list-items">
-                {{#each itemCategories}}
-                    <li class="list-item" data-id="{{_id._str}}">
-                        <div class="item-title">{{name}}</div>
-                        {{#if userInRole 'admin'}}
-                            <a href="#" class="js-delete-item-category"><i class="material-icons">delete</i></a>
-                            <a href="#" class="js-edit-item-category"><i class="material-icons">mode_edit</i></a>
-                        {{/if}}
-                    </li>
-                {{/each}}
-            </ul>
+            {{#if userInRole 'admin'}}
+
+                    <ul class="list-items">
+                        {{#each itemCategories}}
+                            <li class="list-item" data-id="{{_id._str}}">
+                                <div class="item-title">{{name}}</div>
+                                {{#if userInRole 'admin'}}
+                                    <a href="#" class="js-delete-item-category"><i class="material-icons">delete</i></a>
+                                    <a href="#" class="js-edit-item-category"><i class="material-icons">mode_edit</i></a>
+                                {{/if}}
+                            </li>
+                        {{/each}}
+                    </ul>
+            {{else}}
+                <div class="wrapper-message">
+                    <div class="title-message">Not allowed.</div>
+                    <div class="subtitle-message">You do not have the permissions to view this page.</div>
+                </div>
+            {{/if}}
         </div>
     </div>
 </template>

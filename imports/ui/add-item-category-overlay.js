@@ -1,16 +1,37 @@
 import { Template } from 'meteor/templating';
 import { Mongo } from 'meteor/mongo';
 
+
+
 import { Items } from '../api/items/items.js';
 import { ItemCategories } from '../api/item-categories/item-categories.js';
+import { Agencies } from '../api/agencies/agencies.js';
 
 import './add-item-category-overlay.html'
+import './appShareDialog.html'
+
 
 Template.addItemCategoryOverlay.onCreated(function () {
 	this.state = new ReactiveDict();
 	Meteor.subscribe('items');
 	Meteor.subscribe('item-categories');
 });
+
+
+Template.addItemCategoryOverlay.rendered = function () {
+
+    var Id = Session.get('currentOverlayID');
+    if (Id == undefined) {
+        $('button[name="category_save_btn"]').text("Add");
+    }
+    else {
+        var itemObject = ItemCategories.findOne({_id: new Mongo.ObjectID(Id)});
+        $('input[name="item-category-name"]').val(itemObject.name);
+        $('button[name="category_save_btn"]').text("Save");
+
+    }
+    ;
+}
 
 Template.addItemCategoryOverlay.events({
 	'submit .form-add-item-category': function (event) {
@@ -20,19 +41,42 @@ Template.addItemCategoryOverlay.events({
 		const itemCategoryName = target['item-category-name'].value.trim();
 
 		if (itemCategoryName.length > 0) {
-			ItemCategories.insert({
-				name: itemCategoryName,
+			var rc = ItemCategories.findOne({name: itemCategoryName});
+			if (rc) {
+                //throw new Meteor.error (666, 'duplicate!', e);
+				sAlert.warning ('This category (' + itemCategoryName + ') already exists!  Please enter a new category.');
+			}
+			else {
+                var Id = Session.get('currentOverlayID');
 
-				created_at: Date.now(),
-				updated_at: Date.now()
-			});
+                // if id is set in the session, we are editing and should do an update
+				// otherwise this is a new and do an insert
+                if (Id) {
 
-			Overlay.close();
+                    ItemCategories.update({ _id: new Mongo.ObjectID(Id) }, { $set: { name: itemCategoryName, updated_at: Date.now() }});
+                    sAlert.info('Saved!');
+                    Session.set('currentOverlayID');
+				}
+				else {
+                    var rc = ItemCategories.insert({
+                        name: itemCategoryName,
+
+                        // these should now be default values on the collection
+                        // but will leave in 24feb2017 mike
+                        created_at: Date.now(),
+                        updated_at: Date.now()
+                    });
+                };
+
+                Overlay.close();
+            }
 		} else {
-			alert('You must fill in all relevant fields in order to create your item category.');
+			sAlert.warning('You must fill in all relevant fields in order to create your item category.');
 		}
 	},
 });
+
+
 
 Template.addItemCategoryOverlay.helpers({
 	items() {
@@ -42,3 +86,5 @@ Template.addItemCategoryOverlay.helpers({
 		return ItemCategories.find({}, { sort: { name: 1 } });
 	}
 });
+
+

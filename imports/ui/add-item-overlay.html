@@ -1,18 +1,24 @@
 <template name="addItemOverlay">
-	<div class="overlay add-item">
+	<div class="overlay add-item ">
 		<a href="#" class="js-close-overlay overlay-dismiss"><span class="icon-close"></span></a>
-		<div class="title-page">Add Item</div>
+		<div class="title-page">
+                {{#if _id}}
+                    Update Item
+                {{else}}
+                    Add Item
+                {{/if}}
+        </div>
 
 		<form class="form-add-item">
 			<div class="form-group">
                 <label for="item-name">Item Name</label>
-				<input type="text" name="item-name" id="item-name" placeholder="Carrots">
-				<hr>
-                <label for="item-quantity">Initial Quantity</label>
-				<input type="text" name="item-quantity" id="item-quantity" placeholder="10">
-				<hr>
+				<input type="text" name="item-name" id="item-name" placeholder="Carrots" required title="{{#if _id}}Item name is set - cannot change!{{else}}Name of the inventory item.{{/if}}" disabled="{{_id}}">
+
+                <label for="item-quantity">Current Inventory Level</label>
+				<input type="text" name="item-quantity" id="item-quantity" placeholder="10" required>
+
                 <label for="quantity-units">Quantity Units</label>
-                <select name="quantity-units" id="quantity-units">
+                <select name="quantity-units" id="quantity-units" required>
                     {{#each itemUnits}}
                         <option value="" disabled>{{name}}</option>
                         {{#each units}}
@@ -20,26 +26,28 @@
                         {{/each}}
                     {{/each}}
                 </select>
-                <hr>
+
                 <label for="item-order-minimum">Order Quantity Minimum</label>
-				<input type="text" name="item-order-minimum" id="item-order-minimum" placeholder="1">
-				<hr>
+				<input type="text" name="item-order-minimum" id="item-order-minimum" placeholder="1" required>
+
                 <label for="item-order-maximum">Order Quantity Maximum</label>
-                <input type="text" name="item-order-maximum" id="item-order-maximum" placeholder="50">
-                <hr>
+                <input type="text" name="item-order-maximum" id="item-order-maximum" placeholder="50" required>
+
                 <label for="item-order-increment">Order Quantity Increment</label>
-				<input type="text" name="item-order-increment" id="item-order-increment" placeholder="1">
-				<hr>
+				<input type="text" name="item-order-increment" id="item-order-increment" placeholder="1" required>
+
                 <label for="item-category">Item Category</label>
-				<select name="item-category" id="item-category">
+				<select name="item-category" id="item-category" required>
 					<option value="" disabled selected>Select An Item Category...</option>
                     {{#each itemCategories}}
                         <option value="{{_id._str}}">{{name}}</option>
                     {{/each}}
 				</select>
-			</div>
 
-			<button class="btn-primary" type="submit">Add</button>
+                <button class="btn-primary2" type="submit" name="inventory_save_btn" id="inventory_save_btn">Add</button>
+            </div>
+
+
 		</form>
 	</div>
 </template>

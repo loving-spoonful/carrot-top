@@ -8,12 +8,14 @@ import { Roles } from 'meteor/alanning:roles';
 
 import { Orders } from '../imports/api/orders/orders.js';
 
+import { ItemCategories } from '../imports/api/item-categories/item-categories.js';
+import { Items } from '../imports/api/items/items.js';
+import { Agencies } from '../imports/api/agencies/agencies.js';
 import '../lib/accounts.js'
 
 import '../imports/ui/overlay.js';
 import '../imports/ui/nav.js';
 import '../imports/ui/app-body.js';
-
 import '../imports/ui/home.js';
 import '../imports/ui/order.js';
 import '../imports/ui/pending-packing.js';
@@ -22,17 +24,19 @@ import '../imports/ui/my-pending-orders.js';
 import '../imports/ui/my-pending-deliveries.js';
 import '../imports/ui/inventory.js';
 import '../imports/ui/categories.js';
+import '../imports/ui/agencies.js';
 import '../imports/ui/users.js';
-
 import '../imports/ui/add-item-overlay.js';
 import '../imports/ui/add-item-category-overlay.js';
 import '../imports/ui/add-item-to-order-overlay.js';
-
+import '../imports/ui/add-agency-overlay.js';
+import '../imports/ui/user/edit-user-overlay.js';
 import '../imports/ui/auth-page.js';
 import '../imports/ui/admin.js';
+import '../imports/ui/help.js';
+import '../imports/ui/order/add-notes-to-order.js';
 
 Template.registerHelper('activePage', function (routeName) {
-	// includes Spacebars.kw but that's OK because the route name ain't that.
 	return _.include(arguments, FlowRouter.getRouteName()) && 'active';
 });
 
@@ -67,12 +71,17 @@ Template.registerHelper('userInRole', function (role) {
 	}
 });
 Template.registerHelper('userIdInRole', function (id, roles) {
-	return !!Roles.userIsInRole(id, [roles.trim().split(',')], Roles.GLOBAL_GROUP);
+	return Roles.userIsInRole(id, [roles.trim().split(',')], Roles.GLOBAL_GROUP);
 });
 Template.registerHelper('userIsApproved', function (id) {
-	return !(Roles.getRolesForUser(id, Roles.GLOBAL_GROUP).length === 0);
+    return  !(Roles.getRolesForUser(id, Roles.GLOBAL_GROUP).length === 0);
 });
+Template.registerHelper('currentUserIsApproved', function () {
 
+	var id = Meteor.userId();
+    return  (Roles.userIsInRole(id, ['admin', 'admin'], Roles.GLOBAL_GROUP))
+        || !(Roles.getRolesForUser(id, Roles.GLOBAL_GROUP).length === 0);
+});
 Template.registerHelper('inArray', function (s, a){
 	return a.indexOf(s) > -1;
 });
@@ -81,8 +90,15 @@ Template.registerHelper('addressForOrder', function (orderID) {
 	var orderObject = Orders.findOne({ _id: new Mongo.ObjectID(orderID) });
 	var owner = Meteor.users.findOne({ _id: orderObject.owner_id });
 
-	return owner.profile.address.replace("\n", "<br>");
+	// may need some formatting to display nicely!
+	return owner.profile.address; //.replace("\n", "<br>");
 });
+
+function distinct(collection, field) {
+    return _.uniq(collection.find({}, {
+            sort: {[field]: 1}, fields: {[field]: 1}
+        }).map(x => x[field]), true);
+};
 
 Template.registerHelper('itemUnits', function () {
 	return [

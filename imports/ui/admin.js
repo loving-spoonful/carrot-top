@@ -27,7 +27,7 @@ Template.admin.events({
 		var text = $(event.target).find('[name=text]').val();
 		News.insert({ text: text, date: new Date });
 
-		alert('Saved latest news');
+		sAlert.info('Saved latest news');
 	},
 
 	'click .login': function() {

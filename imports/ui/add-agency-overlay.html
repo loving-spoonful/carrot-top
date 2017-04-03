@@ -1,0 +1,48 @@
+<template name="addAgencyOverlay">
+	<div class="overlay add-agency">
+		<a href="#" class="js-close-overlay overlay-dismiss"><span class="icon-close"></span></a>
+		<div class="title-page">
+            {{#if _id}}
+                Update Agency
+            {{else}}
+                Add Agency
+            {{/if}}
+        </div>
+
+		<form class="form-add-agency">
+            <div class="form-group">
+                <label for="agency-name">Agency Name</label>
+                <input type="text" name="agency-name" id="agency-name" placeholder="Name of agency" required>
+
+                <label for="primary_contact_name">Contact First And Last Name</label>
+                <input type="text" name="primary_contact_name" id="primary_contact_name" placeholder="contact name" required>
+
+                <!--<label for="primary_contact_last_name">Contact Last Name</label>-->
+                <!--<input type="text" name="primary_contact_last_name" id="primary_contact_last_name" placeholder="contact last name" required>-->
+
+                <label for="primary_contact_email">Contact Email</label>
+                <input type="text" name="primary_contact_email" id="primary_contact_email" placeholder="Contact email" required>
+
+                <label for="primary_contact_phone">Contact Phone</label>
+                <input type="text" name="primary_contact_phone" id="primary_contact_phone" placeholder="Contact phone" required>
+
+                <label for="street_address">Address</label>
+                <input type="text" name="street_address" id="street_address" placeholder="address" required>
+
+                <label for="city">City/Town</label>
+                <input type="text" name="city" id="city" placeholder="city" required>
+
+                <label for="delivery_instructions">Delivery Instructions</label>
+                <input type="text" name="delivery_instructions" id="delivery_instructions" placeholder="instructions" required>
+
+                <label for="google_maps_link">Google Maps Link</label>
+                <input type="text" name="google_maps_link" id="google_maps_link" placeholder="Google Maps Link" required>
+
+                {{#if _id}}
+                    <a target="_blank"  href="{{google_maps_link}}">Google Maps</a>
+                {{/if}}
+            </div>
+			<button class="btn-primary" type="submit" id="agency_save_btn" name="agency_save_btn">Add</button>
+		</form>
+	</div>
+</template>

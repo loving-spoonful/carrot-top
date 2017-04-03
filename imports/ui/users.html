@@ -2,12 +2,18 @@
     <div class="page users">
         {{> nav title='Users' black=false}}
         <div class="content-scrollable with-top">
+
+
+            {{#if isInRole  'agency'}} agency{{/if}}
+            {{#if isInRole 'admin'}} Admin{{/if}}
+            {{#if isInRole 'volunteer'}} volunteer{{/if}}
+
             {{#if isInRole 'admin'}}
                 {{#unless isInRole 'pending'}}
                 <ul class="list-users">
                     {{#each users}}
                         <li class="list-user" data-id="{{_id}}">
-                            <div class="user-title">{{emails.[0].address}}</div>
+                            <div class="user-title" >{{emails.[0].address}}</div>
                             <div class="user-info">
                                 {{#if userIdInRole _id 'admin'}}
                                     <div class="user-role">Admin</div>
@@ -23,29 +29,38 @@
                                 {{/unless}}
 
                                 <div class="user-approval-status">
+                                    <a href="#" class="js-edit-user" >
+                                        <i class="material-icons">mode_edit</i>
+                                    </a>
+
                                     {{#if profile.food_robot_id}}
-                                        <a href="#" class="js-change-user-robot-connection user-robot-connection">
-                                            <i class="material-icons">cloud_queue</i>
+                                        <a href="#" class="js-change-user-robot-connection user-robot-connection" >
+                                            <i class="material-icons" title="User has a robot id!">cloud_queue</i>
                                         </a>
                                     {{else}}
                                         <a href="#" class="js-connect-user-to-robot user-robot-connection">
-                                            <i class="material-icons">cloud_off</i>
+                                            <i class="material-icons" title="Add Robot Id">cloud_off</i>
                                         </a>
                                     {{/if}}
-                                    {{#unless matchesCurrentUser _id}}
+                                    <!--{{#unless matchesCurrentUser _id}}-->
+                                        <!--<a href="#" class="js-approve-user user-approval">-->
+                                            <!--<i class="material-icons">check_box_outline_blank</i>-->
+                                        <!--</a>-->
+
                                         {{#unless userIsApproved _id}}
                                             <a href="#" class="js-approve-user user-approval">
-                                                <i class="material-icons">check_box_outline_blank</i>
+                                                <i class="material-icons" title="Approve this user!">check_box_outline_blank</i>
                                             </a>
                                         {{else}}
                                             <a href="#" class="js-unapprove-user user-approval">
-                                                <i class="material-icons">check_box</i>
+                                                <i class="material-icons" title="Unapprove this user!">check_box</i>
                                             </a>
-                                        {{/unless}}
-                                        <a href="#" class="js-delete-user">
-                                            <i class="material-icons">delete</i>
-                                        </a>
+                                        <!--{{/unless}}-->
+
                                     {{/unless}}
+                                    <a href="#" class="js-delete-user">
+                                        <i class="material-icons">delete</i>
+                                    </a>
                                 </div>
                             </div>
                         </li>
@@ -62,7 +77,8 @@
             {{else}}
                 <div class="wrapper-message">
                     <div class="title-message">Not allowed.</div>
-                    <div class="subtitle-message">You do not have the permissions to view this page.</div>
+                    {{_id}}
+                    <div class="subtitle-message">MIKE {{_id}} You do not have the permissions to view this page.</div>
                 </div>
             {{/if}}
         </div>

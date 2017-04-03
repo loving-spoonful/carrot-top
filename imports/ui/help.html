@@ -1,0 +1,33 @@
+<template name="help">
+
+
+    <div class="page help">
+        {{# nav title='Help' black=false}}
+        {{/nav}}
+
+        <div class="content-scrollable with-top">
+
+            {{#if isInRole 'agency,admin,volunteer'}}
+                {{#if isInRole 'agency'}}
+                    <h3 class="help-text">
+                        Order fresh food from Loving Spoonful! Make sure to place your orders by the deadline listed in the inventory notification email.
+                        Note that every effort will be made to complete your order, however quantities may vary upon delivery.
+                    </h3>
+                {{else if isInRole 'volunteer'}}
+                {{else}}
+                {{/if}}
+
+
+                <h3 class="help-text">
+                    For technical assistance, questions, or concerns, please contact Lilith Wyatt, Food Access Coordinator at food@lovingspoonful.org (613) 507-8848
+                </h3>
+
+            {{else}}
+                <div class="wrapper-message">
+                    <div class="title-message">Not allowed.</div>
+                    <div class="subtitle-message">You do not have the permissions to view this page.</div>
+                </div>
+            {{/if}}
+        </div>
+    </div>
+</template>

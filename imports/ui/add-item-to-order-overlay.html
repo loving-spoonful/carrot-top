@@ -7,6 +7,7 @@
 
 		<form class="form-add-to-order">
 			<div class="form-group">
+                <label id="AgencyName" name="AgencyName"></label>
 				<select name="item-type" id="item-type">
                     <option value="" disabled selected>Select An Item...</option>
 					{{#each availableItems}}
@@ -14,18 +15,20 @@
 					{{/each}}
 				</select>
                 <hr>
-                <select name="item-quantity" id="item-quantity">
+                <select name="item-quantity" id="item-quantity" required>
                     <option disabled selected value="">#</option>
                     {{#each intervals}}
                         <option value="{{numerical}}">{{text}}</option>
                     {{/each}}
                 </select>
 				<hr>
+                <label for="instructions">Enter any delivery instructions</label>
+                <hr>
 				<textarea name="instructions" id="instructions" class="instructions"
 					placeholder="Add some additional instructions or qualifications about your order..."></textarea>
 			</div>
 
-			<button class="btn-primary" type="submit">Add</button>
+			<button class="btn-primary" type="submit" name="addItemToOrder" id="addItemToOrder">Add</button>
 		</form>
 	</div>
 </template>

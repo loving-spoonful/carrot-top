@@ -1,9 +1,10 @@
 // standard text input
-input[type="text"], input[type="email"], input[type="password"], input[type="tel"], input[type="number"],
+input[type="text"],input[type="select"],
+input[type="email"], input[type="password"], input[type="tel"], input[type="number"],
 textarea {
 	.font-s3;
 	.type-regular;
-
+	width: 90%;	//mcp
 	// Sizing
 	padding: 0.8rem 1.25rem; //total height ~46.5
 	line-height: 1.5em !important;
@@ -11,11 +12,13 @@ textarea {
 	// Style
 	.placeholder(@color-medium);
 	background: transparent;
-	border: none;
-	border-radius: 0;
+
+	//cyan
+	border: 1px solid #00FFFF;
+
 	box-sizing: border-box;
 	color: @color-full;
-	outline: none;
+//	outline: solid  ;
 
 	&:active,
 	&:focus {
@@ -28,9 +31,10 @@ textarea {
 select {
   	.font-m1;
 	.type-regular;
-	display: block; width: 100%;
+	display: block; width: 90%;
 	margin: 1rem 1.25rem;
 	box-sizing: border-box;
+	border: 1px solid #00FFFF;
 }
 
 // Custom checkbox
