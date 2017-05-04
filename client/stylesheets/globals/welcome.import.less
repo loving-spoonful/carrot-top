@@ -1,6 +1,6 @@
 // Welcome message
 .wrapper-welcome {
-  .position(absolute, 1.25em, auto, auto, 0, 25%);
+  .position(absolute, 1.25em, auto, auto, 0, 35%);
   padding: 0 1.25rem;
   z-index: -1;
 
@@ -18,18 +18,22 @@
     text-indent: 0;
   }
 
+
   .description-welcome {
-    .font-s2;
+    //.font-s2;
+    .font-m1();
     color: @color-well;
 
     & + .description-welcome { margin-top: .5rem; }
 
     a {
-      .type-bold;
-      color: @color-medium-well;
+      //.type-bold;
+      //color: @color-medium-well;
+      color: #8BC34A;s
 
       &:hover { color: darken(@color-well, 10%); }
       &:active { color: @color-well; }
+      text-decoration:underline;
     }
   }
 }
