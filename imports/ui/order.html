@@ -1,6 +1,6 @@
 <template name="order">
 	<div class="page order">
-		{{# nav title='Order' black=false}}
+		{{# nav title=orderTitle black=false}}
             {{#if isInRole 'agency,admin'}}
 			    <a href="#" class="nav-item js-add-item"><span class="icon-add"></span></a>
             {{/if}}
@@ -8,9 +8,9 @@
 		<div class="content-scrollable with-top">
             {{#if isInRole 'admin'}}
                 <h3 class="no-items-message">
-                    <label for="orderAsAgency">Select an Agency to Order for</label>
+                    <label for="orderAsAgency">Select an Agency to {{orderTitle}} for</label>
                     <select class="select" name="orderAsAgency" id="orderAsAgency" style="width: 90%" disabled={{agencySelected}}>
-                        <option disabled selected value="">Select Agency To Order For</option>
+                        <option disabled selected value="">Select Agency To {{orderTitle}} For</option>
                         {{#each allAgencies}}
                             <option value="{{_id}}">{{name}}</option>
                         {{/each}}
@@ -32,12 +32,22 @@
                         </li>
                     {{else}}
                         {{#if isInRole 'agency'}}
-                            <h3 class="no-order-warning">
-                            Order fresh food from Loving Spoonful! Make sure to place your orders by the deadline listed in the inventory notification email.
-                            </h3>
-                            <h3 class="no-order-warning">
-                                Note that every effort will be made to complete your order, however quantities may vary upon delivery.
-                            </h3>
+                            {{#if isMeat}}
+                                <h3 class="no-order-warning">
+                                    Order fresh Meat from the Loving Spoonful's Suppliers! Make sure to place your orders by the deadline listed in the inventory notification email.
+                                </h3>
+                                <h3 class="no-order-warning">
+                                    Note that every effort will be made to complete your meat purchase, however quantities may vary upon delivery.
+                                </h3>
+                            {{else}}
+                                <h3 class="no-order-warning">
+                                    Order fresh food from Loving Spoonful! Make sure to place your orders by the deadline listed in the inventory notification email.
+                                </h3>
+                                <h3 class="no-order-warning">
+                                    Note that every effort will be made to complete your order, however quantities may vary upon delivery.
+                                </h3>
+
+                            {{/if}}
                         {{/if}}
 
                         <h3 class="no-items-message">

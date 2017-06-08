@@ -1,43 +1,10 @@
-.overlay.add-item {
-  .wrapper-camera {
-    .position(absolute, auto, 0, 0, 0, 100%);
-    text-align: center;
-
-    .btn-camera {
-      margin-bottom: .5rem;
-    }
-    .subtext-camera {
-      .font-s2;
-      color: @color-medium;
-      margin-bottom: .75rem;
-    }
-  }
-
-
-  .bg-image {
-    //.position(absolute, 3rem, 0, 0, 0, 100%, 50%);
-    position: relative;
-    margin-top: 3rem;
-    height: 5%;
-  }
-
-  .form-add-item {
+.overlay.add-supplier {
+  .form-add-supplier {
     .background-image(linear-gradient(top, rgba(255,255,255,.9), rgba(255,255,255,1) 10%, @color-empty 100%));
     .position(absolute, auto, 0, 0, 0, 100%);
     .transform(translate3d(0,0,0));// Gpu rendering
-    min-height: 95%;
+    min-height: 90%;
     padding-bottom: 3rem;
-    max-height: 95%;
-    overflow-y: scroll;
-    label {
-      .font-s2;
-      .type-bold;
-      color: @color-well;
-      margin-left: 1.25rem;
-      margin-top: 0.4rem;
-      position: relative;
-      top: 0.3rem;
-    }
 
     .form-group {
       .display(flex);
@@ -45,11 +12,8 @@
 
       margin-bottom: 3rem;
 
-      .avatar,
       .instructions {
         .flex(1);
-      }
-      .instructions {
         width: 100%;
       }
 
@@ -67,9 +31,7 @@
         resize: none;
       }
 
-      input[type="text"] {
-        width: 100%;
-      }
+
 
       &:last-of-type {
         /* Override */

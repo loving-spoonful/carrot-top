@@ -2,59 +2,60 @@
  * Created by mike on 2017-01-22.
  */
 import { Template } from 'meteor/templating';
+import { Suppliers } from '../api/suppliers/suppliers.js';
 import { Agencies } from '../api/agencies/agencies.js';
-import './agencies.html'
+import './suppliers.html'
 import './modalWindow.js'
 
 if (Meteor.isClient) {
-    FlowRouter.route('/agencies/', {
-        name: 'agencies',
+    FlowRouter.route('/suppliers/', {
+        name: 'suppliers',
         action() {
-            BlazeLayout.render('appBody', { main: 'agencies' })
+            BlazeLayout.render('appBody', { main: 'suppliers' })
         }
     });
 
 
 }
-Template.agencies.onCreated(function bodyOnCreated() {
+Template.suppliers.onCreated(function bodyOnCreated() {
     this.state = new ReactiveDict();
-    Meteor.subscribe('agencies');
+    Meteor.subscribe('Suppliers');
 });
 
 
 
-Template.agencies.events({
-    'click .js-add-agency': function (event) {
+Template.suppliers.events({
+    'click .js-add-supplier': function (event) {
         event.preventDefault();
-        Overlay.open('addAgencyOverlay', this);
+        Overlay.open('addSupplierOverlay', this);
     },
 
-    'click .js-edit-agency': function (event) {
+    'click .js-edit-supplier': function (event) {
         event.preventDefault();
 
-        var $agency = $(event.target).parents('.list-item').first();
-        var Id = $agency.data('id');
+        var $supplier = $(event.target).parents('.list-item').first();
+        var Id = $supplier.data('id');
 
         // put the id in the session.  overlay.close will always clear it out, but
         // after an update on the respective overlay page, should clear there as well
         // So should only ever be existing while on an overlay page
         Session.set('currentOverlayID',Id);
-        Overlay.open('addAgencyOverlay', this);
+        Overlay.open('addSupplierOverlay', this);
     },
 
 
-    'click .js-delete-agency': function (event) {
+    'click .js-delete-supplier': function (event) {
         event.preventDefault();
 
-        var $agency = $(event.target).parents('.list-item').first();
-        var Id = $agency.data('id');
+        var $supplier = $(event.target).parents('.list-item').first();
+        var Id = $supplier.data('id');
 
 
-        var itemObject = Agencies.findOne({ _id: new Mongo.ObjectID(Id) });
+        var itemObject = Suppliers.findOne({ _id: new Mongo.ObjectID(Id) });
         var itemName = itemObject.name;
 
 
-        var sdi = Meteor.commonFunctions.popupModal("Deleting Supplier", "Are you sure you want to delete the agency for '" + itemName + "'?");
+        var sdi = Meteor.commonFunctions.popupModal("Deleting Supplier", "Are you sure you want to delete the supplier for '" + itemName + "'?");
         var modalPopup = ReactiveModal.initDialog(sdi);
 
         modalPopup.buttons.ok.on('click', function (button) {
@@ -65,7 +66,7 @@ Template.agencies.events({
             // IF so, do not allow the delete and pop up a message.
             // Probably just do a find, and if it returns something - don't allow the remove
 
-            Agencies.remove({_id: new Mongo.ObjectID(Id)});
+            Suppliers.remove({_id: new Mongo.ObjectID(Id)});
 
             $(this).remove();
 
@@ -75,10 +76,10 @@ Template.agencies.events({
     }
 });
 
-Template.agencies.helpers({
-    agencies() {
+Template.suppliers.helpers({
+    suppliers() {
         //ebugger;
-        return Agencies.find ({}, {sort: {name: 1}});
 
+        return Suppliers.find ({}, {sort: {name: 1}});
     }
 });

@@ -48,43 +48,88 @@
 
                     {{#if isInRole 'agency,admin'}}
                         <div class="nav-spacer"></div>
-                        <a href="/order" class="{{activePage 'order'}}">
+                        <a href="/order?program=N" class="{{activePage 'order'}}">
                             <span class="wrapper-menu-item">
                                 <!--<span class="icon-speaker_phone"></span>-->
                                 <i class="material-icons">shopping_basket</i>
                                 <span class="title-menu">Order</span>
                             </span>
                         </a>
-                        <a href="/my-pending-orders?orderState=inprogress" class="{{activePage 'my-pending-orders'}}">
+
+                        {{#if currentUserIsAgencyInMeatProgram}}
+                            <a href="/orderMeat?program=M" class="{{activePage 'orderMeat'}}">
+                                <span class="wrapper-menu-item">
+                                    <!--<span class="icon-speaker_phone"></span>-->
+                                    <i class="material-icons">shopping_basket</i>
+                                    <span class="title-menu">Buy Meat</span>
+                                </span>
+                            </a>
+                        {{/if}}
+
+                        <a href="/my-pending-ordersN?orderState=inprogress&program=N" class="{{activePage 'my-pending-ordersN'}}">
                             <span class="wrapper-menu-item">
                                 <!--<span class="icon-list"></span>-->
                                 <i class="material-icons">update</i>
                                 {{#if isInRole 'admin'}}
-                                    <span class="title-menu">Pending Orders</span>
+                                    <span class="title-menu">All Pending Orders</span>
                                 {{else}}
                                     <span class="title-menu">My Pending Orders</span>
                                 {{/if}}
                             </span>
                         </a>
-                        <a href="/my-completed-orders?orderState=completed"
-                           class="{{activePage 'my-completed-orders'}}">
+                        <a href="/my-completed-ordersN?orderState=completed&program=N"
+                           class="{{activePage 'my-completed-ordersN'}}">
                             <span class="wrapper-menu-item">
                                 <!--<span class="icon-list"></span>-->
                                 <i class="material-icons">update</i>
                                 {{#if isInRole 'agency'}}
                                     <span class="title-menu">My Completed Orders</span>
                                 {{else}}
-                                    <span class="title-menu">Completed Orders</span>
+                                    <span class="title-menu">All Completed Orders</span>
                                 {{/if}}
                             </span>
                         </a>
 
+                        {{#if currentUserIsAgencyInMeatProgram}}
+                            <a href="/my-pending-ordersM?orderState=inprogress&program=M" class="{{activePage 'my-pending-ordersM'}}">
+                                <span class="wrapper-menu-item">
+                                    <!--<span class="icon-list"></span>-->
+                                    <i class="material-icons">update</i>
+                                    {{#if isInRole 'admin'}}
+                                        <span class="title-menu">All Pending Meat Orders</span>
+                                    {{else}}
+                                        <span class="title-menu">My Pending Meat Orders</span>
+                                    {{/if}}
+                                </span>
+                            </a>
+                            <a href="/my-completed-ordersM?orderState=completed&program=M"
+                               class="{{activePage 'my-completed-ordersM'}}">
+                                <span class="wrapper-menu-item">
+                                    <!--<span class="icon-list"></span>-->
+                                    <i class="material-icons">update</i>
+                                    {{#if isInRole 'agency'}}
+                                        <span class="title-menu">My Completed Meat Orders</span>
+                                    {{else}}
+                                        <span class="title-menu">All Completed Meat Orders</span>
+                                    {{/if}}
+                                </span>
+                            </a>
+                        {{/if}}
                     {{/if}}
 
 
                     {{#if isInRole 'agency'}}
                         <div class="nav-spacer"></div>
                     {{/if}}
+                {{/if}}
+                {{#if isInRole 'admin'}}
+                    <a href="/completeMeatOrder?program=M" class="{{activePage 'completeMeatOrder'}}">
+                            <span class="wrapper-menu-item">
+                                <!--<span class="icon-list"></span>-->
+                                <i class="material-icons">cow</i>
+                                <span class="icon-cow">Complete Meat Order!</span>
+                            </span>
+                    </a>
                 {{/if}}
                 {{#if isInRole 'volunteer,admin'}}
                     <div class="nav-spacer"></div>
@@ -122,8 +167,8 @@
                 {{/if}}
 
                 {{#if isInRole 'volunteer'}}
-                    <a href="/my-completed-orders?orderState=completed"
-                       class="{{activePage 'my-completed-orders'}}">
+                    <a href="/my-completed-ordersN?orderState=completed&program=N"
+                       class="{{activePage 'my-completed-ordersN'}}">
                             <span class="wrapper-menu-item">
                                 <!--<span class="icon-list"></span>-->
                                 <i class="material-icons">update</i>
@@ -134,6 +179,16 @@
                                 {{/if}}
                             </span>
                     </a>
+                {{/if}}
+
+                {{#if isInRole 'admin'}}
+                        <a href="/categories" class="{{activePage 'categories'}}">
+                            <span class="wrapper-menu-item">
+                                <!--<span class="icon-storage"></span>-->
+                                <i class="material-icons">view_column</i>
+                                <span class="title-menu">Categories</span>
+                            </span>
+                        </a>
                 {{/if}}
 
                 {{#if isInRole 'volunteer, admin'}}
@@ -147,18 +202,19 @@
                 {{/if}}
 
                 {{#if isInRole 'admin'}}
-                    <a href="/categories" class="{{activePage 'categories'}}">
-                            <span class="wrapper-menu-item">
-                                <!--<span class="icon-storage"></span>-->
-                                <i class="material-icons">view_column</i>
-                                <span class="title-menu">Categories</span>
-                            </span>
-                    </a>
+
                     <a href="/agencies" class="{{activePage 'agencies'}}">
                             <span class="wrapper-menu-item">
                                 <!--<span class="icon-storage"></span>-->
                                 <i class="material-icons">view_column</i>
                                 <span class="title-menu">Agencies</span>
+                            </span>
+                    </a>
+                    <a href="/suppliers" class="{{activePage 'suppliers'}}">
+                            <span class="wrapper-menu-item">
+                                <!--<span class="icon-storage"></span>-->
+                                <i class="material-icons">view_column</i>
+                                <span class="title-menu">Suppliers</span>
                             </span>
                     </a>
                 {{/if}}

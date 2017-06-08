@@ -12,8 +12,15 @@
 
         <form class="form-add-item-category">
             <div class="form-group">
-                <label name="mcp-category-label" id="mcp-category-label" for="item-category-name">Name of Category</label>
+                <label name="item-category-label" id="item-category-label" for="item-category-name">Name of Category</label>
                 <input type="text" name="item-category-name" id="item-category-name" placeholder="Item Category Name" required>
+
+                <label for="purchasing_program">Purchasing Program</label>
+                <select name="purchasing_program" id="purchasing_program" required>
+                    <option value="N">Not in meat purchasing program</option>
+                    <option value="M">In meat purchasing program</option>
+                </select>
+
             </div>
 
             <button class="btn-primary" type="submit" id="category_save_btn" name="category_save_btn">Add</button>

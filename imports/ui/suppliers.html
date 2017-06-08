@@ -1,21 +1,21 @@
-<template name="agencies">
-    <div class="page agencies">
-        {{#nav title='agencies' black=false}}
+<template name="suppliers">
+    <div class="page suppliers">
+        {{#nav title='suppliers' black=false}}
             {{#if userInRole 'admin'}}
                 <!-- only if logged in as a admin -->
-                <a href="#" class="nav-item js-add-agency"><span class="icon-add"></span></a>
+                <a href="#" class="nav-item js-add-supplier"><span class="icon-add"></span></a>
             {{/if}}
         {{/nav}}
         <div class="content-scrollable with-top">
             {{#if userInRole 'admin'}}
 
                 <ul class="list-items">
-                    {{#each agencies}}
+                    {{#each suppliers}}
                         <li class="list-item" data-id="{{_id._str}}">
                             <div class="item-title">{{name}}</div>
                             {{#if userInRole 'admin'}}
-                                <a href="#" class="js-delete-agency"><i class="material-icons">delete</i></a>
-                                <a href="#" class="js-edit-agency"><i class="material-icons">mode_edit</i></a>
+                                <a href="#" class="js-delete-supplier"><i class="material-icons">delete</i></a>
+                                <a href="#" class="js-edit-supplier"><i class="material-icons">mode_edit</i></a>
                             {{/if}}
                         </li>
                     {{/each}}

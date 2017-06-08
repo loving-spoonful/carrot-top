@@ -15,13 +15,15 @@
 					{{/each}}
 				</select>
                 <hr>
-                <select name="item-quantity" id="item-quantity" required>
-                    <option disabled selected value="">#</option>
-                    {{#each intervals}}
-                        <option value="{{numerical}}">{{text}}</option>
-                    {{/each}}
-                </select>
-				<hr>
+
+                    <select name="item-quantity" id="item-quantity" required>
+                        <option disabled selected value="">#</option>
+                        {{#each intervals}}
+                            <option value="{{numerical}}">{{text}}</option>
+                        {{/each}}
+                    </select>
+
+                <hr>
                 <label for="instructions">Notes</label>
                 <hr>
 				<textarea name="instructions" id="instructions" class="instructions"

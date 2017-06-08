@@ -247,10 +247,19 @@ Template.myPendingDeliveries.helpers({
 
         if ((Roles.userIsInRole(Meteor.userId(), ['admin', 'admin'], Roles.GLOBAL_GROUP)) ) {
             if (params == 'completed') {
-                return OrderBundles.find({owner_id: volunteerSelected, completed: true},{sort: {updated_at: -1}});
+                if (volunteerSelected == 'All') {
+                    var x;
+                    x = OrderBundles.find({completed: true}); //,{sort: {updated_at: -1}});
+                    return x;
+                }
+                else
+                    return OrderBundles.find({owner_id: volunteerSelected, completed: true},{sort: {updated_at: -1}});
             }
             else {
-                return OrderBundles.find({owner_id: volunteerSelected, completed: false},{sort: {updated_at: -1}});
+                if (volunteerSelected == 'All')
+                    return OrderBundles.find({completed: false}); //,{sort: {updated_at: -1}});
+                else
+                    return OrderBundles.find({owner_id: volunteerSelected, completed: false},{sort: {updated_at: -1}});
 
             }
         }

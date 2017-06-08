@@ -23,6 +23,11 @@ Orders.schema = new SimpleSchema({
     owner_id: {type: String},
     agency_id: {type: String},
 
+    // really really lazy - should look it up from agency, but first go around
+    // just pull it in
+    purchasing_program: {
+        type: String
+    },
     // no longer have a separate concept of 'packed' Mike March 2017
     //	packed: { type: Boolean },
     //	packed_by_id: { type: String, optional: true },

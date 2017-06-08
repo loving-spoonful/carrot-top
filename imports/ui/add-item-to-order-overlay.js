@@ -55,7 +55,8 @@ Template.addItemToOrderOverlay.rendered = function() {
         $('textarea[name="instructions"]').val(userAgency.delivery_instructions);
     }
     else {
-        var currentSessionData = Session.get(CURRENT_ORDER_KEY);
+        var purchasing_program = Session.get("overlayData");
+        var currentSessionData = Session.get(CURRENT_ORDER_KEY + purchasing_program);
 
         var orderItemObject = currentSessionData[Id];
         $('select[name="item-type"]').val(orderItemObject._id._str);
@@ -82,10 +83,11 @@ Template.addItemToOrderOverlay.events({
 		const target = event.target;
 		const item = target['item-type'].value;
 
-		var currentSessionData = Session.get(CURRENT_ORDER_KEY);
+        var purchasing_program = Session.get("overlayData");
+		var currentSessionData = Session.get(CURRENT_ORDER_KEY + purchasing_program);
         if (parseFloat(target['item-quantity'].value) <= 0) {
             sAlert('You must order more than 0 of an item!');
-			return;
+            return;
         }
 
 		var Id = Session.get('currentOverlayID');
@@ -97,13 +99,16 @@ Template.addItemToOrderOverlay.events({
 			newItem.instructions = target['instructions'].value;
 			currentSessionData.push(newItem);
 
-			Session.set(CURRENT_ORDER_KEY, currentSessionData);
+			var purchasing_program = Session.get("overlayData");
+			Session.set(CURRENT_ORDER_KEY + purchasing_program, currentSessionData);
 		}
 		else {
             var orderItemObject = currentSessionData[Id];
             orderItemObject.quantity = target['item-quantity'].value;
             orderItemObject.instructions = target['instructions'].value;
-            Session.set(CURRENT_ORDER_KEY, currentSessionData);
+
+            var purchasing_program = Session.get("overlayData");
+            Session.set(CURRENT_ORDER_KEY  + purchasing_program, currentSessionData);
 		}
 
         Session.set('currentOverlayID');
@@ -120,11 +125,12 @@ Template.addItemToOrderOverlay.events({
 
 Template.addItemToOrderOverlay.helpers({
 	items() {
-		return Items.find({}, { sort: { name: 1 } });
+		return Items.find({purchasing_program: "N"}, { sort: { name: 1 } });
 	},
     availableItems() {
         var existingOrderItemIds = [];
-        var currentSessionData = Session.get(CURRENT_ORDER_KEY);
+        var purchasing_program = Session.get("overlayData");
+        var currentSessionData = Session.get(CURRENT_ORDER_KEY  + purchasing_program);
 
         var Id = Session.get('currentOverlayID');
 
@@ -139,12 +145,17 @@ Template.addItemToOrderOverlay.helpers({
             }
         }
 
+
         return Items.find({
             _id: {$nin: existingOrderItemIds},
-            quantity_amount: {$gt: 0}
+            quantity_amount: {$gt: 0},
+            purchasing_program: purchasing_program
         }, {sort: {name: 1}});
     },
-
+    isProduce() {
+        var purchasing_program = Session.get("overlayData");
+        return (purchasing_program != "M");
+    },
 	intervals() {
 		return Template.instance().state.get(ITEM_INTERVALS_KEY);
 	}

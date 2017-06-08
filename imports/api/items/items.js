@@ -29,7 +29,13 @@ Items.schema = new SimpleSchema({
     },
     updated_at: {
         type: Date
-    }
+    },
+    purchasing_program: {
+        type: String,
+        defaultValue: 'N'
+    },
+    supplier_id: {type: String},
+    price: {type: Number, decimal:true, optional: true},
 
 });
 Items.attachSchema(Items.schema);
@@ -49,14 +55,20 @@ Meteor.methods({
     // one of the two agencies gets their order, and there isn't enough left for the other.
     // updates based on anything other than the id has to be trusted and on the server side - so this will do
     // and update based on the original amount that was in the inventory
-    updateItem: function (id, amount, i) {
+    updateItem: function (id, amount, purchasingProgram, i) {
 
+        // for meat program, the amount of inventory is unlimited, so leave the value
+        // unchanged
+        if (purchasingProgram == "M") {
+            amount = 0;
+        }
         var itemToUpdate = Items.findOne({_id: new Mongo.ObjectID(id)});
 
         var updatedCount = Items.update(
             {$and: [{_id: new Mongo.ObjectID(id)}, {quantity_amount: {$gte: Number(amount)}}]},
             {
                 $inc: {quantity_amount: -Number(amount)},
+                $set: {purchasing_program: purchasingProgram},
                 $set: {updated_at: new Date}
             },
         );

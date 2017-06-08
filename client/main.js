@@ -1,4 +1,5 @@
 'use strict';
+import {Mongo} from 'meteor/mongo';
 
 import { Template } from 'meteor/templating';
 import { AccountsTemplates } from 'meteor/useraccounts:core';
@@ -11,6 +12,8 @@ import { Orders } from '../imports/api/orders/orders.js';
 import { ItemCategories } from '../imports/api/item-categories/item-categories.js';
 import { Items } from '../imports/api/items/items.js';
 import { Agencies } from '../imports/api/agencies/agencies.js';
+import { Suppliers } from '../imports/api/suppliers/suppliers.js';
+
 import '../lib/accounts.js'
 
 import '../imports/ui/overlay.js';
@@ -18,6 +21,7 @@ import '../imports/ui/nav.js';
 import '../imports/ui/app-body.js';
 import '../imports/ui/home.js';
 import '../imports/ui/order.js';
+
 import '../imports/ui/pending-packing.js';
 import '../imports/ui/pending-delivery.js';
 import '../imports/ui/my-pending-orders.js';
@@ -25,19 +29,21 @@ import '../imports/ui/my-pending-deliveries.js';
 import '../imports/ui/inventory.js';
 import '../imports/ui/categories.js';
 import '../imports/ui/agencies.js';
+import '../imports/ui/suppliers.js';
 import '../imports/ui/users.js';
 import '../imports/ui/add-item-overlay.js';
 import '../imports/ui/add-item-category-overlay.js';
 import '../imports/ui/add-item-to-order-overlay.js';
 import '../imports/ui/add-agency-overlay.js';
 import '../imports/ui/user/edit-user-overlay.js';
+import '../imports/ui/supplier/add-supplier-overlay.js';
 import '../imports/ui/auth-page.js';
 import '../imports/ui/admin.js';
 import '../imports/ui/help.js';
 import '../imports/ui/order/add-notes-to-order.js';
 
 Template.registerHelper('activePage', function (routeName) {
-	return _.include(arguments, FlowRouter.getRouteName()) && 'active';
+    return _.include(arguments, FlowRouter.getRouteName()) && 'active';
 });
 
 Template.registerHelper('formattedDate', function (date) {
@@ -82,6 +88,50 @@ Template.registerHelper('currentUserIsApproved', function () {
     return  (Roles.userIsInRole(id, ['admin', 'admin'], Roles.GLOBAL_GROUP))
         || !(Roles.getRolesForUser(id, Roles.GLOBAL_GROUP).length === 0);
 });
+
+Template.registerHelper('currentUserIsAgencyInMeatProgram', function () {
+
+    var id = Meteor.userId();
+console.log ("id " + id);
+    var user = Meteor.users.findOne({_id: id});
+    console.log("user " + user);
+    var isAdmin = Roles.userIsInRole(id, ['admin','admin'], Roles.GLOBAL_GROUP);
+    if (isAdmin) {
+    	return true;
+	}
+    var isInAgency = Roles.userIsInRole(id, ['agency','agency'], Roles.GLOBAL_GROUP);
+	console.log("is in agency " + isInAgency);
+//    var userAgency = user.profile.desired_agency;
+//    var user_id = Meteor.userId();
+
+    var currentUser = Meteor.users.findOne({_id: id });
+//    console.log ("useragency " + userAgency);
+	var x = new Meteor.Collection.ObjectID(currentUser.profile.desired_agency);
+    console.log ("fred " + currentUser.profile.desired_agency);
+    console.log ("x " + x);
+    //var userAgency = Agencies.find ({name: "Agency1IN"});
+    var userAgency2 = Agencies.findOne(new Meteor.Collection.ObjectID(currentUser.profile.desired_agency));
+console.log (userAgency2);
+//console.log (Orders.find({}).fetch().count());
+    // .forEach(function(obj){
+    //     print(obj.name)
+    // });
+    // // var alpha;
+    // while (userAgency2.hasNext()) {
+    	// alpha = userAgency2.next();
+    	// console.log (alpha.name);
+	// }
+    //(new Meteor.Collection.ObjectID(currentUser.profile.desired_agency));
+	//(currentUser.profile.desired_agency)});
+    //console.log ("agency " + agency);
+    console.log ("current agenc " + userAgency2);
+    // console.log ("pp "  + userAgency2.purchasing_program);
+    // console.log ("ret val " + (userAgency2.purchasing_program=='M'));
+    return (userAgency2.purchasing_program=="M");
+    // return  (Roles.userIsInRole(id, ['admin', 'admin'], Roles.GLOBAL_GROUP))
+    //     || !(Roles.getRolesForUser(id, Roles.GLOBAL_GROUP).length === 0);
+});
+
 Template.registerHelper('inArray', function (s, a){
 	return a.indexOf(s) > -1;
 });
