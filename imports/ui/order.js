@@ -20,6 +20,12 @@ if (Meteor.isClient) {
 					BlazeLayout.render('appBody', { main: 'order' });
 		}
 	});
+    FlowRouter.route('/orderMeat/', {
+        name: 'orderMeat',
+        action() {
+            BlazeLayout.render('appBody', { main: 'order' });
+        }
+    });
 }
 
 Template.order.rendered = function() {
@@ -37,20 +43,34 @@ Template.order.onCreated(function bodyOnCreated() {
 	Meteor.subscribe('orders');
     Meteor.subscribe('agencies');
 
-	if (!Session.get(CURRENT_ORDER_KEY)) { Session.set(CURRENT_ORDER_KEY, []); }
-
+    var programParam = FlowRouter.getQueryParam("program");
+    if (programParam == "M"){
+        if (!Session.get(CURRENT_MEATORDER_KEY)) { Session.set(CURRENT_MEATORDER_KEY, []); }
+    }
+    else {
+        if (!Session.get(CURRENT_REGULARORDER_KEY)) { Session.set(CURRENT_REGULARORDER_KEY, []); }
+    }
 
 });
 
 Template.order.events({
 	'click .js-add-item': function (event) {
 		event.preventDefault();
-
-		Overlay.open('addItemToOrderOverlay', this);
+        var programParam = FlowRouter.getQueryParam("program");
+		Overlay.open('addItemToOrderOverlay', programParam);
 	},
 
 	'click .js-place-order': function (event) {
 		event.preventDefault();
+
+        var programParam = FlowRouter.getQueryParam("program");
+        var key;
+        if (programParam == "M") {
+            key = CURRENT_MEATORDER_KEY;
+        }
+        else {
+            key = CURRENT_REGULARORDER_KEY;
+        }
 
 		// TODO: Additional verification around roles.
 		if (Meteor.user()) {
@@ -68,7 +88,7 @@ Template.order.events({
                 var currentUser = Meteor.users.findOne({_id: x });
 		        agencyAlreadySelected = currentUser.profile.desired_agency;
             }
-			var currentOrder = Session.get(CURRENT_ORDER_KEY);
+			var currentOrder = Session.get(key);
 			if (currentOrder.length <= 0) {
                 sAlert.error('You must have at least one item in your order.');
 				return;
@@ -97,7 +117,7 @@ Template.order.events({
                         // Subtract off ordered amount from inventory amount.
                         // TODO: Somehow make sure this doesn't result in errors if 2 simultaneous updates happen.
 
-                        // Mike: lift this idea from jpa/hibernate
+                        // Mike: lifted this idea from jpa/hibernate
                         // fetch the update timestamp first.  This gets set with every update
                         // in the update statement, include that as part of the 'where' condition
                         // If an update has happened in between fetching the timestamp and our update
@@ -106,6 +126,7 @@ Template.order.events({
                         var updatedCount = Meteor.call('updateItem',
                             currentOrder[i]._id._str,
                             currentOrder[i].quantity,
+                            "M",
                             i,
                             function(error, result) {
                                 // 'result' is the method return value
@@ -138,6 +159,7 @@ Template.order.events({
                                         agency_id: agencyAlreadySelected,
                                         // packed: false,
                                         // packed_by_id: "",
+                                        purchasing_program: programParam,
 
                                         completed: false,
                                         completed_by_id: "",
@@ -149,11 +171,11 @@ Template.order.events({
                                     });
 
                                     if (itemsToStay.length > 0) {
-                                        Session.set(CURRENT_ORDER_KEY,itemsToStay); //, itemsToStay);
+                                        Session.set(key,itemsToStay); //, itemsToStay);
                                         sAlert.info('Order partially placed!');
                                     }
                                     else {
-                                        Session.set(CURRENT_ORDER_KEY,itemsToStay);
+                                        Session.set(key,itemsToStay);
                                         sAlert.info('Order placed!');
                                     }
                                 }
@@ -183,7 +205,15 @@ Template.order.events({
     'click .js-edit-order': function (event) {
         event.preventDefault();
 
-        var currentOrder = Session.get(CURRENT_ORDER_KEY);
+        var key;
+        if (programParam == "M") {
+            key = CURRENT_MEATORDER_KEY;
+        }
+        else {
+            key = CURRENT_REGULARORDER_KEY;
+        }
+
+        var currentOrder = Session.get(key);
 
         var $orderItem = $(event.target).parents('.list-item').first();
         var orderItemIndex = parseInt($orderItem.data('index'));
@@ -191,14 +221,21 @@ Template.order.events({
 		var Id = orderItemIndex;
 
         Session.set('currentOverlayID',Id);
-
-        Overlay.open('addItemToOrderOverlay', this);
+        var programParam = FlowRouter.getQueryParam("program");
+        Overlay.open('addItemToOrderOverlay', programParam);
     },
 
 	'click .js-delete-order': function (event) {
         event.preventDefault();
-
-        var currentOrder = Session.get(CURRENT_ORDER_KEY);
+        var key;
+        var programParam = FlowRouter.getQueryParam("program");
+        if (programParam == "M") {
+            key = CURRENT_MEATORDER_KEY;
+        }
+        else {
+            key = CURRENT_REGULARORDER_KEY;
+        }
+        var currentOrder = Session.get(key);
 
 		var $orderItem = $(event.target).parents('.list-item').first();
 		var orderItemIndex = parseInt($orderItem.data('index'));
@@ -215,7 +252,7 @@ Template.order.events({
 
                 if (currentOrder[orderItemIndex] !== undefined) {
                     currentOrder.splice(orderItemIndex, 1);
-                    Session.set(CURRENT_ORDER_KEY, currentOrder);
+                    Session.set(key, currentOrder);
                 }
 
                 $(this).remove();
@@ -228,19 +265,50 @@ Template.order.events({
 
 Template.order.helpers({
     agencySelected() {
-        var currentOrder = Session.get(CURRENT_ORDER_KEY);
+        var programParam = FlowRouter.getQueryParam("program");
+        var key;
+        if (programParam == "M") {
+            key = CURRENT_MEATORDER_KEY;
+        }
+        else {
+            key = CURRENT_REGULARORDER_KEY;
+        }
+        var currentOrder = Session.get(key);
         var agencyAlreadySelected = Session.get(CURRENT_AGENCY);
 
         return ((agencyAlreadySelected != undefined) && (currentOrder.length > 0));
     },
+    orderTitle() {
+        var programParam = FlowRouter.getQueryParam("program");
+        if (programParam == "M") {
+            return "Order Meat";
+        }
+        else {
+            return "Order";
+        }
+    },
+    isMeat() {
+        var programParam = FlowRouter.getQueryParam("program");
+        if (programParam == "M")
+            return true;
+        else
+            return false;
+    }
+    ,
     items() {
-        return Items.find({}, {sort: {name: 1}});
+        var programParam = FlowRouter.getQueryParam("program");
+        return Items.find({purchasing_program: programParam}, {sort: {name: 1}});
     },
     currentOrder() {
-        return Session.get(CURRENT_ORDER_KEY);
+        var programParam = FlowRouter.getQueryParam("program");
+        if (programParam == "M")
+            return Session.get(CURRENT_MEATORDER_KEY);
+        else
+            return Session.get(CURRENT_REGULARORDER_KEY);
     },
     allAgencies() {
-        return Agencies.find({}, {sort: {name: 1}});
+        var programParam = FlowRouter.getQueryParam("program");
+        return Agencies.find({purchasing_program: programParam}, {sort: {name: 1}});
     }
 });
 

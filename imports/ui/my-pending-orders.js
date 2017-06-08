@@ -9,15 +9,26 @@ import './modalWindow.js'
 import './const.js'
 
 if (Meteor.isClient) {
-	FlowRouter.route('/my-pending-orders/', {
-		name: 'my-pending-orders',
+	FlowRouter.route('/my-pending-ordersM/', {
+		name: 'my-pending-ordersM',
 		action: function () {
 				BlazeLayout.render('appBody', { main: 'myPendingOrders' });
 		}
 	});
-
-    FlowRouter.route('/my-completed-orders/', {
-        name: 'my-completed-orders',
+    FlowRouter.route('/my-pending-ordersN/', {
+        name: 'my-pending-ordersN',
+        action: function () {
+            BlazeLayout.render('appBody', { main: 'myPendingOrders' });
+        }
+    });
+    FlowRouter.route('/my-completed-ordersM/', {
+        name: 'my-completed-ordersM',
+        action: function () {
+            BlazeLayout.render('appBody', { main: 'myPendingOrders' });
+        }
+    });
+    FlowRouter.route('/my-completed-ordersN/', {
+        name: 'my-completed-ordersN',
         action: function () {
             BlazeLayout.render('appBody', { main: 'myPendingOrders' });
         }
@@ -120,19 +131,20 @@ Template.myPendingOrders.helpers({
         return allagencies;
     },
 	orders: function () {
-        var params = FlowRouter.getQueryParam("orderState");
+        var orderStateParam = FlowRouter.getQueryParam("orderState");
+        var programParam = FlowRouter.getQueryParam("program");
 
         if ((Roles.userIsInRole(Meteor.userId(), ['agency', 'agency'], Roles.GLOBAL_GROUP)) ) {
             // NOT an admin
 
             var x = Meteor.userId();
             var currentUser = Meteor.users.findOne({_id: x });
-            Meteor.users.find();
 
-            if (params == 'completed') {
+            if (orderStateParam == 'completed') {
                 return Orders.find({
                     $and: [
                         {completed: true},
+                        {purchasing_program: programParam},
                         //{owner_id: Meteor.userId()}
                         {agency_id: currentUser.profile.desired_agency}
                     ]
@@ -147,6 +159,7 @@ Template.myPendingOrders.helpers({
                                 {completed: null}
                             ]
                         },
+                        {purchasing_program: programParam},
                         {agency_id: currentUser.profile.desired_agency}
 //                        {owner_id: Meteor.userId()}
                     ]
@@ -155,32 +168,67 @@ Template.myPendingOrders.helpers({
         }
         else {
             // an admin
-            if (params == 'completed') {
+            if (orderStateParam == 'completed') {
                 if (agencySelected == undefined) {
-                    return Orders.find({completed: true}, {sort: {updated_at: -1}});
+                    return Orders.find({$and: [{completed: true}, {purchasing_program: programParam}]}, {sort: {updated_at: -1}});
                 }
                 else {
-                    return Orders.find({$and: [{completed: true},{agency_id: agencySelected}]}, {sort: {updated_at: -1}});
+                    return Orders.find({$and: [{completed: true}, {purchasing_program: programParam}, {agency_id: agencySelected}]}, {sort: {updated_at: -1}});
                 }
             }
             else {
                 if (agencySelected == ALL) {
-                    return Orders.find({$or: [{completed: false},{completed: null}]}, {sort: {updated_at: -1}});
+                    return Orders.find(
+                        {$and:
+
+                        [   {$or: [{completed: false},{completed: null}]}, {sort: {updated_at: -1}},
+                            {purchasing_program: programParam}
+                        ]
+                        });
                 }
                 else {
                     return Orders.find(
                         {$and: [
-                            {$or: [{completed: false},{completed: null}]}, {agency_id: agencySelected}
+                            {$or: [{completed: false},{completed: null}]}, {agency_id: agencySelected},  {purchasing_program: programParam}
                         ]},
                         {sort: {updated_at: -1}});
                 }
             }
         }
 	},
-    orderState: function () {
-        var params = FlowRouter.getQueryParam("orderState");
+    isProduce() {
+        var programParam = FlowRouter.getQueryParam("program");
+        if (programParam == "N")
+            return true;
+        return false;
+    },
+    orderTitle() {
+        var orderStateParam = FlowRouter.getQueryParam("orderState");
+        var programParam = FlowRouter.getQueryParam("program");
 
-        if (params == 'completed') {
+        if (orderStateParam == "inprogress") {
+            orderStateParam = "PENDING";
+        }
+        var isAdmin =Roles.userIsInRole(Meteor.userId(), ['admin', 'admin'], Roles.GLOBAL_GROUP);
+
+        var title;
+        if (programParam == "M") {
+            title = orderStateParam + " Meat Orders";
+        }
+        else {
+            title = orderStateParam + " Orders";
+        }
+
+        if (isAdmin) {
+            return "All " + title;
+        }
+        else
+            return title;
+    },
+    orderState: function () {
+        var orderStateParam = FlowRouter.getQueryParam("orderState");
+
+        if (orderStateParam == 'completed') {
             return true;
         }
         else {

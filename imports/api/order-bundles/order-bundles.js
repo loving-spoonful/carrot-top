@@ -20,7 +20,7 @@ OrderBundles.schema = new SimpleSchema({
     owner_id: {type: String},
 
     completed: {type: Boolean},
-
+    purchasing_program: {type: String},
     created_at: {
         type: Date
     },

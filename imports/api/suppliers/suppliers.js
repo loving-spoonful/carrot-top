@@ -5,26 +5,23 @@
 import {Mongo} from 'meteor/mongo';
 
 
-export const Agencies = new Mongo.Collection('Agencies', {idGeneration: 'MONGO'});
+export const Suppliers = new Mongo.Collection('Suppliers', {idGeneration: 'MONGO'});
 
 if (Meteor.isServer) {
 
-    Meteor.publish('agencies', function getAllAgencies() {
-        return Agencies.find();
+    Meteor.publish('Suppliers', function getAllSuppliers() {
+        return Suppliers.find();
     });
 }
 
 
-Agencies.schema = new SimpleSchema({
+Suppliers.schema = new SimpleSchema({
     name: {type: String, unique: true},
     created_at: {
         type: Date
     },
     updated_at: {
         type: Date
-    },
-    delivery_instructions: {
-        type: String
     },
     primary_contact_name: {
         type: String
@@ -48,9 +45,9 @@ Agencies.schema = new SimpleSchema({
 
     purchasing_program: {
         type: String,
-        defaultValue: 'N'
+        defaultValue: 'M'
     },
 
 });
-Agencies.attachSchema(Agencies.schema);
+Suppliers.attachSchema(Suppliers.schema);
 

@@ -12,11 +12,17 @@ import './modalWindow.js'
 
 if (Meteor.isClient) {
 	FlowRouter.route('/pending-delivery/', {
-		name: 'pending-delivery',
+        name: 'pending-delivery',
         action: function () {
-				BlazeLayout.render('appBody', { main: 'pendingDelivery' });
-		}
-	});
+            BlazeLayout.render('appBody', { main: 'pendingDelivery' });
+        }
+    });
+    FlowRouter.route('/completeMeatOrder/', {
+        name: 'completeMeatOrder',
+        action: function () {
+            BlazeLayout.render('appBody', { main: 'pendingDelivery' });
+        }
+    });
 }
 
 Template.pendingDelivery.onCreated(function bodyOnCreated() {
@@ -119,7 +125,7 @@ Template.pendingDelivery.events({
                     order_ids: [ orderId ],
                     owner_id: assignedVolunteer,
                     completed: false,
-
+                    purchasing_program: "N",
                     created_at: Date.now(),
                     updated_at: Date.now()
                 });
@@ -184,7 +190,7 @@ Template.pendingDelivery.events({
                     order_ids: [ orderId ],
                     owner_id: Meteor.userId(),
                     completed: false,
-
+                    purchasing_program: "N",
                     created_at: Date.now(),
                     updated_at: Date.now()
                 });
@@ -202,7 +208,93 @@ Template.pendingDelivery.events({
         // modal
 
 	},
+    'click .js-submit-meat-order': function (event) {
+        event.preventDefault();
+debugger;
+// var firstTime = true;
+//
+//         var r;
+// var xxx;
+//         var $order = Orders.find({
+//             $and: [
+//                 {
+//                     $or: [
+//                         { completed: false },
+//                         { completed: null }
+//                     ]
+//                 },
+//                 {
+//                     $or: [
+//                         { bundled: false },
+//                         { bundled: null }
+//                     ]
+//                 },
+//                 {purchasing_program: "M"}
+//             ]
+//         }, { sort: { updated_at: -1 } }).forEach(function(obj){
+//
+// xxx = obj._id;
+//             //mcpmcp
+//             if (firstTime) {
+//                 OrderBundles.insert({
+//                     order_ids: [obj._id._str],
+//                     owner_id: Meteor.userId(),
+//                     completed: false,
+//                     purchasing_program: "M",
+//                     created_at: Date.now(),
+//                     updated_at: Date.now()
+//                 });
+//                 firstTime = false;
+//             }
+//             else {
+//                 var existingBundle = OrderBundles.findOne({ owner_id: Meteor.userId(), completed: false, purchasing_program: "M" });
+//                 OrderBundles.update({
+//                     _id: new Mongo.ObjectID(existingBundle._id._str)
+//                 }, {
+//                     $push: { order_ids: obj._id._str },
+//                     $set: { updated_at: Date.now() }
+// // THIS IS THE FINAL!                    $set: { updated_at: Date.now(), completed: true }
+//                 });
+//
+//             }
+//             Orders.update({ _id: (obj._id) }, {
+//                 $set: {
+//                     completed_by_id: Meteor.userId(),
+//                     // completed: true,
+//                     // bundled: true,
+//                     updated_at: Date.now()
+//                 }
+//             });
+//         })
 
+
+
+        //modal
+        var sdi = Meteor.commonFunctions.popupModal("Submit Meat Order", "Is it already monday at noon?  If you are ready, click ok to submit meat orders to the suppliers.");
+        //
+        // var oo = Orders.findOne({ _id: (xxx) });
+        // r = oo.requests;
+        // for (var item in r) {
+        //     debugger;
+        //     var f = item;
+        // }
+        var modalPopup = ReactiveModal.initDialog(sdi);
+
+        modalPopup.buttons.ok.on('click', function (button) {
+            // what needs to be done after click ok.
+            sAlert.info ("Submitting meat orders!");
+
+            $order.slideUp(150, function () {
+                // When finished sliding
+
+
+
+                $(this).remove();
+            });
+        });
+        modalPopup.show();
+        //modal
+    },
 	'click .js-complete-order': function (event) {
         event.preventDefault();
 
@@ -276,8 +368,38 @@ Template.pendingDelivery.helpers({
         var fooText = someString.substring(0,1);
         return new Spacebars.SafeString(fooText)
     },
+    pdTitle: function () {
+        var programParam = FlowRouter.getQueryParam("program");
+        if (programParam == 'M') {
+            return 'Complete Meat Orders';
+        }
+        else {
+            return 'Orders To Be Loaded';
+        }
+    },
+    isNotMeat: function () {
+        var programParam = FlowRouter.getQueryParam("program");
+        if (programParam != 'M') {
+            return true;
+        }
+        else {
+            return false;
+        }
+    },
+    isMeat: function () {
+        var programParam = FlowRouter.getQueryParam("program");
+        if (programParam == 'M') {
+            return true;
+        }
+        else {
+            return false;
+        }
+    },
 	orders: function () {
-
+            var programParam = FlowRouter.getQueryParam("program");
+            if (programParam == undefined){
+                programParam = "N";
+            }
             return Orders.find({
                 $and: [
                     {
@@ -291,7 +413,8 @@ Template.pendingDelivery.helpers({
                             { bundled: false },
                             { bundled: null }
                         ]
-                    }
+                    },
+                    {purchasing_program: programParam}
                     //{ packed: true }
                 ]
             }, { sort: { updated_at: -1 } });

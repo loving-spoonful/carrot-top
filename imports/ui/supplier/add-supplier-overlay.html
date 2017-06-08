@@ -1,24 +1,23 @@
-<template name="addAgencyOverlay">
-	<div class="overlay add-agency">
+<template name="addSupplierOverlay">
+	<div class="overlay add-supplier">
 		<a href="#" class="js-close-overlay overlay-dismiss"><span class="icon-close"></span></a>
 		<div class="title-page">
             {{#if _id}}
-                Update Agency
+                Update Supplier
             {{else}}
-                Add Agency
+                Add Supplier
             {{/if}}
         </div>
 
-		<form class="form-add-agency">
+		<form class="form-add-supplier">
             <div class="content-scrollable with-top">
 
             <!--<div class="form-group">-->
-                <label for="agency-name">Agency Name</label>
-                <input type="text" name="agency-name" id="agency-name" placeholder="Agency Name" required>
+                <label for="supplier-name">Supplier Name</label>
+                <input type="text" name="supplier-name" id="supplier-name" placeholder="Supplier Name" required>
 
                 <label for="purchasing_program">Purchasing Program</label>
                 <select name="purchasing_program" id="purchasing_program" required>
-                    <option value="N">Not in meat purchasing program</option>
                     <option value="M">In meat purchasing program</option>
                 </select>
 
@@ -40,8 +39,8 @@
                 <label for="city">City/Town</label>
                 <input type="text" name="city" id="city" placeholder="City/Town" required>
 
-                <label for="delivery_instructions">Delivery Instructions</label>
-                <input type="text" name="delivery_instructions" id="delivery_instructions" placeholder="Delivery Instructions" required>
+                <!--<label for="delivery_instructions">Delivery Instructions</label>-->
+                <!--<input type="text" name="delivery_instructions" id="delivery_instructions" placeholder="Delivery Instructions" required>-->
 
                 <label for="google_maps_link">Google Maps Link</label>
                 <input type="text" name="google_maps_link" id="google_maps_link" placeholder="Google Maps Link" required>
@@ -49,7 +48,7 @@
                 {{#if _id}}
                     <a target="_blank"  href="{{google_maps_link}}">Google Maps</a>
                 {{/if}}
-			<button class="btn-primary2" type="submit" id="agency_save_btn" name="agency_save_btn">Add</button>
+			<button class="btn-primary2" type="submit" id="supplier_save_btn" name="supplier_save_btn">Add</button>
             </div>
 		</form>
 	</div>

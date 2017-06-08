@@ -1,23 +1,24 @@
 <template name="myPendingOrders">
 	<div class="page my-pending-orders">
         {{#if isInRole 'volunteer, agency,admin'}}
-            {{#if isInRole 'volunteer, admin'}}
-                {{#if orderState}}
-                    {{#nav title='All Completed Orders' black=false}}
-                    {{/nav}}
-                {{else}}
-                    {{#nav title='All Pending Orders' black=false}}
-                    {{/nav}}
-                {{/if}}
-            {{else}}
-                {{#if orderState}}
-                    {{#nav title='My Completed Orders' black=false}}
-                    {{/nav}}
-                {{else}}
-                    {{#nav title='My Pending Orders' black=false}}
-                    {{/nav}}
-                {{/if}}
-            {{/if}}
+            {{#nav title=orderTitle black=false}}
+            {{/nav}}
+            <!--{{#if isInRole 'volunteer, admin'}}-->
+                <!--{{#if orderState}}-->
+          <!---->
+                <!--{{else}}-->
+                    <!--{{#nav title= orderTitle black=false}}-->
+                    <!--{{/nav}}-->
+                <!--{{/if}}-->
+            <!--{{else}}-->
+                <!--{{#if orderState}}-->
+                    <!--{{#nav title= orderTitle black=false}}-->
+                    <!--{{/nav}}-->
+                <!--{{else}}-->
+                    <!--{{#nav title= orderTitle black=false}}-->
+                    <!--{{/nav}}-->
+                <!--{{/if}}-->
+            <!--{{/if}}-->
         {{/if}}
 
 		<div class="content-scrollable with-top">
@@ -49,14 +50,16 @@
                                     <div class="order-title"> by {{owner.emails.[0].address}}</div>
                                     <div class="order-date">{{formattedDate created_at}}</div>
                                 </div>
-                                <div class="order-status">
-                                    <!--<div class="order-status-item order-status-packed {{#if packed}}complete{{/if}}">-->
+                                {{#if isProduce}}
+                                    <div class="order-status">
+                                        <!--<div class="order-status-item order-status-packed {{#if packed}}complete{{/if}}">-->
                                         <!--Packed-->
-                                    <!--</div>-->
-                                    <div class="order-status-item order-status-deliverer {{#if bundled}}complete{{/if}}">
-                                        Has been loaded
+                                        <!--</div>-->
+                                        <div class="order-status-item order-status-deliverer {{#if bundled}}complete{{/if}}">
+                                            Has been loaded
+                                        </div>
                                     </div>
-                                </div>
+                                {{/if}}
                             </div>
                             <ul class="order-items">
                                 {{#each orderItems}}

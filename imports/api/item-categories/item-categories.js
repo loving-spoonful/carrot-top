@@ -16,7 +16,12 @@ ItemCategories.schema = new SimpleSchema({
     },
     updated_at: {
         type: Date
-    }
+    },
+    purchasing_program: {
+        type: String,
+        defaultValue: 'N'
+    },
+
 });
 
 ItemCategories.attachSchema(ItemCategories.schema);

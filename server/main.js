@@ -10,6 +10,7 @@ import '../imports/api/items/items.js'
 import '../imports/api/orders/orders.js'
 import '../imports/api/order-bundles/order-bundles.js'
 import '../imports/api/agencies/agencies.js'
+import '../imports/api/suppliers/suppliers.js'
 import '../imports/ui/private/private-const.js'
 
 Meteor.publish('directory', function () {

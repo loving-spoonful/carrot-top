@@ -27,6 +27,7 @@ Template.addItemCategoryOverlay.rendered = function () {
     else {
         var itemObject = ItemCategories.findOne({_id: new Mongo.ObjectID(Id)});
         $('input[name="item-category-name"]').val(itemObject.name);
+        $('select[name="purchasing_program"]').val(itemObject.purchasing_program);
         $('button[name="category_save_btn"]').text("Save");
 
     }
@@ -39,28 +40,29 @@ Template.addItemCategoryOverlay.events({
 
 		const target = event.target;
 		const itemCategoryName = target['item-category-name'].value.trim();
+        const purchasingProgram = target['purchasing_program'].value.trim();
 
 		if (itemCategoryName.length > 0) {
 			var rc = ItemCategories.findOne({name: itemCategoryName});
-			if (rc) {
-                //throw new Meteor.error (666, 'duplicate!', e);
-				sAlert.warning ('This category (' + itemCategoryName + ') already exists!  Please enter a new category.');
-			}
-			else {
+			// if (rc) {
+             //    //throw new Meteor.error (666, 'duplicate!', e);
+			// 	sAlert.warning ('This category (' + itemCategoryName + ') already exists!  Please enter a new category.');
+			// }
+			// else {
                 var Id = Session.get('currentOverlayID');
 
                 // if id is set in the session, we are editing and should do an update
 				// otherwise this is a new and do an insert
                 if (Id) {
 
-                    ItemCategories.update({ _id: new Mongo.ObjectID(Id) }, { $set: { name: itemCategoryName, updated_at: Date.now() }});
+                    ItemCategories.update({ _id: new Mongo.ObjectID(Id) }, { $set: { name: itemCategoryName, updated_at: Date.now(), purchasing_program: purchasingProgram }});
                     sAlert.info('Saved!');
                     Session.set('currentOverlayID');
 				}
 				else {
                     var rc = ItemCategories.insert({
                         name: itemCategoryName,
-
+                        purchasing_program: purchasingProgram,
                         // these should now be default values on the collection
                         // but will leave in 24feb2017 mike
                         created_at: Date.now(),
@@ -69,7 +71,7 @@ Template.addItemCategoryOverlay.events({
                 };
 
                 Overlay.close();
-            }
+            // }
 		} else {
 			sAlert.warning('You must fill in all relevant fields in order to create your item category.');
 		}

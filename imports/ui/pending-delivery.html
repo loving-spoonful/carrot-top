@@ -1,33 +1,39 @@
 <template name="pendingDelivery">
 	<div class="page pending-delivery">
-		{{> nav title='Orders To Be Loaded' black=false}}
+		{{> nav title=pdTitle black=false}}
 		<div class="content-scrollable with-top">
             {{#if isInRole 'volunteer,admin'}}
-
-                {{#if isInRole 'admin'}}
-                    <h3 class="no-items-message">
-                        <label for="assignVolunteer">Assign a delivery volunter</label>
-                        <select name="assignVolunteer" id="assignVolunteer" >
-                            <option disabled selected value="">Select Volunteer To Assign</option>
-                            {{#each allVolunteers2}}
-                                <option value="{{_id}}">{{profile.name}} - {{firstLetter profile.desired_role}}</option>
-                            {{/each}}
-                        </select>
-                    </h3>
+                {{#if isNotMeat}}
+                    {{#if isInRole 'admin'}}
+                        <h3 class="no-items-message">
+                            <label for="assignVolunteer">Assign a delivery volunter</label>
+                            <select name="assignVolunteer" id="assignVolunteer" >
+                                <option disabled selected value="">Select Volunteer To Assign</option>
+                                {{#each allVolunteers2}}
+                                    <option value="{{_id}}">{{profile.name}} - {{firstLetter profile.desired_role}}</option>
+                                {{/each}}
+                            </select>
+                        </h3>
+                    {{/if}}
                 {{/if}}
-
                 <ul class="list-orders">
                     {{#each orders}}
                         <li class="list-order" data-index="{{@index}}" data-id="{{_id._str}}">
                             <div class="order-details">
                                 <div class="float-container">
                                     <a href="#" title="cancel order" class="js-cancel-order"><span class="icon-close"></span></a>
+                                    {{#if isNotMeat}}
+                                        {{#if userInRole 'volunteer'}}
+                                            <a href="#" title="Take responsibility for order" class="js-take-responsibility"><span class="icon-take-responsibility"></span></a>
+                                        {{/if}}
+                                    {{/if}}
                                     {{#if userInRole 'volunteer'}}
-                                        <a href="#" title="Take responsibility for order" class="js-take-responsibility"><span class="icon-take-responsibility"></span></a>
                                         <a href="#" title="Add notes to order" class="js-add-notes-to-order"><span class="icon-add-notes-to-order"></span></a>
                                     {{/if}}
-                                    {{#if isInRole 'admin'}}
-                                        <a href="#" title="Assign to a volunteer" class="js-assign-order"><span class="icon-assign"></span></a>
+                                    {{#if isNotMeat}}
+                                        {{#if isInRole 'admin'}}
+                                            <a href="#" title="Assign to a volunteer" class="js-assign-order"><span class="icon-assign"></span></a>
+                                        {{/if}}
                                     {{/if}}
 
                                     <div class="order-title">Order from {{getEmail agency_id}}</div>
@@ -58,6 +64,9 @@
                         </li>
                     {{/each}}
                 </ul>
+                {{#if isMeat}}
+                    <a href="#" class="btn-primary js-submit-meat-order">Submit Meat Orders!!!</a>
+                {{/if}}
             {{else}}
                 <div class="wrapper-message">
                     <div class="title-message">Not allowed.</div>

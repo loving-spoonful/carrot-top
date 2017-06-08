@@ -29,7 +29,8 @@ Template.addAgencyOverlay.rendered = function() {
         var agencyObject = Agencies.findOne({_id: new Mongo.ObjectID(Id)});
         $('input[name="agency-name"]').val(agencyObject.name);
         $('input[name="delivery_instructions"]').val(agencyObject.delivery_instructions);
-        $('input[name="primary_contact_name"]').val(agencyObject.primary_first_name);
+        $('input[name="primary_contact_name"]').val(agencyObject.primary_contact_name);
+        $('select[name="purchasing_program"]').val(agencyObject.purchasing_program);
 
         $('input[name="primary_contact_email"]').val(agencyObject.primary_contact_email);
         $('input[name="primary_contact_phone"]').val(agencyObject.primary_contact_phone);
@@ -58,6 +59,7 @@ Template.addAgencyOverlay.events({
         const agencyAddress = target['street_address'].value.trim();
         const agencyCity = target['city'].value.trim();
         const agencyGoogleMapsLink = target['google_maps_link'].value.trim();
+        const purchasingProgram = target['purchasing_program'].value.trim();
 
 		if (agencyName.length > 0) {
 
@@ -87,7 +89,8 @@ Template.addAgencyOverlay.events({
                                 street_address: agencyAddress,
                                 city: agencyCity,
                                 google_maps_link: agencyGoogleMapsLink,
-                                updated_at: Date.now()
+                                updated_at: Date.now(),
+                                purchasing_program: purchasingProgram
                             }
                         });
                     sAlert.info('Saved!');
@@ -118,6 +121,7 @@ Template.addAgencyOverlay.events({
                             street_address: agencyAddress,
                             city: agencyCity,
                             google_maps_link: agencyGoogleMapsLink,
+                            purchasing_program: purchasingProgram,
                             created_at: Date.now(),
                             updated_at: Date.now()
                         });

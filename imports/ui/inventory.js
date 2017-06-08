@@ -34,7 +34,6 @@ Template.inventory.events({
         var Id = $inventory.data('id');
         var itemObject = Items.findOne({ _id: new Mongo.ObjectID(Id) });
 
-        //mcpmcp wednesday
         Session.set('currentOverlayID',Id);
 
         Overlay.open('addItemOverlay', this);
@@ -80,7 +79,7 @@ Template.inventory.events({
 
 Template.inventory.helpers({
 	items() {
-		return Items.find({}, { sort: { name: 1 } });
+		return Items.find({}, { sort: { purchasing_program: -1, name: 1 } });
 	},
 	availableItems() {
 		return Items.find({ quantity_amount: { $gt: 0 } }, { sort: { name: 1 } })
