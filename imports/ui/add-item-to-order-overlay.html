@@ -15,6 +15,7 @@
 					{{/each}}
 				</select>
                 <hr>
+<<<<<<< HEAD
 
                     <select name="item-quantity" id="item-quantity" required>
                         <option disabled selected value="">#</option>
@@ -24,6 +25,15 @@
                     </select>
 
                 <hr>
+=======
+                <select name="item-quantity" id="item-quantity" required>
+                    <option disabled selected value="">#</option>
+                    {{#each intervals}}
+                        <option value="{{numerical}}">{{text}}</option>
+                    {{/each}}
+                </select>
+				<hr>
+>>>>>>> 3280c78b248f42401b8a449f6a2f933823f03fc5
                 <label for="instructions">Notes</label>
                 <hr>
 				<textarea name="instructions" id="instructions" class="instructions"
