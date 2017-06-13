@@ -10,7 +10,7 @@
             {{#if userInRole 'admin'}}
 
                 <ul class="list-items">
-                    {{#each agencies}}
+                    {{#each Agencies}}
                         <li class="list-item" data-id="{{_id._str}}">
                             <div class="item-title">{{name}}</div>
                             {{#if userInRole 'admin'}}

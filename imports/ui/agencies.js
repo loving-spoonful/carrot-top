@@ -18,7 +18,7 @@ if (Meteor.isClient) {
 }
 Template.agencies.onCreated(function bodyOnCreated() {
     this.state = new ReactiveDict();
-    Meteor.subscribe('agencies');
+    Meteor.subscribe('Agencies');
 });
 
 
@@ -76,7 +76,7 @@ Template.agencies.events({
 });
 
 Template.agencies.helpers({
-    agencies() {
+    Agencies() {
         //ebugger;
         return Agencies.find ({}, {sort: {name: 1}});
 

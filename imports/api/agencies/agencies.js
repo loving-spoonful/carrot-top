@@ -9,7 +9,7 @@ export const Agencies = new Mongo.Collection('Agencies', {idGeneration: 'MONGO'}
 
 if (Meteor.isServer) {
 
-    Meteor.publish('agencies', function getAllAgencies() {
+    Meteor.publish('Agencies', function () {
         return Agencies.find();
     });
 }
