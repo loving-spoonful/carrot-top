@@ -55,15 +55,23 @@ Orders.helpers({
     },
 
     orderItems: function () {
-        var item_ids = [];
+        // fixed by mike - code previously built up a list of ids
+        // then queried doing $in
+        // unfortunately, doing an in does not guarantee the order of insert
+        // which is assumed by the html page - in some cases (noticed with an order of 3 items)
+        // the instructions for the 1st and 3rd items were reversed; it could have been potentially
+        // any ordering
+        var listOfItems=[];
 
         for (var item in this.requests) {
             if (this.requests.hasOwnProperty(item)) {
-                item_ids.push(new Mongo.ObjectID(this.requests[item].item_id));
+                listOfItems.push (Items.findOne({_id: new Mongo.ObjectID(this.requests[item].item_id)}));
             }
         }
 
-        return Items.find({_id: {$in: item_ids}});
+        // this does not guarantee the order of which the requests were inserted
+        //        return Items.find({_id: {$in: item_ids}});
+        return listOfItems;
     },
 
     orderQuantityForItem: function (index) {
