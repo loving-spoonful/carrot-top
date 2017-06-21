@@ -336,36 +336,7 @@ Template.pendingDelivery.events({
 
         var emailString = [allSuppliers.length];
 
-        for (var i =0; i <allSuppliers.length; i++) {
-            debugger;
-            var currentSupplier = Suppliers.findOne({_id: new Mongo.ObjectID(allSuppliers[i])});
-            var emailOfSupplier = currentSupplier.primary_contact_email;
-            var contactNameOfSupplier =  currentSupplier.primary_contact_name;
-            var nameOfSupplier = currentSupplier.name;
 
-            var emailToAgencies = [ordersForSuppliersList[i].length];
-            emailString = "emailto: " + emailOfSupplier
-                + "\nDear " + contactNameOfSupplier + " of " + nameOfSupplier
-                + "\nOrders:";
-
-            for (var j=0; j<ordersForSuppliersList[i].length; j++) {
-                emailToAgencies[j] = ordersForSuppliersList[i][j].getAgencyEmail();
-                var currentOrder = ordersForSuppliersList[i][j];
-                emailString = emailString + "\n"
-                    + (j+1) + ". "
-                    + currentOrder.agency.primary_contact_name + " of " + currentOrder.agency.name
-                    + "\nEmail: " + currentOrder.getAgencyEmail()
-                    + "\nAmount of " + currentOrder.amount + " " + currentOrder.quantity_units;
-
-            }
-            debugger;
-            Meteor.call('sendEmail',
-                "mike__porter@hotmail.com",
-                CTOP_REDIRECT_EMAIL_FOR_TESTING,
-                'Meat Order',
-                emailString);
-
-        }
 
         //modal
         var sdi = Meteor.commonFunctions.popupModal("Submit Meat Order", "Is it already monday at noon?  If you are ready, click ok to submit meat orders to the suppliers.");
@@ -376,13 +347,44 @@ Template.pendingDelivery.events({
             // what needs to be done after click ok.
             sAlert.info ("Submitting meat orders!");
 
-            $order.slideUp(150, function () {
-                // When finished sliding
+            // $order.slideUp(150, function () {
+            //     // When finished sliding
+            //
+            //
+            //
+            //     $(this).remove();
+            // });
 
+            for (var i =0; i <allSuppliers.length; i++) {
+                //ebugger;
+                var currentSupplier = Suppliers.findOne({_id: new Mongo.ObjectID(allSuppliers[i])});
+                var emailOfSupplier = currentSupplier.primary_contact_email;
+                var contactNameOfSupplier =  currentSupplier.primary_contact_name;
+                var nameOfSupplier = currentSupplier.name;
 
+                var emailToAgencies = [ordersForSuppliersList[i].length];
+                emailString = "emailto: " + emailOfSupplier
+                    + "\nDear " + contactNameOfSupplier + " of " + nameOfSupplier
+                    + "\nOrders:";
 
-                $(this).remove();
-            });
+                for (var j=0; j<ordersForSuppliersList[i].length; j++) {
+                    emailToAgencies[j] = ordersForSuppliersList[i][j].getAgencyEmail();
+                    var currentOrder = ordersForSuppliersList[i][j];
+                    emailString = emailString + "\n"
+                        + (j+1) + ". "
+                        + currentOrder.agency.primary_contact_name + " of " + currentOrder.agency.name
+                        + "\nEmail: " + currentOrder.getAgencyEmail()
+                        + "\nAmount of " + currentOrder.amount + " " + currentOrder.quantity_units;
+
+                }
+                //ebugger;
+
+                Meteor.call('sendEmail',
+                    'mike__porter@hotmail.com',
+                    CTOP_REDIRECT_EMAIL_FOR_TESTING,
+                    'Meat Order',
+                    'This email is confirming you are approved for Carrottop!');
+            }
         });
         modalPopup.show();
         //modal
