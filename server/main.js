@@ -31,7 +31,7 @@ AccountsTemplates.configure({
 
 Meteor.startup(() => {
     // code to run on server at startup
-
+    process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
     // set up connection info for sending email
     process.env.MAIL_URL = "smtp://" + CTOP_EMAIL_ACCOUNT + ":" + CTOP_EMAIL_PASSWORD + "@smtp.gmail.com:587/";
 
@@ -56,9 +56,16 @@ Meteor.methods({
             subject = subject + ".  Would have sent to " + to;
             to = "mike__porter@hotmail.com";
         }
+        var toUsers = [];
+        // change this - just for the first demo mcpmcp
+        toUsers.push (to);
+        toUsers.push ("food@lovingspoonful.org");
+        //carrot.lovingspoonful.org@gmail.com");
+
         Email.send({
-            to: to,
+            to: toUsers,
             from: from,
+
             subject: subject,
             text: text
         });

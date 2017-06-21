@@ -319,16 +319,16 @@ Template.pendingDelivery.events({
                     _id: new Mongo.ObjectID(existingBundle._id._str)
                 }, {
                     $push: { order_ids: currentObject._id._str },
-                    $set: { updated_at: Date.now() }
-                    //$set: { updated_at: Date.now(), completed: true }
+                    // $set: { updated_at: Date.now() }
+                    $set: { updated_at: Date.now(), completed: true }
                 });
 
             }
             Orders.update({ _id: (currentObject._id) }, {
                 $set: {
                     completed_by_id: Meteor.userId(),
-                    // completed: true,
-                    // bundled: true,
+                    completed: true,
+                    bundled: true,
                     updated_at: Date.now()
                 }
             });
@@ -378,12 +378,12 @@ Template.pendingDelivery.events({
 
                 }
                 //ebugger;
-
                 Meteor.call('sendEmail',
                     'mike__porter@hotmail.com',
                     CTOP_REDIRECT_EMAIL_FOR_TESTING,
                     'Meat Order',
-                    'This email is confirming you are approved for Carrottop!');
+                    emailString);
+
             }
         });
         modalPopup.show();
