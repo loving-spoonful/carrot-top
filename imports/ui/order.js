@@ -41,7 +41,7 @@ Template.order.onCreated(function bodyOnCreated() {
 	Meteor.subscribe('directory');
 	Meteor.subscribe('items');
 	Meteor.subscribe('orders');
-    Meteor.subscribe('agencies');
+    Meteor.subscribe('Agencies');
 
     var programParam = FlowRouter.getQueryParam("program");
     if (programParam == "M"){
@@ -276,15 +276,20 @@ Template.order.helpers({
         var currentOrder = Session.get(key);
         var agencyAlreadySelected = Session.get(CURRENT_AGENCY);
 
-        return ((agencyAlreadySelected != undefined) && (currentOrder.length > 0));
+        if (currentOrder == undefined) {
+            return (agencyAlreadySelected != undefined);
+        }
+        else {
+            return ((agencyAlreadySelected != undefined) && (currentOrder.length > 0));
+        }
     },
     orderTitle() {
         var programParam = FlowRouter.getQueryParam("program");
         if (programParam == "M") {
-            return "Order Meat";
+            return "Buy Meat";
         }
         else {
-            return "Order";
+            return "Order Veggies";
         }
     },
     isMeat() {

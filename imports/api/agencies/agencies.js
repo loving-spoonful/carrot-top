@@ -51,6 +51,8 @@ Agencies.schema = new SimpleSchema({
         defaultValue: 'N'
     },
 
+
+
 });
 Agencies.attachSchema(Agencies.schema);
 

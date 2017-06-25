@@ -5,7 +5,7 @@ import './auth-page.html'
 
 Template.atForm.onCreated(function bodyOnCreated() {
     this.state = new ReactiveDict();
-    Meteor.subscribe('agencies');
+    Meteor.subscribe('Agencies');
 
 });
 
@@ -67,7 +67,7 @@ Template.wrappedSelect2.onCreated (function bodyOnCreated() {
 });
 Template.authPage.onCreated(function bodyOnCreated() {
 	this.state = new ReactiveDict();
-    Meteor.subscribe('agencies');
+    Meteor.subscribe('Agencies');
 
 });
 

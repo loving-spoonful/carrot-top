@@ -6,12 +6,18 @@ import './inventory.html'
 import './modalWindow.js'
 
 if (Meteor.isClient) {
-	FlowRouter.route('/inventory/', {
-		name: 'inventory',
+	FlowRouter.route('/inventoryN/', {
+		name: 'inventoryN',
 		action() {
 			BlazeLayout.render('appBody', { main: 'inventory' });
 		}
 	});
+    FlowRouter.route('/inventoryM/', {
+        name: 'inventoryM',
+        action() {
+            BlazeLayout.render('appBody', { main: 'inventory' });
+        }
+    });
 }
 
 Template.inventory.onCreated(function bodyOnCreated() {
@@ -23,8 +29,8 @@ Template.inventory.onCreated(function bodyOnCreated() {
 Template.inventory.events({
 	'click .js-add-item': function (event) {
 		event.preventDefault();
-
-		Overlay.open('addItemOverlay', this);
+        var typeParam = FlowRouter.getQueryParam("type");
+		Overlay.open('addItemOverlay', typeParam);
 	},
 	'click .js-edit-item': function (event) {
 
@@ -36,7 +42,8 @@ Template.inventory.events({
 
         Session.set('currentOverlayID',Id);
 
-        Overlay.open('addItemOverlay', this);
+        var typeParam = FlowRouter.getQueryParam("type");
+        Overlay.open('addItemOverlay', typeParam);
 
 	},
 
@@ -79,10 +86,19 @@ Template.inventory.events({
 
 Template.inventory.helpers({
 	items() {
-		return Items.find({}, { sort: { purchasing_program: -1, name: 1 } });
+        var typeParam = FlowRouter.getQueryParam("type");
+		return Items.find({purchasing_program: typeParam}, { sort: { purchasing_program: -1, name: 1 } });
 	},
+    isVeggies() {
+        var typeParam = FlowRouter.getQueryParam("type");
+        if (typeParam == "M") {
+            return false;
+        }
+        return true;
+    },
 	availableItems() {
-		return Items.find({ quantity_amount: { $gt: 0 } }, { sort: { name: 1 } })
+        var typeParam = FlowRouter.getQueryParam("type");
+		return Items.find({ $and:[{quantity_amount: { $gt: 0 }}, {purchasing_program: typeParam}] }, { sort: { name: 1 } })
 	},
 	orders() {
 		return Orders.find({}, { sort: { createdAt: 1 }})

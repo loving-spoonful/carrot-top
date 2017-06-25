@@ -12,7 +12,7 @@ import './add-agency-overlay.html'
 Template.addAgencyOverlay.onCreated(function () {
 	this.state = new ReactiveDict();
 
-    Meteor.subscribe('agencies');
+    Meteor.subscribe('Agencies');
 });
 
 

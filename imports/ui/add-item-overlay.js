@@ -13,6 +13,7 @@ Template.addItemOverlay.onCreated(function () {
 
 
 Template.addItemOverlay.rendered = function() {
+    var purchasing_program = Session.get("overlayData");
     var Id = Session.get('currentOverlayID');
     if (Id == undefined) {
         $('button[name="inventory_save_btn"]').text("Add");
@@ -53,7 +54,13 @@ Template.addItemOverlay.events({
 
 		const target = event.target;
 		const itemName = target['item-name'].value.trim();
-		const itemQuantity = parseFloat(target['item-quantity'].value.trim());
+        var itemQuantity;
+		if (target['item-quantity'] == undefined) {
+            itemQuantity = 10000
+		}
+		else {
+            itemQuantity = parseFloat(target['item-quantity'].value.trim());
+		}
 		const itemQuantityUnits = target['quantity-units'].value.trim();
 		const itemOrderMinimum = parseFloat(target['item-order-minimum'].value.trim());
 		const itemOrderMaximum = parseFloat(target['item-order-maximum'].value.trim());
@@ -136,11 +143,20 @@ Template.addItemOverlay.events({
 });
 
 Template.addItemOverlay.helpers({
+	isVeggies() {
+        var purchasing_program = Session.get("overlayData");
+        if (purchasing_program == 'M') {
+            return false;
+    	}
+    	return true;
+	},
 	items() {
-		return Items.find({}, { sort: { name: 1 } });
+        var purchasing_program = Session.get("overlayData");
+		return Items.find({purchasing_program: purchasing_program}, { sort: { name: 1 } });
 	},
 	itemCategories() {
-		return ItemCategories.find({}, { sort: { name: 1 } });
+		var purchasing_program = Session.get("overlayData");
+		return ItemCategories.find({purchasing_program: purchasing_program}, { sort: { name: 1 } });
 	},
 	suppliers() {
 		return Suppliers.find({}, {sort: {name: 1}});

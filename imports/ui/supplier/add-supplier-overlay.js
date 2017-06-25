@@ -38,7 +38,7 @@ Template.addSupplierOverlay.rendered = function() {
         $('input[name="street_address"]').val(supplierObject.street_address);
         $('input[name="city"]').val(supplierObject.city);
         $('input[name="google_maps_link"]').val(supplierObject.google_maps_link);
-
+        $('textarea[name="notes"]').val(supplierObject.notes);
 
         $('button[name="supplier_save_btn"]').text("Save");
 
@@ -60,6 +60,7 @@ Template.addSupplierOverlay.events({
         const supplierCity = target['city'].value.trim();
         const supplierGoogleMapsLink = target['google_maps_link'].value.trim();
         const purchasingProgram = target['purchasing_program'].value.trim();
+        const notes = target['notes'].value.trim();
 
 		if (supplierName.length > 0) {
 
@@ -90,7 +91,8 @@ Template.addSupplierOverlay.events({
                                 city: supplierCity,
                                 google_maps_link: supplierGoogleMapsLink,
                                 updated_at: Date.now(),
-                                purchasing_program: purchasingProgram
+                                purchasing_program: purchasingProgram,
+                                notes: notes
                             }
                         });
                     sAlert.info('Saved!');
@@ -123,7 +125,8 @@ Template.addSupplierOverlay.events({
                             google_maps_link: supplierGoogleMapsLink,
                             purchasing_program: purchasingProgram,
                             created_at: Date.now(),
-                            updated_at: Date.now()
+                            updated_at: Date.now(),
+                            notes: notes
                         });
 
                         Overlay.close();
