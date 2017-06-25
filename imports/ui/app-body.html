@@ -52,7 +52,7 @@
                             <span class="wrapper-menu-item">
                                 <!--<span class="icon-speaker_phone"></span>-->
                                 <i class="material-icons">shopping_basket</i>
-                                <span class="title-menu">Order</span>
+                                <span class="title-menu">Order Veggies</span>
                             </span>
                         </a>
 
@@ -71,9 +71,9 @@
                                 <!--<span class="icon-list"></span>-->
                                 <i class="material-icons">update</i>
                                 {{#if isInRole 'admin'}}
-                                    <span class="title-menu">All Pending Orders</span>
+                                    <span class="title-menu">All Pending Veggies Orders</span>
                                 {{else}}
-                                    <span class="title-menu">My Pending Orders</span>
+                                    <span class="title-menu">My Pending Veggies Orders</span>
                                 {{/if}}
                             </span>
                         </a>
@@ -83,9 +83,9 @@
                                 <!--<span class="icon-list"></span>-->
                                 <i class="material-icons">update</i>
                                 {{#if isInRole 'agency'}}
-                                    <span class="title-menu">My Completed Orders</span>
+                                    <span class="title-menu">My Completed Veggies Orders</span>
                                 {{else}}
-                                    <span class="title-menu">All Completed Orders</span>
+                                    <span class="title-menu">All Completed Veggies Orders</span>
                                 {{/if}}
                             </span>
                         </a>
@@ -126,13 +126,15 @@
                     <a href="/completeMeatOrder?program=M" class="{{activePage 'completeMeatOrder'}}">
                             <span class="wrapper-menu-item">
                                 <!--<span class="icon-list"></span>-->
-                                <i class="material-icons">cow</i>
-                                <span class="icon-cow">Complete Meat Order!</span>
+                                <i class="material-icons">whatshot</i>
+                                <span class="title-menu">Complete Meat Orders!</span>
                             </span>
                     </a>
                 {{/if}}
                 {{#if isInRole 'volunteer,admin'}}
-                    <div class="nav-spacer"></div>
+                    {{#if isInRole 'volunteer'}}
+                        <div class="nav-spacer"></div>
+                    {{/if}}
                     <!--<a href="/pending-packing" class="{{activePage 'pending-packing'}}">-->
                     <!--<span class="wrapper-menu-item">-->
                     <!--&lt;!&ndash;<span class="icon-list"></span>&ndash;&gt;-->
@@ -173,9 +175,9 @@
                                 <!--<span class="icon-list"></span>-->
                                 <i class="material-icons">update</i>
                                 {{#if isInRole 'agency'}}
-                                    <span class="title-menu">My Completed Orders</span>
+                                    <span class="title-menu">My Completed Veggies Orders</span>
                                 {{else}}
-                                    <span class="title-menu">Completed Orders</span>
+                                    <span class="title-menu">Completed Veggies Orders</span>
                                 {{/if}}
                             </span>
                     </a>
@@ -193,10 +195,16 @@
 
                 {{#if isInRole 'volunteer, admin'}}
 
-                    <a href="/inventory" class="{{activePage 'inventory'}}">
+                    <a href="/inventoryN?type=N" class="{{activePage 'inventoryN'}}">
                             <span class="wrapper-menu-item">
                                 <span class="icon-storage"></span>
-                                <span class="title-menu">Inventory</span>
+                                <span class="title-menu">Veggies Inventory</span>
+                            </span>
+                    </a>
+                    <a href="/inventoryM?type=M" class="{{activePage 'inventoryM'}}">
+                            <span class="wrapper-menu-item">
+                                <span class="icon-storage"></span>
+                                <span class="title-menu">Meat Inventory</span>
                             </span>
                     </a>
                 {{/if}}

@@ -48,6 +48,10 @@ Suppliers.schema = new SimpleSchema({
         defaultValue: 'M'
     },
 
+    notes: {
+        type: String,
+        optional: true
+    }
 });
 Suppliers.attachSchema(Suppliers.schema);
 

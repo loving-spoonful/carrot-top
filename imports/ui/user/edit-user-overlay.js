@@ -10,7 +10,7 @@ Template.editUserOverlay.onCreated(function () {
     this.state = new ReactiveDict();
 
     Meteor.subscribe('directory');
-    Meteor.subscribe('agencies');
+    Meteor.subscribe('Agencies');
 });
 
 // like all other overlays - fetch the session id, retrieve the record (if exists) and fill in fields

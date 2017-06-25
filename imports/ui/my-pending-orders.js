@@ -42,7 +42,7 @@ Template.myPendingOrders.onCreated(function bodyOnCreated() {
 	Meteor.subscribe('orders');
 	Meteor.subscribe('order-bundles');
 
-    Meteor.subscribe('agencies');
+    Meteor.subscribe('Agencies');
     Meteor.subscribe('directory');
 
 });
@@ -216,7 +216,7 @@ Template.myPendingOrders.helpers({
             title = orderStateParam + " Meat Orders";
         }
         else {
-            title = orderStateParam + " Orders";
+            title = orderStateParam + " Veggies Orders";
         }
 
         if (isAdmin) {

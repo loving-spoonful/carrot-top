@@ -14,9 +14,10 @@
                 <label for="item-name">Item Name</label>
 				<input type="text" name="item-name" id="item-name" placeholder="Carrots" required title="{{#if _id}}Item name is set - cannot change!{{else}}Name of the inventory item.{{/if}}" disabled="{{_id}}">
 
-                <label for="item-quantity">Current Inventory Level</label>
-				<input type="text" name="item-quantity" id="item-quantity" placeholder="10" required>
-
+                {{#if isVeggies}}
+                    <label for="item-quantity">Current Inventory Level</label>
+			        <input type="text" name="item-quantity" id="item-quantity" placeholder="10" required>
+                {{/if}}
                 <label for="quantity-units">Quantity Units</label>
                 <select name="quantity-units" id="quantity-units" required>
                     {{#each itemUnits}}
