@@ -97,6 +97,10 @@ Template.addItemToOrderOverlay.events({
 			var newItem = Items.findOne({_id: new Meteor.Collection.ObjectID(item)});
 			newItem.quantity = target['item-quantity'].value;
 			newItem.instructions = target['instructions'].value;
+
+			var selectedItem = Items.findOne({_id: new Meteor.Collection.ObjectID(item)});
+            newItem.priceAtTime = selectedItem.price;
+
 			currentSessionData.push(newItem);
 
 			var purchasing_program = Session.get("overlayData");

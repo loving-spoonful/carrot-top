@@ -10,6 +10,7 @@ import { BlazeLayout } from 'meteor/kadira:blaze-layout';
 import { Items } from '../api/items/items.js';
 import { Orders } from '../api/orders/orders.js';
 import { Agencies } from '../api/agencies/agencies.js';
+import { Suppliers } from '../api/suppliers/suppliers.js';
 import './const.js';
 import './order.html';
 
@@ -42,6 +43,7 @@ Template.order.onCreated(function bodyOnCreated() {
 	Meteor.subscribe('items');
 	Meteor.subscribe('orders');
     Meteor.subscribe('Agencies');
+    Meteor.subscribe('Suppliers');
 
     var programParam = FlowRouter.getQueryParam("program");
     if (programParam == "M"){
@@ -143,10 +145,17 @@ Template.order.events({
                                     itemsToStay.push(currentOrder[result]);
                                 }
                                 else {
+
+                                    var priceAtTime = 0;
+                                    if (item.purchasing_program == 'M') {
+                                        priceAtTime = item.price;
+                                    }
                                     result = result - 1;
+                                    debugger;
                                     requests.push({
                                          item_id: currentOrder[result]._id._str,
                                          quantity: currentOrder[result].quantity,
+                                         priceAtTime: currentOrder[result].priceAtTime,
                                          instructions: currentOrder[result].instructions
                                     });
 
@@ -261,6 +270,10 @@ Template.order.events({
 
         modalPopup.show();
 	}
+});
+
+Template.registerHelper('returnCost', function (amount, price) {
+    return amount * price;
 });
 
 Template.order.helpers({

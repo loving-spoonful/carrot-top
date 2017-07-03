@@ -115,6 +115,7 @@ Template.myPendingOrders.events({
 
 });
 
+
 Template.myPendingOrders.helpers({
 	items: function () {
 		return Items.find({}, { sort: { updated_at: -1}});

@@ -14,7 +14,7 @@
                         {{#if isProduce}}
 						    <option value="{{_id._str}}">{{name}} ({{quantity_amount}} {{quantity_units}} available)</option>
                         {{else}}
-                            <option value="{{_id._str}}">{{name}} ({{quantity_amount}} {{quantity_units}})</option>
+                            <option value="{{_id._str}}">{{name}} (at ${{price}})</option>
                         {{/if}}
 					{{/each}}
 				</select>

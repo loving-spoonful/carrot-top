@@ -18,6 +18,7 @@ Orders.schema = new SimpleSchema({
     },
     'requests.$.item_id': {type: String},
     'requests.$.quantity': {type: Number, min: 0, decimal: true},
+    'requests.$.priceAtTime': {type: Number, min: 0, decimal: true, optional: true},
     'requests.$.instructions': {type: String, optional: true},
 
     owner_id: {type: String},
@@ -49,6 +50,7 @@ Orders.schema = new SimpleSchema({
 });
 Orders.attachSchema(Orders.schema);
 
+
 Orders.helpers({
     owner: function () {
         return Meteor.users.findOne({_id: this.owner_id});
@@ -76,6 +78,17 @@ Orders.helpers({
 
     orderQuantityForItem: function (index) {
         return (Math.round(this.requests[index].quantity * 100) / 100).toString();
+    },
+    orderTotalForItem: function (index) {
+        debugger;
+        return (this.requests[index].quantity * this.requests[index].priceAtTime).toString();
+//        return (Math.round(this.requests[index].quantity * this.requests[index].priceAtTime*100/100)).toString();
+    },
+
+    orderPriceForItem: function (index) {
+        if (this.purchasing_program == 'M') {
+            return (this.requests[index].priceAtTime).toString();
+        }
     },
 
     orderInstructionsForItem: function (index) {

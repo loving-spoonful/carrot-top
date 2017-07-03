@@ -47,7 +47,11 @@
                                     <li class="order-item" data-index="{{@index}}">
                                         <div class="item-name">{{name}}</div>
                                         <div class="item-quantity-ordered">
-                                            {{../orderQuantityForItem @index}} {{quantity_units}}
+                                            {{#if isMeat}}
+                                                {{../orderQuantityForItem @index}} {{quantity_units}} at ${{../orderPriceForItem @index}} = ${{../orderTotalForItem @index}}
+                                            {{else}}
+                                                {{../orderQuantityForItem @index}} {{quantity_units}}
+                                             {{/if}}
                                         </div>
                                         {{#if ../orderInstructionsForItem @index}}
                                             <p>

@@ -21,7 +21,11 @@
                 <ul class="list-items">
                     {{#each currentOrder}}
                         <li class="list-item" data-index="{{@index}}">
-                            <div class="item-title">{{name}} {{fixFloat quantity}} {{quantity_units}}</div>
+                            {{#if isMeat}}
+                                <div class="item-title">{{name}} {{fixFloat quantity}} {{quantity_units}} @ ${{priceAtTime}} = ${{returnCost quantity priceAtTime}}</div>
+                            {{else}}
+                                <div class="item-title">{{name}} {{fixFloat quantity}} {{quantity_units}}</div>
+                            {{/if}}
 
                             <!--<div class="item-quantity item-quantity-ordered">{{fixFloat quantity}} {{quantity_units}}</div>-->
                             <a href="#" class="js-delete-order"><i class="material-icons">delete</i></a>

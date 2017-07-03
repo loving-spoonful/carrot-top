@@ -33,7 +33,8 @@ Meteor.startup(() => {
     // code to run on server at startup
     process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
     // set up connection info for sending email
-    process.env.MAIL_URL = "smtp://" + CTOP_EMAIL_ACCOUNT + ":" + CTOP_EMAIL_PASSWORD + "@smtp.gmail.com:587/";
+//    process.env.MAIL_URL = "smtp://" + CTOP_EMAIL_ACCOUNT + ":" + CTOP_EMAIL_PASSWORD + "@smtp.gmail.com:587/";
+process.env.MAIL_URL = "smtps://" + CTOP_EMAIL_ACCOUNT + ":" + CTOP_EMAIL_PASSWORD + "@in-v3.mailjet.com:465/";
 
 Meteor.methods({
     // the server side methods
