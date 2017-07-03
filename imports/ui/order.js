@@ -43,6 +43,7 @@ Template.order.onCreated(function bodyOnCreated() {
 	Meteor.subscribe('items');
 	Meteor.subscribe('orders');
     Meteor.subscribe('Agencies');
+
     Meteor.subscribe('Suppliers');
 
     var programParam = FlowRouter.getQueryParam("program");
