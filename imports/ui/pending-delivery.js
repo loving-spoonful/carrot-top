@@ -36,7 +36,8 @@ Template.pendingDelivery.onCreated(function bodyOnCreated() {
     Meteor.subscribe('Suppliers');
 });
 
-function MeatOrderDetails (amount, quantity_units, agency_id, price, submitterEmail) {
+function MeatOrderDetails (itemName, amount, quantity_units, agency_id, price, submitterEmail) {
+    this.itemName = itemName;
     this.amount = amount;
     this.quantity_units = quantity_units;
     this.agency = Agencies.findOne({_id: new Mongo.ObjectID(agency_id)});
@@ -56,6 +57,15 @@ MeatOrderDetails.prototype.getAgencyName = function() {
 };
 MeatOrderDetails.prototype.getAgencyEmail = function() {
     return this.agency.primary_contact_email;
+};
+MeatOrderDetails.prototype.getAgencyPhone = function() {
+    return this.agency.primary_contact_phone;
+};
+MeatOrderDetails.prototype.getAgencyDeliveryInstructions = function() {
+    return this.agency.delivery_instructions;
+};
+MeatOrderDetails.prototype.getAgencyGoogleMapsLink = function() {
+    return this.agency.google_maps_link;
 };
 MeatOrderDetails.prototype.getAgencyId = function() {
     return this.agency._id;
@@ -286,7 +296,7 @@ Template.pendingDelivery.events({
                 // TODO var orderOwner = Meteor.users.findOne({_id: new Mongo.ObjectId(currentObject.owner_id)});
 
 
-                var meatOrderDetails = new MeatOrderDetails(currentRequest.quantity, myItem.quantity_units, currentObject.agency_id, myItem.price, currentObject.owner_id);
+                var meatOrderDetails = new MeatOrderDetails(myItem.name, currentRequest.quantity, myItem.quantity_units, currentObject.agency_id, myItem.price, currentObject.owner_id);
                 var sup = myItem.supplier_id;
 
                 var supplierIndex = allSuppliers.indexOf(sup);
@@ -369,9 +379,9 @@ Template.pendingDelivery.events({
                 var nameOfSupplier = currentSupplier.name;
 
                 var emailToAgencies = [ordersForSuppliersList[i].length];
-                emailString = "emailto: " + emailOfSupplier
-                    + "\nDear " + contactNameOfSupplier + " of " + nameOfSupplier
-                    + "\nOrders:";
+                emailString =
+                    "\nDear " + contactNameOfSupplier + " of " + nameOfSupplier
+                    + "\nHere are this week's orders from local shelters and meal programs via the Loving Spoonful:";
                 var ordersThisWeek = false;
                 for (var j=0; j<ordersForSuppliersList[i].length; j++) {
                     emailToAgencies[j] = ordersForSuppliersList[i][j].getAgencyEmail();
@@ -379,18 +389,29 @@ Template.pendingDelivery.events({
                     ordersThisWeek =true;
                     emailString = emailString + "\n"
                         + (j+1) + ". "
-                        + currentOrder.agency.primary_contact_name + " of " + currentOrder.agency.name
-                        + "\nEmail: " + currentOrder.getAgencyEmail()
-                        + "\nEmailForOrderSubmitter: " + currentOrder.owner_id
+                        + currentOrder.agency.name
+                        + "\n" + currentOrder.agency.primary_contact_name
+                        + ", " + currentOrder.getAgencyEmail()
+                        + ", " + currentOrder.getAgencyPhone()
                         + "\nAmount of " + currentOrder.amount + " " + currentOrder.quantity_units
-                        + "\nFor a cost of $" + currentOrder.amount  * currentOrder.price;
+                        + "= $" + currentOrder.amount  * currentOrder.price
+                        + "\n\nNotes:" + currentOrder.getAgencyDeliveryInstructions();
+                        if (currentOrder.getAgencyGoogleMapsLink() != undefined){
+                            emailString = emailString + "\n" + currentOrder.getAgencyGoogleMapsLink()
+                        }
+                        emailString = emailString + "\n";
 
 
                     var agencyEmail = "Dear " + currentOrder.agency.primary_contact_name + " of " + currentOrder.agency.name
-                        + "\nYour meat order this week is"
+                        + "\nYour " + currentOrder.itemName + " order this week is"
                         + "\nAmount of " + currentOrder.amount + " " + currentOrder.quantity_units
-                        + "\nFor a cost of $" + currentOrder.amount  * currentOrder.price
-                        + ".  Delivery notes: " + currentSupplier.notes;
+                        + "= $" + currentOrder.amount  * currentOrder.price;
+                    if (currentSupplier.notes == undefined) {
+                    }
+                    else {
+                        agencyEmail = agencyEmail + "\nDelivery notes: " + currentSupplier.notes;
+
+                    }
                     Meteor.call('sendEmail',
                         currentOrder.getAgencyEmail(),
                         CTOP_REDIRECT_EMAIL_FOR_TESTING,
@@ -400,6 +421,8 @@ Template.pendingDelivery.events({
                 }
                 if (ordersThisWeek)
                 {
+                    emailString = emailString + "\n\n" + "Thank you for helping get more good food to out Kingston neighbours who need it most!"
+                        + "\n" + "Have questions? Call Lilith Wyatt, Food Access Coordinator, at 613-507-8848 or respond to this email."
                     // This is the email to the suppliers!
                     Meteor.call('sendEmail',
                         emailOfSupplier,

@@ -80,7 +80,6 @@ Orders.helpers({
         return (Math.round(this.requests[index].quantity * 100) / 100).toString();
     },
     orderTotalForItem: function (index) {
-        debugger;
         return (this.requests[index].quantity * this.requests[index].priceAtTime).toString();
 //        return (Math.round(this.requests[index].quantity * this.requests[index].priceAtTime*100/100)).toString();
     },

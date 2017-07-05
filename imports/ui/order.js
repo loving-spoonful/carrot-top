@@ -152,7 +152,7 @@ Template.order.events({
                                         priceAtTime = item.price;
                                     }
                                     result = result - 1;
-                                    debugger;
+
                                     requests.push({
                                          item_id: currentOrder[result]._id._str,
                                          quantity: currentOrder[result].quantity,
