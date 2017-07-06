@@ -255,23 +255,21 @@
                     {{#if isInRole 'volunteer,agency'}}
                         <div class="nav-spacer"></div>
                     {{/if}}
+                {{/if}}
 
+                <a href="#" class="user-item js-user-sign-out">
+                    <span class="wrapper-menu-item">
+                        <i class="material-icons">fullscreen_exit</i><span class="title-menu">Sign Out</span>
+                    </span>
+                </a>
 
-                    <a href="#" class="user-item js-user-sign-out">
-                        <span class="wrapper-menu-item">
-                            <i class="material-icons">fullscreen_exit</i>
-                            <span class="title-menu">Sign Out</span>
-                        </span>
+                {{#if isInRole 'volunteer, agency, admin' and currentUserIsApproved}}
+                    <a href="/help" class="{{activePage 'help'}}">
+                    <span class="wrapper-menu-item">
+                        <i class="material-icons">help</i>
+                        <span class="title-menu">Help!</span>
+                    </span>
                     </a>
-
-                    {{#if isInRole 'volunteer, agency, admin'}}
-                        <a href="/help" class="{{activePage 'help'}}">
-                        <span class="wrapper-menu-item">
-                            <i class="material-icons">help</i>
-                            <span class="title-menu">Help!</span>
-                        </span>
-                        </a>
-                    {{/if}}
                 {{/if}}
             {{else}}
                 <div class="nav-spacer"></div>
