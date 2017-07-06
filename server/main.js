@@ -48,7 +48,7 @@ Meteor.methods({
         this.unblock();
 
 
-        if (CTOP_SEND_REAL_EMAILS != "true") {
+        if (CTOP_SEND_REAL_EMAILS !== true) {
             console.log("CTOP_SEND_REAL_EMAILS is false; sending emails to " + CTOP_REDIRECT_EMAIL_FOR_TESTING + " instead.");
             to = CTOP_REDIRECT_EMAIL_FOR_TESTING;
         }
