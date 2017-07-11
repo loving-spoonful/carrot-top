@@ -250,7 +250,7 @@ Template.order.events({
 		var $orderItem = $(event.target).parents('.list-item').first();
 		var orderItemIndex = parseInt($orderItem.data('index'));
 
-        var sdi = Meteor.commonFunctions.popupModal("Deleting Order", "Are you sure you want to delete this order? You cannot get it back afterwards and would have to reorder.");
+        var sdi = Meteor.commonFunctions.popupModal("Deleting Order", "Are you sure you want to delete this order?  Once deleted, you would have to add it again.");
         var modalPopup = ReactiveModal.initDialog(sdi);
 
         modalPopup.buttons.ok.on('click', function (button) {
@@ -274,7 +274,9 @@ Template.order.events({
 });
 
 Template.registerHelper('returnCost', function (amount, price) {
-    return amount * price;
+    var times100 = (Math.round(amount * price*100)).toString();
+
+    return times100.substr(0, times100.length-2) + '.' + times100.substr(times100.length-2);
 });
 
 Template.order.helpers({

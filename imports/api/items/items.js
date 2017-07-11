@@ -77,11 +77,11 @@ Meteor.methods({
         var castToInt;
         if (updatedCount == 0) {
             castToInt = -1 * Number(i) -1;
-            console.log("reutnring " + castToInt);
+            console.log("returning " + castToInt);
             return castToInt;
         }
         castToInt = Number(i) + 1;
-        console.log("reutnring " + castToInt);
+        console.log("returning " + castToInt);
         return castToInt;
     }
 });

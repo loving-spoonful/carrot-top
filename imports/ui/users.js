@@ -87,7 +87,7 @@ Template.users.events({
                 userObject.emails[0].address,
                 CTOP_REDIRECT_EMAIL_FOR_TESTING,
                 'Approved',
-                'This email is confirming you are approved for Carrottop!');
+                'This email is confirming you are approved for Carrottop!  \nTo sign in, visit carrot.lovingspoonful.org');
 
         });
 

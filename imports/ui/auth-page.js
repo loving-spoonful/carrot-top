@@ -37,7 +37,6 @@ Template.atForm.helpers({
     }
 ,
     showExtraFields: function() {
-        console.log("Showextra");
         return Template.instance().showExtraFields.get();
     }
 });
@@ -57,7 +56,6 @@ Template.atForm.events({
             $('#at-field-desired_agency>option:eq(0)').prop('selected', true);
             $('#at-field-desired_agency').prop("disabled", true);
         }
-        console.log("changed!");
     }
 });
 

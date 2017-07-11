@@ -92,44 +92,17 @@ Template.registerHelper('currentUserIsApproved', function () {
 Template.registerHelper('currentUserIsAgencyInMeatProgram', function () {
 
     var id = Meteor.userId();
-console.log ("id " + id);
     var user = Meteor.users.findOne({_id: id});
-    console.log("user " + user);
+
     var isAdmin = Roles.userIsInRole(id, ['admin','admin'], Roles.GLOBAL_GROUP);
     if (isAdmin) {
     	return true;
 	}
-    var isInAgency = Roles.userIsInRole(id, ['agency','agency'], Roles.GLOBAL_GROUP);
-	console.log("is in agency " + isInAgency);
-//    var userAgency = user.profile.desired_agency;
-//    var user_id = Meteor.userId();
 
     var currentUser = Meteor.users.findOne({_id: id });
-//    console.log ("useragency " + userAgency);
-	var x = new Meteor.Collection.ObjectID(currentUser.profile.desired_agency);
-    console.log ("fred " + currentUser.profile.desired_agency);
-    console.log ("x " + x);
-    //var userAgency = Agencies.find ({name: "Agency1IN"});
+
     var userAgency2 = Agencies.findOne(new Meteor.Collection.ObjectID(currentUser.profile.desired_agency));
-console.log (userAgency2);
-//console.log (Orders.find({}).fetch().count());
-    // .forEach(function(obj){
-    //     print(obj.name)
-    // });
-    // // var alpha;
-    // while (userAgency2.hasNext()) {
-    	// alpha = userAgency2.next();
-    	// console.log (alpha.name);
-	// }
-    //(new Meteor.Collection.ObjectID(currentUser.profile.desired_agency));
-	//(currentUser.profile.desired_agency)});
-    //console.log ("agency " + agency);
-    console.log ("current agenc " + userAgency2);
-    // console.log ("pp "  + userAgency2.purchasing_program);
-    // console.log ("ret val " + (userAgency2.purchasing_program=='M'));
     return (userAgency2.purchasing_program=="M");
-    // return  (Roles.userIsInRole(id, ['admin', 'admin'], Roles.GLOBAL_GROUP))
-    //     || !(Roles.getRolesForUser(id, Roles.GLOBAL_GROUP).length === 0);
 });
 
 Template.registerHelper('inArray', function (s, a){

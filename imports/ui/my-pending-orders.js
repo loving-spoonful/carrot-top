@@ -71,7 +71,7 @@ Template.myPendingOrders.events({
         var orderId = $order.data('id');
 
         //
-        var sdi = Meteor.commonFunctions.popupModal("Deleting Order", "Are you sure you want to delete this order? You cannot get it back afterwards.");
+        var sdi = Meteor.commonFunctions.popupModal("Deleting Order", "Are you sure you want to delete this order?  Once deleted, you would have to add it again.");
         var modalPopup = ReactiveModal.initDialog(sdi);
 
         modalPopup.buttons.ok.on('click', function (button) {
@@ -127,9 +127,8 @@ Template.myPendingOrders.helpers({
 	    return itemObject.name;
 	},
     allAgencies2: function() {
-        var allagencies = Agencies.find({});
-
-        return allagencies;
+        var programParam = FlowRouter.getQueryParam("program");
+        return Agencies.find({purchasing_program: programParam}, {sort: {name: 1}});
     },
 	orders: function () {
         var orderStateParam = FlowRouter.getQueryParam("orderState");
@@ -178,14 +177,14 @@ Template.myPendingOrders.helpers({
                 }
             }
             else {
-                if (agencySelected == ALL) {
+
+                if (agencySelected == undefined) {
                     return Orders.find(
                         {$and:
-
-                        [   {$or: [{completed: false},{completed: null}]}, {sort: {updated_at: -1}},
+                        [   {$or: [{completed: false},{completed: null}]},
                             {purchasing_program: programParam}
-                        ]
-                        });
+                        ]},
+                        {sort: {updated_at: -1}});
                 }
                 else {
                     return Orders.find(

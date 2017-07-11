@@ -80,8 +80,9 @@ Orders.helpers({
         return (Math.round(this.requests[index].quantity * 100) / 100).toString();
     },
     orderTotalForItem: function (index) {
-        return (this.requests[index].quantity * this.requests[index].priceAtTime).toString();
-//        return (Math.round(this.requests[index].quantity * this.requests[index].priceAtTime*100/100)).toString();
+        var times100 = (Math.round(this.requests[index].quantity * this.requests[index].priceAtTime*100)).toString();
+
+        return times100.substr(0, times100.length-2) + '.' + times100.substr(times100.length-2);
     },
 
     orderPriceForItem: function (index) {

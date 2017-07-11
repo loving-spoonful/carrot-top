@@ -248,112 +248,7 @@ Template.pendingDelivery.events({
     'click .js-submit-meat-order': function (event) {
         event.preventDefault();
 
-        var firstTime = true;
-
-        // to do #1 - fetch list of suppliers and add supplierid
-        // this is with push
-        var allSuppliers=[];
-
-        Suppliers.find({purchasing_program: "M"}, {sort: {_id:-1}}).
-        forEach(function(obj){
-            allSuppliers.push(obj._id._str);
-        });
-
-        // to do #2 this will create an array of arrays - will have an
-        // entry for each of the suppliers
-        var ordersForSuppliersList = [];
-        for (var i=0; i< allSuppliers.length; i++) {
-            ordersForSuppliersList[i] = [];
-        }
-
-        var $order = Orders.find({
-            $and: [
-                {
-                    $or: [
-                        { completed: false },
-                        { completed: null }
-                    ]
-                },
-                {
-                    $or: [
-                        { bundled: false },
-                        { bundled: null }
-                    ]
-                },
-                {purchasing_program: "M"}
-            ]
-        }, { sort: { updated_at: -1 } }).forEach(function(currentObject){
-
-            r = currentObject.requests;
-            r.forEach(function(currentRequest) {
-                var itemid = currentRequest.item_id;
-
-                //var meatOrderDetails = new MeatOrderDetails(currentRequest.quantity, currentObject.agency_id);
-                var myagency = Agencies.findOne({_id: new Mongo.ObjectID(currentObject.agency_id)});
-
-                var myItem = Items.findOne({_id: new Mongo.ObjectID(currentRequest.item_id)});
-                //ebugger;
-                // TODO var orderOwner = Meteor.users.findOne({_id: new Mongo.ObjectId(currentObject.owner_id)});
-
-
-                var meatOrderDetails = new MeatOrderDetails(myItem.name, currentRequest.quantity, myItem.quantity_units, currentObject.agency_id, myItem.price, currentObject.owner_id);
-                var sup = myItem.supplier_id;
-
-                var supplierIndex = allSuppliers.indexOf(sup);
-
-                // let's see if an agency submitted more than 1 order for a particular meat product
-
-                var foundMatch = false;
-                for (var i=0; i < ordersForSuppliersList[supplierIndex].length; i++) {
-                    var w = ordersForSuppliersList[supplierIndex][i];
-                    if (w.getAgencyId()._str == currentObject.agency_id) {
-                        w.incrementAmount(currentRequest.quantity);
-                        foundMatch = true;
-
-                    }
-                }
-
-                if (foundMatch == false) {
-                    ordersForSuppliersList[supplierIndex].push(meatOrderDetails);
-                }
-
-            });
-
-            if (firstTime) {
-                OrderBundles.insert({
-                    order_ids: [currentObject._id._str],
-                    owner_id: Meteor.userId(),
-                    completed: false,
-                    purchasing_program: "M",
-                    created_at: Date.now(),
-                    updated_at: Date.now()
-                });
-                firstTime = false;
-            }
-            else {
-                var existingBundle = OrderBundles.findOne({ owner_id: Meteor.userId(), completed: false, purchasing_program: "M" });
-                OrderBundles.update({
-                    _id: new Mongo.ObjectID(existingBundle._id._str)
-                }, {
-                    $push: { order_ids: currentObject._id._str },
-                    // $set: { updated_at: Date.now() }
-                    $set: { updated_at: Date.now(), completed: true }
-                });
-
-            }
-            Orders.update({ _id: (currentObject._id) }, {
-                $set: {
-                    completed_by_id: Meteor.userId(),
-                    completed: true,
-                    bundled: true,
-                    updated_at: Date.now()
-                }
-            });
-        })
-
-        var emailString = [allSuppliers.length];
-
-
+        var $ordersOnPage = $(event.target).parents('.list-order').first();
 
         //modal
         var sdi = Meteor.commonFunctions.popupModal("Submit Meat Order", "Is it already monday at noon?  If you are ready, click ok to submit meat orders to the suppliers.");
@@ -364,13 +259,111 @@ Template.pendingDelivery.events({
             // what needs to be done after click ok.
             sAlert.info ("Submitting meat orders!");
 
-            // $order.slideUp(150, function () {
-            //     // When finished sliding
-            //
-            //
-            //
-            //     $(this).remove();
-            // });
+            var firstTime = true;
+
+            // to do #1 - fetch list of suppliers and add supplierid
+            // this is with push
+            var allSuppliers=[];
+
+            Suppliers.find({purchasing_program: "M"}, {sort: {_id:-1}}).
+            forEach(function(obj){
+                allSuppliers.push(obj._id._str);
+            });
+
+            // to do #2 this will create an array of arrays - will have an
+            // entry for each of the suppliers
+            var ordersForSuppliersList = [];
+            for (var i=0; i< allSuppliers.length; i++) {
+                ordersForSuppliersList[i] = [];
+            }
+
+            var $order = Orders.find({
+                $and: [
+                    {
+                        $or: [
+                            { completed: false },
+                            { completed: null }
+                        ]
+                    },
+                    {
+                        $or: [
+                            { bundled: false },
+                            { bundled: null }
+                        ]
+                    },
+                    {purchasing_program: "M"}
+                ]
+            }, { sort: { updated_at: -1 } }).forEach(function(currentObject){
+
+                r = currentObject.requests;
+                r.forEach(function(currentRequest) {
+                    var itemid = currentRequest.item_id;
+
+                    //var meatOrderDetails = new MeatOrderDetails(currentRequest.quantity, currentObject.agency_id);
+                    var myagency = Agencies.findOne({_id: new Mongo.ObjectID(currentObject.agency_id)});
+
+                    var myItem = Items.findOne({_id: new Mongo.ObjectID(currentRequest.item_id)});
+                    //ebugger;
+                    // TODO var orderOwner = Meteor.users.findOne({_id: new Mongo.ObjectId(currentObject.owner_id)});
+
+
+                    var meatOrderDetails = new MeatOrderDetails(myItem.name, currentRequest.quantity, myItem.quantity_units, currentObject.agency_id, myItem.price, currentObject.owner_id);
+                    var sup = myItem.supplier_id;
+
+                    var supplierIndex = allSuppliers.indexOf(sup);
+
+                    // let's see if an agency submitted more than 1 order for a particular meat product
+
+                    var foundMatch = false;
+                    for (var i=0; i < ordersForSuppliersList[supplierIndex].length; i++) {
+                        var w = ordersForSuppliersList[supplierIndex][i];
+                        if (w.getAgencyId()._str == currentObject.agency_id) {
+                            w.incrementAmount(currentRequest.quantity);
+                            foundMatch = true;
+
+                        }
+                    }
+
+                    if (foundMatch == false) {
+                        ordersForSuppliersList[supplierIndex].push(meatOrderDetails);
+                    }
+
+                });
+
+                if (firstTime) {
+                    OrderBundles.insert({
+                        order_ids: [currentObject._id._str],
+                        owner_id: Meteor.userId(),
+                        completed: false,
+                        purchasing_program: "M",
+                        created_at: Date.now(),
+                        updated_at: Date.now()
+                    });
+                    firstTime = false;
+                }
+                else {
+                    var existingBundle = OrderBundles.findOne({ owner_id: Meteor.userId(), completed: false, purchasing_program: "M" });
+                    OrderBundles.update({
+                        _id: new Mongo.ObjectID(existingBundle._id._str)
+                    }, {
+                        $push: { order_ids: currentObject._id._str },
+                        // $set: { updated_at: Date.now() }
+                        $set: { updated_at: Date.now(), completed: true }
+                    });
+
+                }
+                Orders.update({ _id: (currentObject._id) }, {
+                    $set: {
+                        completed_by_id: Meteor.userId(),
+                        completed: true,
+                        bundled: true,
+                        updated_at: Date.now()
+                    }
+                });
+            })
+
+            var emailString = [allSuppliers.length];
+
             for (var i =0; i <allSuppliers.length; i++) {
                 //ebugger;
                 var currentSupplier = Suppliers.findOne({_id: new Mongo.ObjectID(allSuppliers[i])});
@@ -396,10 +389,10 @@ Template.pendingDelivery.events({
                         + "\nAmount of " + currentOrder.amount + " " + currentOrder.quantity_units
                         + "= $" + currentOrder.amount  * currentOrder.price
                         + "\n\nNotes:" + currentOrder.getAgencyDeliveryInstructions();
-                        if (currentOrder.getAgencyGoogleMapsLink() != undefined){
-                            emailString = emailString + "\n" + currentOrder.getAgencyGoogleMapsLink()
-                        }
-                        emailString = emailString + "\n";
+                    if (currentOrder.getAgencyGoogleMapsLink() != undefined){
+                        emailString = emailString + "\n" + currentOrder.getAgencyGoogleMapsLink()
+                    }
+                    emailString = emailString + "\n";
 
 
                     var agencyEmail = "Dear " + currentOrder.agency.primary_contact_name + " of " + currentOrder.agency.name
@@ -440,6 +433,13 @@ Template.pendingDelivery.events({
                         emailString + "\nNo orders this week!");
                 }
             }
+
+            $ordersOnPage.slideUp(150, function () {
+                // When finished sliding
+
+                $(this).remove();
+            });
+
         });
         modalPopup.show();
         //modal

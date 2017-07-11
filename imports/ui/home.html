@@ -15,7 +15,8 @@
                     <a href="/pending-delivery" class="btn-primary js-make-deliveries">Make Some Deliveries!</a>
                 {{/if}}
                 {{#if isInRole 'agency'}}
-                    <a href="/order" class="btn-primary js-place-order">Place An Order Now!</a>
+                    <a href="/orderMeat?program=M" class="btn-primary js-buy-meat">Buy Meat Now!</a>
+                    <!--<a href="/order" class="btn-primary js-place-order">Place An Order Now!</a>-->
                 {{/if}}
             {{else}}
                 <a href="/signin" class="btn-primary js-sign-in">Sign in for fresh food!</a>

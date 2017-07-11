@@ -84,7 +84,7 @@ Template.addItemOverlay.events({
             var inventoryId = Items.findOne({name: itemName}, {fields: {_id: 1}});
             var inventoryName = Items.findOne({name: itemName});
 			if (Id) {
-				if (Id == inventoryId._id) {
+				if ((inventoryId == undefined) || (Id == inventoryId)) {
 					Items.update ({ _id: new Mongo.ObjectID(Id) },
 						{ $set:
 							{

@@ -33,8 +33,8 @@ Meteor.startup(() => {
     // code to run on server at startup
     process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
     // set up connection info for sending email
-//    process.env.MAIL_URL = "smtp://" + CTOP_EMAIL_ACCOUNT + ":" + CTOP_EMAIL_PASSWORD + "@smtp.gmail.com:587/";
-process.env.MAIL_URL = "smtps://" + CTOP_EMAIL_ACCOUNT + ":" + CTOP_EMAIL_PASSWORD + "@in-v3.mailjet.com:465/";
+    //    process.env.MAIL_URL = "smtp://" + CTOP_EMAIL_ACCOUNT + ":" + CTOP_EMAIL_PASSWORD + "@smtp.gmail.com:587/";
+    process.env.MAIL_URL = "smtps://" + CTOP_EMAIL_ACCOUNT + ":" + CTOP_EMAIL_PASSWORD + "@" + CTOP_SMTP_SERVER + ":" + CTOP_SMTP_PORT + "/";
 
 Meteor.methods({
     // the server side methods
@@ -48,20 +48,22 @@ Meteor.methods({
         this.unblock();
 
 
-        if (CTOP_SEND_REAL_EMAILS !== true) {
-            console.log("CTOP_SEND_REAL_EMAILS is false; sending emails to " + CTOP_REDIRECT_EMAIL_FOR_TESTING + " instead.");
-            to = CTOP_REDIRECT_EMAIL_FOR_TESTING;
+
+        if (Boolean(CTOP_SEND_REAL_EMAILS)) {
+            console.log("CTOP_SEND_REAL_EMAILS is true - sending real emails!");
         }
         else {
-            console.log("For right now, redirect anyways - fix before prod");
+            console.log("CTOP_SEND_REAL_EMAILS is false; sending emails to " + CTOP_REDIRECT_EMAIL_FOR_TESTING + " instead.");
             subject = subject + ".  Would have sent to " + to;
-            to = "mike__porter@hotmail.com";
+            to = "ekim.retrop@gmail.com";
+
         }
+
+        // at least initially, have all emails also get sent to food@lovingspoonful.org
         var toUsers = [];
-        // change this - just for the first demo mcpmcp
         toUsers.push (to);
         toUsers.push ("food@lovingspoonful.org");
-        //carrot.lovingspoonful.org@gmail.com");
+
 
         Email.send({
             to: toUsers,
@@ -187,7 +189,7 @@ if (Meteor.isServer) {
     Meteor.methods({
         getServerTime2: function () {
             var _time = (new Date).toTimeString();
-            console.log(_time);
+
             return _time;
         },
         getAgenciesList: function () {
