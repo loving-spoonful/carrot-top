@@ -12,6 +12,9 @@ Template.atForm.onCreated(function bodyOnCreated() {
 
     Template.atForm.onRendered(function () {
         waitForRegistrationScreen = Meteor.setInterval(function () {
+            $('#at-field-desired_agency').css('visibility', 'hidden');
+
+
             // Keep checking if registration is shown
             if (AccountsTemplates.getState() == 'signUp') {
                 // If it is shown, and select is empty, populate it
@@ -46,15 +49,16 @@ Template.atForm.events({
     'change #at-field-desired_role': function (event, template) {
         var currentTarget = event.currentTarget;
 
-        var xx = template.find('#at-field-desired_role').value;
+        var selectedRole = template.find('#at-field-desired_role').value;
         //template.showExtraFields.set( true );
-        if (xx == 'agency') {
+        if (selectedRole == 'agency') {
             $('#at-field-desired_agency').prop("disabled", false);
+            $('#at-field-desired_agency').css('visibility', 'visible');
         }
         else {
-            //$('#at-field-desired_agency'). ("SELECT");
             $('#at-field-desired_agency>option:eq(0)').prop('selected', true);
             $('#at-field-desired_agency').prop("disabled", true);
+            $('#at-field-desired_agency').css('visibility', 'hidden');
         }
     }
 });
@@ -66,6 +70,7 @@ Template.wrappedSelect2.onCreated (function bodyOnCreated() {
 Template.authPage.onCreated(function bodyOnCreated() {
 	this.state = new ReactiveDict();
     Meteor.subscribe('Agencies');
+
 
 });
 

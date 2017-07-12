@@ -407,7 +407,7 @@ Template.pendingDelivery.events({
                     }
                     Meteor.call('sendEmail',
                         currentOrder.getAgencyEmail(),
-                        CTOP_REDIRECT_EMAIL_FOR_TESTING,
+                        CTOP_SMTP_SENDING_EMAIL_ACCOUNT,
                         'Meat Order',
                         agencyEmail);
 
@@ -419,7 +419,7 @@ Template.pendingDelivery.events({
                     // This is the email to the suppliers!
                     Meteor.call('sendEmail',
                         emailOfSupplier,
-                        CTOP_REDIRECT_EMAIL_FOR_TESTING,
+                        CTOP_SMTP_SENDING_EMAIL_ACCOUNT,
                         'Meat Order',
                         emailString);
                 }
@@ -428,7 +428,7 @@ Template.pendingDelivery.events({
                     // This is the email to the suppliers!
                     Meteor.call('sendEmail',
                         emailOfSupplier,
-                        CTOP_REDIRECT_EMAIL_FOR_TESTING,
+                        CTOP_SMTP_SENDING_EMAIL_ACCOUNT,
                         'Meat Order',
                         emailString + "\nNo orders this week!");
                 }

@@ -1,8 +1,8 @@
 <template name="addItemToOrderOverlay">
 	<div class="overlay add-item-to-order">
 		<a href="#" class="js-close-overlay overlay-dismiss"><span class="icon-close"></span></a>
-        
-        <div class="title-page">Add Item to Order</div>
+
+        <div class="title-page">Add Item to Order/Update</div>
         <a href="#" class="js-close-overlay overlay-dismiss"><span class="icon-cross"></span></a>
 
 		<form class="form-add-to-order">
@@ -19,12 +19,12 @@
 					{{/each}}
 				</select>
 
-                    <select name="item-quantity" id="item-quantity" required>
-                        <option disabled selected value="">#</option>
-                        {{#each intervals}}
-                            <option value="{{numerical}}">{{text}}</option>
-                        {{/each}}
-                    </select>
+                <select name="item-quantity" id="item-quantity" required>
+                    <option disabled selected value="">#</option>
+                    {{#each intervals}}
+                        <option value="{{numerical}}">{{text}}</option>
+                    {{/each}}
+                </select>
 
                 <hr>
 

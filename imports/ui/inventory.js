@@ -85,6 +85,15 @@ Template.inventory.events({
 });
 
 Template.inventory.helpers({
+    title: function () {
+        var programParam = FlowRouter.getQueryParam("type");
+        if (programParam == 'M') {
+            return 'Meat Program';
+        }
+        else {
+            return 'In Storage';
+        }
+    },
 	items() {
         var typeParam = FlowRouter.getQueryParam("type");
 		return Items.find({purchasing_program: typeParam}, { sort: { purchasing_program: -1, name: 1 } });

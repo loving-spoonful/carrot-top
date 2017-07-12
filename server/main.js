@@ -55,7 +55,7 @@ Meteor.methods({
         else {
             console.log("CTOP_SEND_REAL_EMAILS is false; sending emails to " + CTOP_REDIRECT_EMAIL_FOR_TESTING + " instead.");
             subject = subject + ".  Would have sent to " + to;
-            to = "ekim.retrop@gmail.com";
+            to = CTOP_REDIRECT_EMAIL_FOR_TESTING;
 
         }
 

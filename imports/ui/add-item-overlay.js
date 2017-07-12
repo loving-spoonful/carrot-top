@@ -66,8 +66,18 @@ Template.addItemOverlay.events({
 		const itemOrderMaximum = parseFloat(target['item-order-maximum'].value.trim());
 		const itemOrderIncrement = parseFloat(target['item-order-increment'].value.trim());
 		const itemCategory = target['item-category'].value.trim();
-		const supplierId = target['item-supplier-id'].value.trim();
-        const price = target['price'].value.trim();
+		var supplierId;
+        var price;
+
+		if (target['item-supplier-id'] == undefined) {
+            supplierId = null;
+            price = null;
+        }
+        else {
+            supplierId = target['item-supplier-id'].value.trim();
+            price = target['price'].value.trim();
+
+        }
 
 		if (itemOrderMinimum > itemOrderMaximum) {
             sAlert.warning('The maximum must be greater than the minimum. Correct and save again.');
@@ -84,7 +94,8 @@ Template.addItemOverlay.events({
             var inventoryId = Items.findOne({name: itemName}, {fields: {_id: 1}});
             var inventoryName = Items.findOne({name: itemName});
 			if (Id) {
-				if ((inventoryId == undefined) || (Id == inventoryId)) {
+
+				if ((inventoryId == undefined) || (Id == inventoryId._id._str)) {
 					Items.update ({ _id: new Mongo.ObjectID(Id) },
 						{ $set:
 							{

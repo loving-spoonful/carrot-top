@@ -34,7 +34,7 @@ Items.schema = new SimpleSchema({
         type: String,
         defaultValue: 'N'
     },
-    supplier_id: {type: String},
+    supplier_id: {type: String, optional: true},
     price: {type: Number, decimal:true, optional: true},
 
 });

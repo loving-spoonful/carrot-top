@@ -19,6 +19,8 @@ var getIntervalsForItem = function (id) {
 		});
 	}
 
+
+
 	return intervals;
 };
 
@@ -65,8 +67,8 @@ Template.addItemToOrderOverlay.rendered = function() {
         $('textarea[name="instructions"]').val(orderItemObject.instructions);
 
        Template.instance().state.set(ITEM_INTERVALS_KEY, getIntervalsForItem(orderItemObject._id._str));
-
-       $('select[name="item-quantity"]').val(orderItemObject.quantity);
+debugger;
+        $('select[name="item-quantity"]').val(orderItemObject.quantity);
         $('select[name="item-type"]').disabled=true;
 
         $('button[name="addItemToOrder"]').text("Save");
@@ -159,6 +161,9 @@ Template.addItemToOrderOverlay.helpers({
     isProduce() {
         var purchasing_program = Session.get("overlayData");
         return (purchasing_program != "M");
+    },
+    title() {
+	    return "GARGE";
     },
 	intervals() {
 		return Template.instance().state.get(ITEM_INTERVALS_KEY);

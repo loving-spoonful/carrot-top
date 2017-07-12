@@ -2,11 +2,7 @@
 	<div class="overlay add-item ">
 		<a href="#" class="js-close-overlay overlay-dismiss"><span class="icon-close"></span></a>
 		<div class="title-page">
-                {{#if _id}}
-                    Update Item
-                {{else}}
-                    Add Item
-                {{/if}}
+                Add/Update Item
         </div>
 
 		<form class="form-add-item">
@@ -45,17 +41,18 @@
                     {{/each}}
 				</select>
 
-                <label for="item-supplier">Item Supplier</label>
-                <select name="item-supplier-id" id="item-supplier" required>
-                    <option value="" disabled selected>Select A Supplier...</option>
-                    {{#each suppliers}}
-                        <option value="{{_id._str}}">{{name}}</option>
-                    {{/each}}
-                </select>
+                {{#unless isVeggies}}
+                    <label for="item-supplier">Item Supplier</label>
+                    <select name="item-supplier-id" id="item-supplier" required>
+                        <option value="" disabled selected>Select A Supplier...</option>
+                        {{#each suppliers}}
+                            <option value="{{_id._str}}">{{name}}</option>
+                        {{/each}}
+                    </select>
 
-                <label for="price">Price</label>
-                <input type="text" name="price" id="price" placeholder="1">
-
+                    <label for="price">Price</label>
+                    <input type="text" name="price" id="price" placeholder="1">
+                {{/unless}}
 
                 <button class="btn-primary2" type="submit" name="inventory_save_btn" id="inventory_save_btn">Add</button>
             </div>

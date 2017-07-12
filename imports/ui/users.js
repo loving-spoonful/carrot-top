@@ -85,7 +85,7 @@ Template.users.events({
 
             Meteor.call('sendEmail',
                 userObject.emails[0].address,
-                CTOP_REDIRECT_EMAIL_FOR_TESTING,
+                CTOP_SMTP_SENDING_EMAIL_ACCOUNT,
                 'Approved',
                 'This email is confirming you are approved for Carrottop!  \nTo sign in, visit carrot.lovingspoonful.org');
 

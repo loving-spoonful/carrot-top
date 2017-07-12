@@ -1,6 +1,6 @@
 <template name="inventory">
 	<div class="page inventory">
-		{{#nav title='In Storage' black=false}}
+		{{#nav title=title black=false}}
             {{#if userInRole 'admin'}}
                     <!-- only if logged in as a admin -->
                     <a href="#" class="nav-item js-add-item"><span class="icon-add"></span></a>
