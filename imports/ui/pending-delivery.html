@@ -6,10 +6,10 @@
                 {{#if isNotMeat}}
                     {{#if isInRole 'admin'}}
                         <h3 class="no-items-message">
-                            <label for="assignVolunteer">Assign a delivery volunter</label>
+                            <label for="assignVolunteer">Assign a delivery volunteer</label>
                             <select name="assignVolunteer" id="assignVolunteer" >
                                 <option disabled selected value="">Select Volunteer To Assign</option>
-                                {{#each allVolunteers2}}
+                                {{#each allVolunteerList}}
                                     <option value="{{_id}}">{{profile.name}} - {{firstLetter profile.desired_role}}</option>
                                 {{/each}}
                             </select>
@@ -27,8 +27,10 @@
                                             <a href="#" title="Take responsibility for order" class="js-take-responsibility"><span class="icon-take-responsibility"></span></a>
                                         {{/if}}
                                     {{/if}}
-                                    {{#if userInRole 'volunteer'}}
-                                        <a href="#" title="Add notes to order" class="js-add-notes-to-order"><span class="icon-add-notes-to-order"></span></a>
+                                    {{#if isNotMeat}}
+                                        {{#if userInRole 'volunteer'}}
+                                            <a href="#" title="Add notes to order" class="js-add-notes-to-order"><span class="icon-add-notes-to-order"></span></a>
+                                        {{/if}}
                                     {{/if}}
                                     {{#if isNotMeat}}
                                         {{#if isInRole 'admin'}}

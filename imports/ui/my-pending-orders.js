@@ -51,8 +51,8 @@ Template.myPendingOrders.onCreated(function bodyOnCreated() {
 var agencySelected;
 Template.myPendingOrders.events({
     'change #orderAsAgency': function (event) {
-        event.preventDefault();
 
+        event.preventDefault();
         var justID=event.target.value.split("\"");
         if ((agencySelected == undefined) && (justID[1] != undefined)) {
             agencySelected = justID[1];
@@ -202,6 +202,7 @@ Template.myPendingOrders.helpers({
             return true;
         return false;
     },
+
     orderTitle() {
         var orderStateParam = FlowRouter.getQueryParam("orderState");
         var programParam = FlowRouter.getQueryParam("program");

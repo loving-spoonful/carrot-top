@@ -99,6 +99,15 @@ Template.editUserOverlay.events({
 Template.editUserOverlay.helpers({
     AgencyList() {
         return Agencies.find({}, {sort: {name: 1}});
+    },
+    isAgency() {
+
+        var Id = Session.get('currentOverlayID');
+        if (Id == undefined) {
+            return false;
+        }
+        var userObject = Meteor.users.findOne({_id: Id});
+        return (userObject.profile.desired_role == "agency");
     }
 
 });

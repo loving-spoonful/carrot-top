@@ -142,6 +142,22 @@ Template.myPendingDeliveries.events({
                     OrderBundles.update({ _id: orderBundle._id }, { $set: { completed: true,  updated_at: Date.now() }});
 
                 }
+
+
+                // let's send an email to the agency to let them know the order is coming!
+                var thisOrder = Orders.findOne({ _id: new Mongo.ObjectID(orderId) });
+                console.log("thisOrder " + thisOrder);
+                var orderAgency = Agencies.findOne({_id: new Mongo.ObjectID(thisOrder.agency_id) });
+                console.log("two orderagencyone " + orderAgency);
+                var agencyEmail = orderAgency.primary_contact_email;
+                console.log(" agencyEmail " + agencyEmail);
+                var emailText = "One of our carrot top deliverers has prepared your order and will be delivering soon.  For details, please visit carrot.lovingspoonful.org.";
+                Meteor.call('sendEmail',
+                    agencyEmail,
+                    CTOP_SMTP_SENDING_EMAIL_ACCOUNT,
+                    'Delivering soon!',
+                    emailText);
+
                 $(this).remove();
             });
 
@@ -280,19 +296,17 @@ Template.myPendingDeliveries.helpers({
     },
     getEmail: function (Id) {
         var itemObject;
-        //= Agencies.findOne({_id: Id });
         itemObject = Agencies.findOne({_id: new Mongo.ObjectID(Id) });
         return itemObject.name;
     },
     getGoogleMapsLink: function (Id) {
-
         var order = Orders.findOne({ _id: Id});
         var agencyForOrder = Agencies.findOne({_id: new Mongo.ObjectID(order.agency_id)});
 
         return agencyForOrder.google_maps_link;
 
     },
-    deliveryState: function () {
+    deliveryCompleted: function () {
         var params = FlowRouter.getQueryParam("deliveryState");
 
         if (params == 'completed') {

@@ -25,13 +25,15 @@
                     <option value="admin">Administrator</option>
                 </select>
 
-                <label for="agency">Agency</label>
-                <select name="agency" id="agency">
-                    <option value="" disabled selected>--- Please Select An Agency ---</option>
-                    {{#each AgencyList}}
-                        <option value="{{_id._str}}">{{name}}</option>
-                    {{/each}}
-                </select>
+                {{#if isAgency}}
+                    <label for="agency">Agency</label>
+                    <select name="agency" id="agency">
+                        <option value="" disabled selected>--- Please Select An Agency ---</option>
+                        {{#each AgencyList}}
+                            <option value="{{_id._str}}">{{name}}</option>
+                        {{/each}}
+                    </select>
+                {{/if}}
 
                 <label for="robot_id">Robot ID</label>
                 <input type="text" name="robot_id" id="robot_id">

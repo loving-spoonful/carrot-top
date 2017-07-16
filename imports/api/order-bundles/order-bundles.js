@@ -55,5 +55,18 @@ OrderBundles.helpers({
             {completed: false}
             ]});
 
+    },
+    orderObjectsCompleted: function () {
+        var order_id_objects = [];
+        for (var i in this.order_ids) {
+            if (this.order_ids.hasOwnProperty(i)) {
+                order_id_objects.push(new Mongo.ObjectID(this.order_ids[i]));
+            }
+        }
+        return Orders.find({$and: [
+            {_id: {$in: order_id_objects}},
+            {completed: true}
+        ]});
+
     }
 });

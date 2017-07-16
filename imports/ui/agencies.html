@@ -14,8 +14,8 @@
                         <li class="list-item" data-id="{{_id._str}}">
                             <div class="item-title">{{name}}</div>
                             {{#if userInRole 'admin'}}
-                                <a href="#" class="js-delete-agency"><i class="material-icons">delete</i></a>
-                                <a href="#" class="js-edit-agency"><i class="material-icons">mode_edit</i></a>
+                                <a href="#" class="js-delete-agency"><i class="material-icons" title="Delete this agency">delete</i></a>
+                                <a href="#" class="js-edit-agency"><i class="material-icons" title="Edit agency details">mode_edit</i></a>
                             {{/if}}
                         </li>
                     {{/each}}

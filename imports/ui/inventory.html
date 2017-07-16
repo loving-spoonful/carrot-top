@@ -13,8 +13,8 @@
                         <li class="list-item" data-id="{{_id._str}}" data-editing="false">
                             <div class="item-title">{{name}}</div>
                             {{#if userInRole 'admin'}}
-                                <a href="#" class="js-delete-item"><i class="material-icons">delete</i></a>
-                                <a href="#" class="js-edit-item"><i class="material-icons">mode_edit</i></a>
+                                <a href="#" class="js-delete-item"><i class="material-icons" title="Delete inventory item">delete</i></a>
+                                <a href="#" class="js-edit-item"><i class="material-icons" title="Edit inventory details">mode_edit</i></a>
                             {{/if}}
 
                             {{#if isVeggies}}

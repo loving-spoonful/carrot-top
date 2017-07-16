@@ -26,7 +26,7 @@
 
                 {{#if isInRole 'volunteer, admin'}}
                     <h3 class="no-items-message">
-                        <label for="orderAsAgency">Select an Agency to Order for</label>
+                        <label for="orderAsAgency">Select an Agency</label>
                         <select name="orderAsAgency" id="orderAsAgency" >
                             <option disabled selected value="">Select Agency To View</option>
                             <option value="All">All</option>
@@ -44,7 +44,7 @@
                             <div class="order-details">
                                 <div style="overflow: hidden;">
                                     {{#unless bundled}}
-                                        <a href="#" class="js-cancel-order"><span class="icon-close"></span></a>
+                                        <a href="#" class="js-cancel-order"><span class="icon-close" title="Cancel Order"></span></a>
                                     {{/unless}}
                                     <div class="order-title">Order from {{getEmail agency_id}}</div>
                                     <div class="order-title"> by {{owner.emails.[0].address}}</div>
@@ -69,7 +69,7 @@
                                             {{#if isProduce}}
                                                 {{../orderQuantityForItem @index}} {{quantity_units}}
                                             {{else}}
-                                                {{../orderQuantityForItem @index}} {{quantity_units}} @ ${{price}} =${{../orderTotalForItem @index}}
+                                                {{../orderQuantityForItem @index}} {{quantity_units}} @ ${{../orderPriceForItem @index}} =${{../orderTotalForItem @index}}
                                             {{/if}}
                                         </div>
 

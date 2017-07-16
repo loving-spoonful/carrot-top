@@ -89,6 +89,7 @@ Orders.helpers({
         if (this.purchasing_program == 'M') {
             return (this.requests[index].priceAtTime).toString();
         }
+
     },
 
     orderInstructionsForItem: function (index) {

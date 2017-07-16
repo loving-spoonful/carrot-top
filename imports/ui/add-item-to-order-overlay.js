@@ -67,7 +67,7 @@ Template.addItemToOrderOverlay.rendered = function() {
         $('textarea[name="instructions"]').val(orderItemObject.instructions);
 
        Template.instance().state.set(ITEM_INTERVALS_KEY, getIntervalsForItem(orderItemObject._id._str));
-debugger;
+
         $('select[name="item-quantity"]').val(orderItemObject.quantity);
         $('select[name="item-type"]').disabled=true;
 
@@ -164,6 +164,11 @@ Template.addItemToOrderOverlay.helpers({
     },
     title() {
 	    return "GARGE";
+    },
+    getFormattedCurrency(value) {
+        var times100 = (Math.round(value * 100)).toString();
+
+        return times100.substr(0, times100.length-2) + '.' + times100.substr(times100.length-2);
     },
 	intervals() {
 		return Template.instance().state.get(ITEM_INTERVALS_KEY);

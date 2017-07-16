@@ -36,6 +36,12 @@ Template.pendingDelivery.onCreated(function bodyOnCreated() {
     Meteor.subscribe('Suppliers');
 });
 
+function getFormattedCurrency(amount, price) {
+    var times100 = (Math.round(amount * price * 100)).toString();
+
+    return times100.substr(0, times100.length-2) + '.' + times100.substr(times100.length-2);
+}
+
 function MeatOrderDetails (itemName, amount, quantity_units, agency_id, price, submitterEmail) {
     this.itemName = itemName;
     this.amount = amount;
@@ -129,6 +135,10 @@ Template.pendingDelivery.events({
     'click .js-assign-order': function (event) {
         event.preventDefault();
 
+        if (assignedVolunteer == undefined) {
+            sAlert.info ("Please select a volunteer to assign to this order");
+            return;
+        }
         // modal
         var sdi = Meteor.commonFunctions.popupModal("Assigning Order", "Are you sure you want to assign this order?");
         var modalPopup = ReactiveModal.initDialog(sdi);
@@ -172,6 +182,15 @@ Template.pendingDelivery.events({
                 // When finished sliding
 
             Orders.update({ _id: new Mongo.ObjectID(orderId) }, { $set: { bundled: true, updated_at: Date.now() } });
+
+            // let's send an email to the volunteer to let them know they were assigned a delivery
+            var volunteer = Meteor.users.findOne({_id: assignedVolunteer});
+            var emailText = "You have been assigned a delivery!  Please log in to carrot.lovingspoonful.org.";
+            Meteor.call('sendEmail',
+                volunteer.emails[0].address,
+                CTOP_SMTP_SENDING_EMAIL_ACCOUNT,
+                'Assigned a delivery',
+                emailText);
             $(this).remove();
             });
 
@@ -307,7 +326,7 @@ Template.pendingDelivery.events({
                     // TODO var orderOwner = Meteor.users.findOne({_id: new Mongo.ObjectId(currentObject.owner_id)});
 
 
-                    var meatOrderDetails = new MeatOrderDetails(myItem.name, currentRequest.quantity, myItem.quantity_units, currentObject.agency_id, myItem.price, currentObject.owner_id);
+                    var meatOrderDetails = new MeatOrderDetails(myItem.name, currentRequest.quantity, myItem.quantity_units, currentObject.agency_id, currentRequest.priceAtTime, currentObject.owner_id);
                     var sup = myItem.supplier_id;
 
                     var supplierIndex = allSuppliers.indexOf(sup);
@@ -387,7 +406,7 @@ Template.pendingDelivery.events({
                         + ", " + currentOrder.getAgencyEmail()
                         + ", " + currentOrder.getAgencyPhone()
                         + "\nAmount of " + currentOrder.amount + " " + currentOrder.quantity_units
-                        + "= $" + currentOrder.amount  * currentOrder.price
+                        + "= $" + getFormattedCurrency(currentOrder.amount, currentOrder.price)
                         + "\n\nNotes:" + currentOrder.getAgencyDeliveryInstructions();
                     if (currentOrder.getAgencyGoogleMapsLink() != undefined){
                         emailString = emailString + "\n" + currentOrder.getAgencyGoogleMapsLink()
@@ -398,7 +417,7 @@ Template.pendingDelivery.events({
                     var agencyEmail = "Dear " + currentOrder.agency.primary_contact_name + " of " + currentOrder.agency.name
                         + "\nYour " + currentOrder.itemName + " order this week is"
                         + "\nAmount of " + currentOrder.amount + " " + currentOrder.quantity_units
-                        + "= $" + currentOrder.amount  * currentOrder.price;
+                        + "= $" + getFormattedCurrency(currentOrder.amount, currentOrder.price);
                     if (currentSupplier.notes == undefined) {
                     }
                     else {
@@ -474,6 +493,8 @@ Template.pendingDelivery.events({
                     }
                 });
 
+
+
                 $(this).remove();
             });
 
@@ -497,7 +518,7 @@ Template.pendingDelivery.helpers({
     },
 
     // TODO: seemed to need to name this different than the other allVolunteers function.  revisit
-    allVolunteers2: function() {
+    allVolunteerList: function() {
 
         var allv = Meteor.users.find(
             {
