@@ -77,6 +77,14 @@ MeatOrderDetails.prototype.getAgencyId = function() {
     return this.agency._id;
 };
 
+function compareMeatOrders(a,b) {
+    if (a.getAgencyId < b.getAgencyId)
+        return -1;
+    if (a.getAgencyId > b.getAgencyId)
+        return 1;
+    return 0;
+};
+
 var assignedVolunteer;
 Template.pendingDelivery.events({
     'change #assignVolunteer': function (event) {
@@ -336,7 +344,7 @@ Template.pendingDelivery.events({
                     var foundMatch = false;
                     for (var i=0; i < ordersForSuppliersList[supplierIndex].length; i++) {
                         var w = ordersForSuppliersList[supplierIndex][i];
-                        if (w.getAgencyId()._str == currentObject.agency_id) {
+                        if ((w.getAgencyId()._str == currentObject.agency_id) &&  (w.itemName == myItem.name)) {
                             w.incrementAmount(currentRequest.quantity);
                             foundMatch = true;
 
@@ -381,13 +389,15 @@ Template.pendingDelivery.events({
                 });
             })
 
+            debugger;
+            ordersForSuppliersList.sort(compareMeatOrders);
             var emailString = [allSuppliers.length];
 
             for (var i =0; i <allSuppliers.length; i++) {
                 //ebugger;
                 var currentSupplier = Suppliers.findOne({_id: new Mongo.ObjectID(allSuppliers[i])});
                 var emailOfSupplier = currentSupplier.primary_contact_email;
-                var contactNameOfSupplier =  currentSupplier.primary_contact_name;
+                var contactNameOfSupplier = currentSupplier.primary_contact_name;
                 var nameOfSupplier = currentSupplier.name;
 
                 var emailToAgencies = [ordersForSuppliersList[i].length];
@@ -395,34 +405,76 @@ Template.pendingDelivery.events({
                     "\nDear " + contactNameOfSupplier + " of " + nameOfSupplier
                     + "\nHere are this week's orders from local shelters and meal programs via the Loving Spoonful:";
                 var ordersThisWeek = false;
+
+
+                var startNewEmail = true;
+                var orderNumber = 1;
+
+
+                if (ordersForSuppliersList[i][0] == undefined) {
+                    Meteor.call('sendEmail',
+                        emailOfSupplier,
+                        CTOP_SMTP_SENDING_EMAIL_ACCOUNT,
+                        'Meat Order',
+                        emailString + "\nNo orders this week!");
+                    continue;
+                }
+
+                var currentAgency = ordersForSuppliersList[i][0].agency.name;
                 for (var j=0; j<ordersForSuppliersList[i].length; j++) {
+
+                    // close off this particular agency section of the email
+                    if (currentAgency != ordersForSuppliersList[i][j].agency.name) {
+                        emailString = emailString
+                            + "\n\nNotes:" + currentOrder.getAgencyDeliveryInstructions();
+                        if (currentOrder.getAgencyGoogleMapsLink() != undefined){
+                            emailString = emailString + "\n" + currentOrder.getAgencyGoogleMapsLink()
+                        }
+                        emailString = emailString + "\n";
+                        startNewEmail=true;
+                        orderNumber = orderNumber + 1;
+                    }
+
+                    currentAgency = ordersForSuppliersList[i][j].agency.name;
+
                     emailToAgencies[j] = ordersForSuppliersList[i][j].getAgencyEmail();
                     var currentOrder = ordersForSuppliersList[i][j];
                     ordersThisWeek =true;
-                    emailString = emailString + "\n"
-                        + (j+1) + ". "
-                        + currentOrder.agency.name
-                        + "\n" + currentOrder.agency.primary_contact_name
-                        + ", " + currentOrder.getAgencyEmail()
-                        + ", " + currentOrder.getAgencyPhone()
-                        + "\nAmount of " + currentOrder.amount + " " + currentOrder.quantity_units
-                        + "= $" + getFormattedCurrency(currentOrder.amount, currentOrder.price)
-                        + "\n\nNotes:" + currentOrder.getAgencyDeliveryInstructions();
-                    if (currentOrder.getAgencyGoogleMapsLink() != undefined){
-                        emailString = emailString + "\n" + currentOrder.getAgencyGoogleMapsLink()
+
+                    // at the start of each processing, build the 'header' part of the email (the Dear XXX part with whatever
+                    // other tombstone info
+                    if (startNewEmail == true) {
+                        emailString = emailString + "\n"
+                            + orderNumber + ". "
+                            + currentOrder.agency.name
+                            + "\n" + currentOrder.agency.primary_contact_name
+                            + ", " + currentOrder.getAgencyEmail()
+                            + ", " + currentOrder.getAgencyPhone() + "\n";
+                        startNewEmail = false;
+
+
                     }
-                    emailString = emailString + "\n";
+
+                    // for the other orders for the supplier, add those in (so martha's table may have hamburger and steak) - include as one email
+                    emailString = emailString
+                        + "\n" + currentOrder.itemName + " in the amount of " + currentOrder.amount + " " + currentOrder.quantity_units
+                        + " @ $" + getFormattedCurrency(1, currentOrder.price)
+                        + " = $" + getFormattedCurrency(currentOrder.amount, currentOrder.price);
+
+
 
 
                     var agencyEmail = "Dear " + currentOrder.agency.primary_contact_name + " of " + currentOrder.agency.name
                         + "\nYour " + currentOrder.itemName + " order this week is"
-                        + "\nAmount of " + currentOrder.amount + " " + currentOrder.quantity_units
-                        + "= $" + getFormattedCurrency(currentOrder.amount, currentOrder.price);
+                        + " for " + currentOrder.amount + " " + currentOrder.quantity_units
+                            + " @ $" + getFormattedCurrency(1, currentOrder.price)
+                        + " = $" + getFormattedCurrency(currentOrder.amount, currentOrder.price);
                     if (currentSupplier.notes == undefined) {
                     }
                     else {
-                        agencyEmail = agencyEmail + "\nDelivery notes: " + currentSupplier.notes;
-
+                        if (j==ordersForSuppliersList[i].length-1) {
+                            agencyEmail = agencyEmail + "\nDelivery notes: " + currentSupplier.notes;
+                        }
                     }
                     Meteor.call('sendEmail',
                         currentOrder.getAgencyEmail(),
@@ -431,6 +483,8 @@ Template.pendingDelivery.events({
                         agencyEmail);
 
                 }
+
+
                 if (ordersThisWeek)
                 {
                     emailString = emailString + "\n\n" + "Thank you for helping get more good food to out Kingston neighbours who need it most!"
