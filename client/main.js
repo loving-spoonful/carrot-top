@@ -13,6 +13,7 @@ import { ItemCategories } from '../imports/api/item-categories/item-categories.j
 import { Items } from '../imports/api/items/items.js';
 import { Agencies } from '../imports/api/agencies/agencies.js';
 import { Suppliers } from '../imports/api/suppliers/suppliers.js';
+import { News } from '../imports/api/news/news.js';
 
 import '../lib/accounts.js'
 
@@ -42,6 +43,11 @@ import '../imports/ui/admin.js';
 import '../imports/ui/help.js';
 import '../imports/ui/order/add-notes-to-order.js';
 
+
+//
+// 30Sep2017	Mike	 Adding in news import; adding in 'case' to the drop down for order items
+//						This is to allow ordering a case of hamburgers if needed
+//
 Template.registerHelper('activePage', function (routeName) {
     return _.include(arguments, FlowRouter.getRouteName()) && 'active';
 });
@@ -174,7 +180,12 @@ Template.registerHelper('itemUnits', function () {
 					name: 'Count',
 					symbol: 'items',
 					options: {}
-				}
+				},
+                {
+                    name: 'Case',
+                    symbol: 'case',
+                    options: {}
+                }
 			]
 		}
 	];

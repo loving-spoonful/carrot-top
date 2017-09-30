@@ -1,17 +1,27 @@
 <template name="admin">
-	<div id="admin">
-		<a href="/" class="back-desktop"><span class="icon-arrow-left-alt"></span> Back</a>
+<div class="page admin">
+{{#nav title='admin' black=false}}
+{{/nav}}
+    <div id="admin">
 		<div class="wrapper-admin">
 			<!--{{#if isAdmin}}-->
             {{#if isInRole 'admin'}}
                 {{#if currentUserIsApproved}}
-                    <h1 class="title-admin">Admin</h1>
 
-                    <form>
-                        <label>Edit the front page news:</label>
-                        <textarea name="text" rows="5" placeholder="Show the latest Local Market news on the the frontpage...">{{latestNews.text}}</textarea>
-                        <button type="submit" class="btn-primary">Save</button>
-                    </form>
+                        <form class="form-admin-news">
+                            <label>Edit the front page news:</label>
+                            <textarea name="text" rows="5" placeholder="Show the latest Local Market news on the the frontpage...">{{latestNews.text}}</textarea>
+                            <button type="submit" class="btn-primary" id="btn-saveNews" name="btn-saveNews">Save The News</button>
+                        </form>
+                        <form class="form-admin-email-burst">
+                            <label>Week day deadline for next meat delivery:</label>
+                            <input  name="meatDeadline" type="text" value="Monday" />
+
+                            <button type="submit" class="btn-primary" id="btn-blast" name="btn-blast">eMail Blast</button>
+
+
+                        </form>
+
                 {{else}}
                         <h1 class="title-admin">Forbidden</h1>
                 {{/if}}
@@ -20,4 +30,5 @@
 			{{/if}}
 		</div>
 	</div>
+</div>
 </template>

@@ -9,6 +9,12 @@
                 <span class="title-callout">Hours</span>
                 Order fresh food from Loving Spoonful! Make sure to place your orders by the deadline listed in the inventory notification email.
             </div>
+            <div class="callout-news">
+                {{latestNews.text}}
+            </div>
+            <div class="callout-news">
+                Version {{getVersion}}
+            </div>
             <!--{{> loginButtons}}-->
             {{#if currentUser }}
                 {{#if isInRole 'volunteer,admin'}}
