@@ -29,10 +29,9 @@ Template.appBody.events({
 
 Template.home.helpers({
     latestNews: function () {
-        debugger;
-        var alp;
-        alp = News.findOne({}, {sort: {date: -1, limit: 1}});
-        return alp;
+        var theLatestNewsPosting;
+        theLatestNewsPosting = News.findOne({}, {sort: {date: -1, limit: 1}});
+        return theLatestNewsPosting;
     },
     getVersion: function() {
         return CTOP_VERSION;
