@@ -162,9 +162,7 @@ Template.addItemToOrderOverlay.helpers({
         var purchasing_program = Session.get("overlayData");
         return (purchasing_program != "M");
     },
-    title() {
-	    return "GARGE";
-    },
+
     getFormattedCurrency(value) {
         var times100 = (Math.round(value * 100)).toString();
 

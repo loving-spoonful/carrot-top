@@ -11,6 +11,10 @@ import { Suppliers } from '../api/suppliers/suppliers.js';
 import './pending-delivery.html'
 import './modalWindow.js'
 
+/*
+ *  mike    30sep2017   reworked emails to agencies so they get 1 email with their complete order, rather than
+ *                      previously, where they would get 1 email for chicken, 1 for beef, 1 for pork
+ */
 if (Meteor.isClient) {
 	FlowRouter.route('/pending-delivery/', {
         name: 'pending-delivery',
@@ -42,13 +46,14 @@ function getFormattedCurrency(amount, price) {
     return times100.substr(0, times100.length-2) + '.' + times100.substr(times100.length-2);
 }
 
-function MeatOrderDetails (itemName, amount, quantity_units, agency_id, price, submitterEmail) {
+function MeatOrderDetails (itemName, amount, quantity_units, agency_id, price, submitterEmail, supplierId) {
     this.itemName = itemName;
     this.amount = amount;
     this.quantity_units = quantity_units;
     this.agency = Agencies.findOne({_id: new Mongo.ObjectID(agency_id)});
     this.price = price;
     this.submitterEmail = submitterEmail;
+    this.supplierId = supplierId;
 
 }
 
@@ -334,7 +339,7 @@ Template.pendingDelivery.events({
                     // TODO var orderOwner = Meteor.users.findOne({_id: new Mongo.ObjectId(currentObject.owner_id)});
 
 
-                    var meatOrderDetails = new MeatOrderDetails(myItem.name, currentRequest.quantity, myItem.quantity_units, currentObject.agency_id, currentRequest.priceAtTime, currentObject.owner_id);
+                    var meatOrderDetails = new MeatOrderDetails(myItem.name, currentRequest.quantity, myItem.quantity_units, currentObject.agency_id, currentRequest.priceAtTime, currentObject.owner_id, myItem.supplier_id);
                     var sup = myItem.supplier_id;
 
                     var supplierIndex = allSuppliers.indexOf(sup);
@@ -342,6 +347,8 @@ Template.pendingDelivery.events({
                     // let's see if an agency submitted more than 1 order for a particular meat product
 
                     var foundMatch = false;
+
+
                     for (var i=0; i < ordersForSuppliersList[supplierIndex].length; i++) {
                         var w = ordersForSuppliersList[supplierIndex][i];
                         if ((w.getAgencyId()._str == currentObject.agency_id) &&  (w.itemName == myItem.name)) {
@@ -389,9 +396,11 @@ Template.pendingDelivery.events({
                 });
             })
 
-            debugger;
             ordersForSuppliersList.sort(compareMeatOrders);
             var emailString = [allSuppliers.length];
+
+            // set up a local mongo collection (wish i knew about this before sept 2017)
+            emailsForAgencies = new Mongo.Collection(null);
 
             for (var i =0; i <allSuppliers.length; i++) {
                 //ebugger;
@@ -412,15 +421,20 @@ Template.pendingDelivery.events({
 
 
                 if (ordersForSuppliersList[i][0] == undefined) {
-                    Meteor.call('sendEmail',
-                        emailOfSupplier,
-                        CTOP_SMTP_SENDING_EMAIL_ACCOUNT,
-                        'Meat Order',
-                        emailString + "\nNo orders this week!");
+                    // Meteor.call('sendEmail',
+                    //     emailOfSupplier,
+                    //     CTOP_SMTP_SENDING_EMAIL_ACCOUNT,
+                    //     'Meat Order',
+                    //     emailString + "\nNo orders this week1!");
                     continue;
                 }
 
+
                 var currentAgency = ordersForSuppliersList[i][0].agency.name;
+
+
+
+
                 for (var j=0; j<ordersForSuppliersList[i].length; j++) {
 
                     // close off this particular agency section of the email
@@ -461,26 +475,22 @@ Template.pendingDelivery.events({
                         + " @ $" + getFormattedCurrency(1, currentOrder.price)
                         + " = $" + getFormattedCurrency(currentOrder.amount, currentOrder.price);
 
+                    var emailForAgency = emailsForAgencies.findOne ({name:currentAgency });
 
+                    var supplierNotes = Suppliers.findOne({_id: new Mongo.ObjectID(currentOrder.supplierId)});
+                    emailsForAgencies.insert({
+                        name: currentAgency,
+                        agency_email: currentOrder.getAgencyEmail(),
+                        agency_primary_contact_name: currentOrder.agency.primary_contact_name,
+                        agency_name: currentOrder.agency.name,
+                        orderName: currentOrder.itemName,
+                        orderAmount: currentOrder.amount,
+                        orderQuantity: currentOrder.quantity_units,
+                        orderCost: getFormattedCurrency(1, currentOrder.price),
+                        orderTotal: getFormattedCurrency(currentOrder.amount, currentOrder.price),
+                        orderNotes: supplierNotes.notes
+                    })
 
-
-                    var agencyEmail = "Dear " + currentOrder.agency.primary_contact_name + " of " + currentOrder.agency.name
-                        + "\nYour " + currentOrder.itemName + " order this week is"
-                        + " for " + currentOrder.amount + " " + currentOrder.quantity_units
-                            + " @ $" + getFormattedCurrency(1, currentOrder.price)
-                        + " = $" + getFormattedCurrency(currentOrder.amount, currentOrder.price);
-                    if (currentSupplier.notes == undefined) {
-                    }
-                    else {
-                        if (j==ordersForSuppliersList[i].length-1) {
-                            agencyEmail = agencyEmail + "\nDelivery notes: " + currentSupplier.notes;
-                        }
-                    }
-                    Meteor.call('sendEmail',
-                        currentOrder.getAgencyEmail(),
-                        CTOP_SMTP_SENDING_EMAIL_ACCOUNT,
-                        'Meat Order',
-                        agencyEmail);
 
                 }
 
@@ -490,22 +500,62 @@ Template.pendingDelivery.events({
                     emailString = emailString + "\n\n" + "Thank you for helping get more good food to out Kingston neighbours who need it most!"
                         + "\n" + "Have questions? Call Lilith Wyatt, Food Access Coordinator, at 613-507-8848 or respond to this email."
                     // This is the email to the suppliers!
-                    Meteor.call('sendEmail',
-                        emailOfSupplier,
-                        CTOP_SMTP_SENDING_EMAIL_ACCOUNT,
-                        'Meat Order',
-                        emailString);
+                    // Meteor.call('sendEmail',
+                    //     emailOfSupplier,
+                    //     CTOP_SMTP_SENDING_EMAIL_ACCOUNT,
+                    //     'Meat Order',
+                    //     emailString);
                 }
                 else
                 {
                     // This is the email to the suppliers!
-                    Meteor.call('sendEmail',
-                        emailOfSupplier,
-                        CTOP_SMTP_SENDING_EMAIL_ACCOUNT,
-                        'Meat Order',
-                        emailString + "\nNo orders this week!");
+                    // Meteor.call('sendEmail',
+                    //     emailOfSupplier,
+                    //     CTOP_SMTP_SENDING_EMAIL_ACCOUNT,
+                    //     'Meat Order',
+                    //     emailString + "\nNo orders this week2!");
                 }
             }
+
+
+            var agenciesProcessed = [];
+            var queryEmailsForAgencies = emailsForAgencies.find({}, { sort: { name: -1 } }).forEach(function(currentOrder) {
+
+                var alreadyProcessed = false;
+                for (var w=0; w< agenciesProcessed.length; w++) {
+                    if (currentOrder.name == agenciesProcessed[w]) {
+                        alreadyProcessed = true;
+                    }
+                }
+
+                if (!alreadyProcessed) {
+                    var orderDetails = emailsForAgencies.find({name: currentOrder.name}).fetch();
+
+                    var agencyEmail = "Dear " + currentOrder.agency_primary_contact_name + " of " + currentOrder.agency_name + "\n";
+
+                    for (var k = 0; k < orderDetails.length; k++) {
+                        agencyEmail = "\n" + agencyEmail + "\nYour " + orderDetails[k].orderName + " order this week is"
+                            + " for " + orderDetails[k].orderAmount + " " + orderDetails[k].orderQuantity
+                            + " @ $" + orderDetails[k].orderCost
+                            + " = $" + orderDetails[k].orderTotal ;
+                        if (orderDetails[k].orderNotes == undefined) {
+                        }
+                        else {
+                            agencyEmail = agencyEmail + "\nDelivery notes: " + orderDetails[k].orderNotes + "\n";
+
+                        }
+
+                    }
+                    sAlert.info(agencyEmail);
+                    agenciesProcessed.push(currentOrder.name);
+                    Meteor.call('sendEmail',
+                        currentOrder.agency_email,
+                        CTOP_SMTP_SENDING_EMAIL_ACCOUNT,
+                        'Meat Order',
+                        agencyEmail);
+                }
+            });
+
 
             $ordersOnPage.slideUp(150, function () {
                 // When finished sliding

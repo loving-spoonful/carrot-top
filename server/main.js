@@ -11,8 +11,14 @@ import '../imports/api/orders/orders.js'
 import '../imports/api/order-bundles/order-bundles.js'
 import '../imports/api/agencies/agencies.js'
 import '../imports/api/suppliers/suppliers.js'
+import '../imports/api/news/news.js'
 import '../imports/ui/private/private-const.js'
 
+/*
+ *  Mike    30sep2017   added changeUserRole on server side.  Will need when fix issue where user registers as a
+ *                      volunteer, for example, but really wanted to be part of an agency.  Users window doesn't
+ *                      properly allow the admin to fix this issue currently
+ */
 Meteor.publish('directory', function () {
     return Meteor.users.find({}, {fields: {emails: 1, profile: 1, roles: 1}});
 });
@@ -38,10 +44,12 @@ Meteor.startup(() => {
 
 Meteor.methods({
     // the server side methods
-
+    changeUserRole: function (Id, newRole) {
+        Roles.setUserRoles (Id, [newRole]);
+    },
 
     sendEmail: function (to, from, subject, text) {
-        check([to, from, subject, text], [String]);
+        //check([to, from, subject, text], [String]);
 
         // Let other method calls from the same client start running,
         // without waiting for the email sending to complete.
@@ -127,7 +135,7 @@ if (Meteor.users.find().count() == 1) {
 Accounts.onCreateUser((options, user) => {
     // Make sure profile exists at the very least as a blank object.
     user.profile = options.profile ? options.profile : {};
-return user;
+    return user;
 })
 ;
 

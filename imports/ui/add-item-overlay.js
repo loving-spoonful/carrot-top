@@ -4,6 +4,10 @@ import { ItemCategories } from '../api/item-categories/item-categories.js';
 import { Suppliers } from '../api/suppliers/suppliers.js';
 import './add-item-overlay.html'
 
+/*
+ *	mike	30sep2017	adding in support for item quantity units comment (which is useful for things like
+ *						40 items in case
+ */
 Template.addItemOverlay.onCreated(function () {
 	this.state = new ReactiveDict();
 	Meteor.subscribe('items');
@@ -24,6 +28,10 @@ Template.addItemOverlay.rendered = function() {
         $('input[name="item-name"]').val(inventoryObject.name);
         $('input[name="item-quantity"]').val(inventoryObject.quantity_amount);
         $('select[name="quantity-units"]').val(inventoryObject.quantity_units);
+
+
+        $('input[name="quantity-units-comments"]').val(inventoryObject.quantity_units_comments);
+
         $('input[name="item-order-minimum"]').val(inventoryObject.ordering_minimum);
         $('input[name="item-order-maximum"]').val(inventoryObject.ordering_maximum);
         $('input[name="item-order-increment"]').val(inventoryObject.ordering_increment);
@@ -62,6 +70,9 @@ Template.addItemOverlay.events({
             itemQuantity = parseFloat(target['item-quantity'].value.trim());
 		}
 		const itemQuantityUnits = target['quantity-units'].value.trim();
+
+        const itemQuantityUnitsComments = target['quantity-units-comments'].value.trim();
+
 		const itemOrderMinimum = parseFloat(target['item-order-minimum'].value.trim());
 		const itemOrderMaximum = parseFloat(target['item-order-maximum'].value.trim());
 		const itemOrderIncrement = parseFloat(target['item-order-increment'].value.trim());
@@ -103,6 +114,8 @@ Template.addItemOverlay.events({
 
 								quantity_amount: itemQuantity,
 								quantity_units: itemQuantityUnits,
+                                quantity_units_comments: itemQuantityUnitsComments,
+
 								ordering_minimum: itemOrderMinimum,
 								ordering_maximum: itemOrderMaximum,
 								ordering_increment: itemOrderIncrement,
@@ -131,6 +144,7 @@ Template.addItemOverlay.events({
 
                         quantity_amount: itemQuantity,
                         quantity_units: itemQuantityUnits,
+						quantity_units_comments: itemQuantityUnitsComments,
                         ordering_minimum: itemOrderMinimum,
                         ordering_maximum: itemOrderMaximum,
                         ordering_increment: itemOrderIncrement,

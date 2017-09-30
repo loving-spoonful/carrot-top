@@ -2,6 +2,10 @@ import {Mongo} from 'meteor/mongo';
 
 import {ItemCategories} from '../item-categories/item-categories.js';
 
+/*
+ *  porterm 30sep2017   add in quantity comments - which gets appended to email blast
+ *                      useful for text like '40 per case'
+ */
 export const Items = new Mongo.Collection('items', {idGeneration: 'MONGO'});
 
 if (Meteor.isServer) {
@@ -36,6 +40,7 @@ Items.schema = new SimpleSchema({
     },
     supplier_id: {type: String, optional: true},
     price: {type: Number, decimal:true, optional: true},
+    quantity_units_comments: {type: String, optional: true}
 
 });
 Items.attachSchema(Items.schema);
