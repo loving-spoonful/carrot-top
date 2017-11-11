@@ -5,6 +5,12 @@ import {Agencies} from '../../api/agencies/agencies.js';
 
 import './edit-user-overlay.html'
 
+/*
+ * mike     08nov2017   correct the code to allow the admin to reassign a role to someone
+ *                      this is typically when someone doesn't select a role, or picks a role
+ *                      other than what they wanted.  Previously it was setting preferred_role,
+ *                      now it properly calls the meteor roles.setrole
+ */
 
 Template.editUserOverlay.onCreated(function () {
     this.state = new ReactiveDict();
@@ -49,8 +55,15 @@ Template.editUserOverlay.events({
         const first_and_last_name = target['first_and_last_name'].value.trim();
         const phone_number = target['phone_number'].value.trim();
         const role = target['role'].value.trim();
-        const agency = target['agency'].value.trim();
+        var agency;
         const robot_id = target['robot_id'].value.trim();
+
+        if (target['agency'] == undefined) {
+            agency = undefined;
+        }
+        else {
+            agency = target['agency'].value.trim();
+        }
 
         if (email.length > 0) {
             // look to see if this is updating the same user
@@ -62,21 +75,21 @@ Template.editUserOverlay.events({
                 if ((!possibleExistingId) || ((possibleExistingId) && (Id == possibleExistingId._id))) {
                     // this is an update for the same existing user
 
+                    //Roles.removeUsersFromRoles(Id, userObject.desired_role);
                     Meteor.users.update({_id: Id},
                         {
                             $set: {
                                 'emails.0.address': email,
                                 'profile.name': first_and_last_name,
                                 'profile.phone': phone_number,
-                                //
+
                                 'profile.desired_role': role,
                                 'profile.desired_agency': agency,
 
                                 'profile.food_robot_id': robot_id
                             }
                         });
-
-
+                    Roles.setUserRoles(Id, [role], Roles.GLOBAL_GROUP);
                     sAlert.info('Saved!');
                     Session.set('currentOverlayID');
                     Overlay.close();

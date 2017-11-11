@@ -14,6 +14,10 @@ import './modalWindow.js'
 /*
  *  mike    30sep2017   reworked emails to agencies so they get 1 email with their complete order, rather than
  *                      previously, where they would get 1 email for chicken, 1 for beef, 1 for pork
+ *  mike    08nov2017   Adding in an additional email to send to when you assign someone to a delivery
+ *                      This is primarily to assign to people that may not be using the system, but so that
+ *                      they get an email.  They still need an account in the system (and hence pick up the
+ *                      email account there)
  */
 if (Meteor.isClient) {
 	FlowRouter.route('/pending-delivery/', {
@@ -91,6 +95,7 @@ function compareMeatOrders(a,b) {
 };
 
 var assignedVolunteer;
+var assignedVolunteerJustForEmail;
 Template.pendingDelivery.events({
     'change #assignVolunteer': function (event) {
         event.preventDefault();
@@ -98,7 +103,12 @@ Template.pendingDelivery.events({
         var justID=event.target.value.split("\"");
         assignedVolunteer = justID[0];
     },
-
+    'change #assignAdditionalVolunteerEmailOnly': function (event) {
+        event.preventDefault();
+        // capture the volunteer that's selected from the drop down list
+        var justID=event.target.value.split("\"");
+        assignedVolunteerJustForEmail = justID[0];
+    },
 	'click .js-cancel-order': function (event) {
         event.preventDefault();
 		var $order = $(event.target).parents('.list-order').first();
@@ -175,15 +185,17 @@ Template.pendingDelivery.events({
                         _id: new Mongo.ObjectID(existingBundle._id._str)
                     }, {
                         $push: { order_ids: orderId },
-                        $set: { updated_at: Date.now() }
+                        $set: { updated_at: Date.now(), additional_volunteer_for_email_id: assignedVolunteerJustForEmail }
                     });
                 } else {
                     // TODO: Handle order already being in a order.
                 }
             } else {
+
                 OrderBundles.insert({
                     order_ids: [ orderId ],
                     owner_id: assignedVolunteer,
+                    additional_volunteer_for_email_id: assignedVolunteerJustForEmail,
                     completed: false,
                     purchasing_program: "N",
                     created_at: Date.now(),
@@ -198,9 +210,30 @@ Template.pendingDelivery.events({
 
             // let's send an email to the volunteer to let them know they were assigned a delivery
             var volunteer = Meteor.users.findOne({_id: assignedVolunteer});
-            var emailText = "You have been assigned a delivery!  Please log in to carrot.lovingspoonful.org.";
-            Meteor.call('sendEmail',
+            var volunteerJustForEmail = Meteor.users.findOne({_id: assignedVolunteerJustForEmail});
+
+            var emailText = "Dear ";
+            if (volunteerJustForEmail == undefined) {
+                emailText += volunteer.profile.name ;
+            }
+            else {
+                emailText += volunteerJustForEmail.profile.name ;
+            }
+            emailText += ",\nYou have been assigned a delivery!\n";
+
+
+            var thisOrder = Orders.findOne({_id: new Mongo.ObjectID(orderId)});
+            var forAgency = Agencies.findOne({_id: new Mongo.ObjectID(thisOrder.agency_id)});
+
+            emailText += "\n" + forAgency.name;
+            emailText += "\n" + forAgency.street_address + ", " + forAgency.city;
+            emailText += "\n" + forAgency.primary_contact_name + " " + forAgency.primary_contact_email + " " + forAgency.primary_contact_phone;
+            emailText += "\n" + forAgency.google_maps_link;
+
+            emailText += "\n\nPlease log in to carrot.lovingspoonful.org.";
+            Meteor.call('sendCCEmail',
                 volunteer.emails[0].address,
+                volunteerJustForEmail.emails[0].address,
                 CTOP_SMTP_SENDING_EMAIL_ACCOUNT,
                 'Assigned a delivery',
                 emailText);
@@ -421,11 +454,11 @@ Template.pendingDelivery.events({
 
 
                 if (ordersForSuppliersList[i][0] == undefined) {
-                    // Meteor.call('sendEmail',
-                    //     emailOfSupplier,
-                    //     CTOP_SMTP_SENDING_EMAIL_ACCOUNT,
-                    //     'Meat Order',
-                    //     emailString + "\nNo orders this week1!");
+                    Meteor.call('sendEmail',
+                        emailOfSupplier,
+                        CTOP_SMTP_SENDING_EMAIL_ACCOUNT,
+                        'Meat Order',
+                        emailString + "\nNo orders this week!");
                     continue;
                 }
 
@@ -500,21 +533,22 @@ Template.pendingDelivery.events({
                     emailString = emailString + "\n\n" + "Thank you for helping get more good food to out Kingston neighbours who need it most!"
                         + "\n" + "Have questions? Call Lilith Wyatt, Food Access Coordinator, at 613-507-8848 or respond to this email."
                     // This is the email to the suppliers!
-                    // Meteor.call('sendEmail',
-                    //     emailOfSupplier,
-                    //     CTOP_SMTP_SENDING_EMAIL_ACCOUNT,
-                    //     'Meat Order',
-                    //     emailString);
+                    Meteor.call('sendEmail',
+                        emailOfSupplier,
+                        CTOP_SMTP_SENDING_EMAIL_ACCOUNT,
+                        'Meat Order',
+                        emailString);
                 }
-                else
-                {
-                    // This is the email to the suppliers!
-                    // Meteor.call('sendEmail',
-                    //     emailOfSupplier,
-                    //     CTOP_SMTP_SENDING_EMAIL_ACCOUNT,
-                    //     'Meat Order',
-                    //     emailString + "\nNo orders this week2!");
-                }
+                // else
+                // {
+                //     // this will never happen - the NO email to suppliers happens above
+                //     // This is the email to the suppliers!
+                //     Meteor.call('sendEmail',
+                //         emailOfSupplier,
+                //         CTOP_SMTP_SENDING_EMAIL_ACCOUNT,
+                //         'Meat Order',
+                //         emailString + "\nNo orders this week2!");
+                // }
             }
 
 
@@ -626,13 +660,13 @@ Template.pendingDelivery.helpers({
 
         var allv = Meteor.users.find(
             {
+
                 $or: [
-                    {'profile.desired_role': 'volunteer'},
-                    {'profile.desired_role': 'administrator'}
+                    {'roles.__global_roles__': 'volunteer'},
+                    {'roles.__global_roles__': 'admin'}
                 ]
             }
         );
-
 
 
         return allv;

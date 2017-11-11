@@ -15,6 +15,10 @@ import '../imports/api/news/news.js'
 import '../imports/ui/private/private-const.js'
 
 /*
+ *  Mike    07Oct2017   added changeUserRole on server side.  Will need when fix issue where user registers as
+ *                      one role, but picked the wrong one (or left it as select)
+ *                      Added in methods to overload sending email - BCC emails, CC emails, etc
+ *
  *  Mike    30sep2017   added changeUserRole on server side.  Will need when fix issue where user registers as a
  *                      volunteer, for example, but really wanted to be part of an agency.  Users window doesn't
  *                      properly allow the admin to fix this issue currently
@@ -47,8 +51,16 @@ Meteor.methods({
     changeUserRole: function (Id, newRole) {
         Roles.setUserRoles (Id, [newRole]);
     },
-
+    sendBCCEmail: function (bcc, from, subject, text) {
+      Meteor.call('sendFullEmail', undefined, from, undefined, bcc, subject, text);
+    },
     sendEmail: function (to, from, subject, text) {
+        Meteor.call('sendFullEmail', to, from, undefined, undefined, subject,text);
+    },
+    sendCCEmail: function (to, cc, from, subject, text) {
+        Meteor.call('sendFullEmail', to, from, cc, undefined, subject,text);
+    },
+    sendFullEmail: function (to, from, cc, bcc, subject, text) {
         //check([to, from, subject, text], [String]);
 
         // Let other method calls from the same client start running,
@@ -62,19 +74,33 @@ Meteor.methods({
         }
         else {
             console.log("CTOP_SEND_REAL_EMAILS is false; sending emails to " + CTOP_REDIRECT_EMAIL_FOR_TESTING + " instead.");
-            subject = subject + ".  Would have sent to " + to;
+            if (to != undefined) {
+                subject = subject + ".  Would have sent to " + to;
+            }
+            if (cc != undefined) {
+                subject = subject + ".  CC of " + cc;
+            }
+            if (bcc != undefined) {
+                subject = subject + ".  BCC of " + bcc;
+            }
+
             to = CTOP_REDIRECT_EMAIL_FOR_TESTING;
 
         }
 
-        // at least initially, have all emails also get sent to food@lovingspoonful.org
-        var toUsers = [];
-        toUsers.push (to);
-        toUsers.push ("food@lovingspoonful.org");
 
+        var toBCCUsers = [];
+        if (toBCCUsers != undefined) {
+            toBCCUsers.push (bcc);
+        }
+
+        // always send all emails to food@lovingspoonful.org as a bcc
+        toBCCUsers.push ("food@lovingspoonful.org");
 
         Email.send({
-            to: toUsers,
+            to: to,
+            cc: cc,
+            bcc: toBCCUsers,
             from: from,
 
             subject: subject,

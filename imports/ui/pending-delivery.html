@@ -13,6 +13,15 @@
                                     <option value="{{_id}}">{{profile.name}} - {{firstLetter profile.desired_role}}</option>
                                 {{/each}}
                             </select>
+
+
+                            <label for="assignAdditionalVolunteerEmailOnly">Send additional email to volunteer</label>
+                            <select name="assignAdditionalVolunteerEmailOnly" id="assignAdditionalVolunteerEmailOnly" >
+                                <option disabled selected value="">Select Additional Volunteer To Email</option>
+                                {{#each allVolunteerList}}
+                                    <option value="{{_id}}">{{profile.name}} - {{firstLetter profile.desired_role}}</option>
+                                {{/each}}
+                            </select>
                         </h3>
                     {{/if}}
                 {{/if}}

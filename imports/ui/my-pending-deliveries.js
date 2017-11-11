@@ -6,6 +6,9 @@ import { Agencies } from '../api/agencies/agencies.js';
 import './my-pending-deliveries.html'
 import './modalWindow.js'
 
+/*
+ *  mike    08nov2017   Allow assignment of deliveries to both volunteers AND admin
+ */
 if (Meteor.isClient) {
 	FlowRouter.route('/my-pending-deliveries/', {
 		name: 'my-pending-deliveries',
@@ -245,16 +248,16 @@ Template.myPendingDeliveries.helpers({
 	items: function () {
 		return Items.find({}, { sort: { name: 1 } });
 	},
-    allVolunteers: function() {
-        var allvolunteers = Meteor.users.find(
+    allVolunteersAndAdmins: function() {
+        var allvolunteersandadmins = Meteor.users.find(
                                             {
                                                 $or: [
-                                                    {'profile.desired_role': 'volunteer'},
-                                                    {'profile.desired_role': 'administrator'}
+                                                    {'roles.__global_roles__': 'volunteer'},
+                                                    {'roles.__global_roles__': 'admin'}
                                                 ]
                                             });
 
-        return allvolunteers;
+        return allvolunteersandadmins;
     },
 
 	orderBundles: function () {

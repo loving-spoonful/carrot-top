@@ -5,6 +5,12 @@ import {Orders} from '../orders/orders.js'
 
 export const OrderBundles = new Mongo.Collection('orderBundles', {idGeneration: 'MONGO'});
 
+/*
+ *  mike    08nov2017   Add in additional_volunteer_for_email_id.  This is for deliverers that are initially not
+ *                      going to use the system.  Admin will assign to themselves (or another admin) and then
+ *                      select the additional volunteer.  Both the admin and volunteer will get the email
+ *                      as a CC.  It is addressed to the volunteer by name
+ */
 if (Meteor.isServer) {
     Meteor.publish('order-bundles', function () {
         return OrderBundles.find();
@@ -18,6 +24,7 @@ OrderBundles.schema = new SimpleSchema({
     },
 
     owner_id: {type: String},
+    additional_volunteer_for_email_id: {type: String},
 
     completed: {type: Boolean},
     purchasing_program: {type: String},

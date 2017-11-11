@@ -8,7 +8,9 @@ import './private/private-const.js'
 
 /*
  * 30sep2017    mike    subscribe to news to allow editing for 'new' news
- *                      Email burst -
+ *                      Email burst - for meat
+ * 08nov2017    mike    added in veggie email burst.  Gather up the inventory of veggies and email to the contact
+ *                      person at each agency (one email done with BCC)
  */
 if (Meteor.isClient) {
 	FlowRouter.route('/admin/', {
@@ -53,13 +55,54 @@ Template.admin.events({
 
         sAlert.info('Saved latest news' + text);
     },
-    'submit .form-admin-email-burst': function (event) {
+    'submit .form-admin-veggie-email-burst': function (event) {
+        event.preventDefault();
+
+        const target = event.target;
+        var sdi = Meteor.commonFunctions.popupModal("Vaggie Email Blast", "Are you sure you want to email all veggie inventory amounts to agencies?");
+        var modalPopup = ReactiveModal.initDialog(sdi);
+        modalPopup.buttons.ok.on('click', function(button) {
+            var toUsers = [];
+
+            //purchasing_program: "N"
+            var listOfVeggieProgramAgencies = Agencies.find({}).
+                forEach(function(obj){
+                    toUsers.push(obj.primary_contact_email);
+                });
+
+            var emailText = "Hi friends,\n\nVisit the Carrot Top at carrot.lovingspoonful.org to place your veggie orders.  If you have any questions, please be in touch.";
+            emailText = emailText + "\n\n" + "Here are this week's veggie inventory:\n"
+            var countOfItems = 0;
+
+            var listOfVeggieItems = Items.find({purchasing_program: "N"}, {sort: {name:1}}).
+            forEach(function(obj){
+                countOfItems++;
+                emailText = emailText + "\n" + obj.name + ": " + obj.quantity_amount + " " + obj.quantity_units;
+            });
+
+            emailText = emailText + "\n\n";
+
+            emailText = emailText + "Cheers,\nLilith\n\n"
+                + "We are grateful to our local veggie suppliers.";
+
+            emailText = emailText + "\n\nLilith Wyatt\nFood Access Coordinator\n\n";
+            emailText = emailText + "559 Bagot St.\nKingston, ON  K7K 3E1\nOffice:  613-507-8848\nCell:  613-893-6393\nfood@lovingspoonful.org\nwww.lovingspoonful.org"
+
+            Meteor.call('sendBCCEmail',
+                toUsers,
+                CTOP_SMTP_SENDING_EMAIL_ACCOUNT,
+                'CarrotTop Veggie Program: Current Inventory',
+                emailText);
+        });
+        modalPopup.show();
+    },
+    'submit .form-admin-meat-email-burst': function (event) {
         event.preventDefault();
 
         const target = event.target;
         var meatDeadline = $(event.target).find('[name=meatDeadline]').val();
 
-        var sdi = Meteor.commonFunctions.popupModal("Email Blast", "Are you sure you want to email all meat prices to agencies in the meat program?");
+        var sdi = Meteor.commonFunctions.popupModal("Meat Email Blast", "Are you sure you want to email all meat prices to agencies in the meat program?");
         var modalPopup = ReactiveModal.initDialog(sdi);
         modalPopup.buttons.ok.on('click', function(button) {
 
@@ -138,10 +181,10 @@ Template.admin.events({
             emailText = emailText + "\n\nLilith Wyatt\nFood Access Coordinator\n\n";
             emailText = emailText + "559 Bagot St.\nKingston, ON  K7K 3E1\nOffice:  613-507-8848\nCell:  613-893-6393\nfood@lovingspoonful.org\nwww.lovingspoonful.org"
 
-            Meteor.call('sendEmail',
+            Meteor.call('sendBCCEmail',
                 toUsers,
                 CTOP_SMTP_SENDING_EMAIL_ACCOUNT,
-                'CarrotTop Meat Price Updates!',
+                'CarrotTop Meat Program: Order by noon ' + meatDeadline,
                 emailText);
             //sAlert.info('Blast' + emailText);
         });

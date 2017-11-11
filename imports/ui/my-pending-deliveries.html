@@ -29,7 +29,7 @@
                         <select name="deliveriesVolunteer" id="deliveriesVolunteer">
                             <option disabled selected value="">Select Volunteer To View</option>
                             <option value="All">All</option>
-                            {{#each allVolunteers}}
+                            {{#each allVolunteersAndAdmins}}
                                 <option value="{{_id}}">{{profile.name}} - {{firstLetter profile.desired_role}}</option>
                             {{/each}}
                         </select>

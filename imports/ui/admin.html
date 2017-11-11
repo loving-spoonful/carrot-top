@@ -13,15 +13,23 @@
                             <textarea name="text" rows="5" placeholder="Show the latest Local Market news on the the frontpage...">{{latestNews.text}}</textarea>
                             <button type="submit" class="btn-primary" id="btn-saveNews" name="btn-saveNews">Save The News</button>
                         </form>
-                        <form class="form-admin-email-burst">
+                        <form class="form-admin-meat-email-burst">
                             <label>Week day deadline for next meat delivery:</label>
                             <input  name="meatDeadline" type="text" value="Monday" />
 
-                            <button type="submit" class="btn-primary" id="btn-blast" name="btn-blast">eMail Blast</button>
+                            <button type="submit" class="btn-primary" id="btn-meat-blast" name="btn-meat-blast">Meat eMail Blast</button>
 
 
                         </form>
 
+                        <form class="form-admin-veggie-email-burst">
+                            <!--<label>Week day deadline for next Veggie delivery:</label>-->
+                            <!--<input  name="meatDeadline" type="text" value="Monday" />-->
+
+                            <button type="submit" class="btn-primary" id="btn-veggie-blast" name="btn-veggie-blast">Veggie eMail Blast</button>
+
+
+                        </form>
                 {{else}}
                         <h1 class="title-admin">Forbidden</h1>
                 {{/if}}
