@@ -8,9 +8,11 @@ import './private/private-const.js'
 
 /*
  * 30sep2017    mike    subscribe to news to allow editing for 'new' news
- *                      Email burst - for meat
- * 08nov2017    mike    added in veggie email burst.  Gather up the inventory of veggies and email to the contact
+ *                      Email blast - for meat
+ * 08nov2017    mike    added in veggie email blast.  Gather up the inventory of veggies and email to the contact
  *                      person at each agency (one email done with BCC)
+ *
+ * 18nov2017    mike    change wording for veggie email blast
  */
 if (Meteor.isClient) {
 	FlowRouter.route('/admin/', {
@@ -55,8 +57,11 @@ Template.admin.events({
 
         sAlert.info('Saved latest news' + text);
     },
-    'submit .form-admin-veggie-email-burst': function (event) {
+
+    'submit .form-admin-veggie-email-blast': function (event) {
         event.preventDefault();
+
+        var veggieDeadline = $(event.target).find('[name=veggieDeadline]').val();
 
         const target = event.target;
         var sdi = Meteor.commonFunctions.popupModal("Vaggie Email Blast", "Are you sure you want to email all veggie inventory amounts to agencies?");
@@ -70,22 +75,44 @@ Template.admin.events({
                     toUsers.push(obj.primary_contact_email);
                 });
 
-            var emailText = "Hi friends,\n\nVisit the Carrot Top at carrot.lovingspoonful.org to place your veggie orders.  If you have any questions, please be in touch.";
-            emailText = emailText + "\n\n" + "Here are this week's veggie inventory:\n"
+            var emailText = "Dear friends,\n\nWe have received large donations of fresh produce to our cold storage and you can get some in three easy steps!";
+            emailText = emailText + "\n\n" + "\t1. Visit carrot.lovingspoonful.org on any phone, tablet or computer. ";
+            emailText = emailText + "\n"   + "\t2. Log in to view the inventory of ";
+
+
             var countOfItems = 0;
+
+            var totalVeggieItems = Items.find({purchasing_program: "N"}, {sort: {name:1}}).count();
 
             var listOfVeggieItems = Items.find({purchasing_program: "N"}, {sort: {name:1}}).
             forEach(function(obj){
                 countOfItems++;
-                emailText = emailText + "\n" + obj.name + ": " + obj.quantity_amount + " " + obj.quantity_units;
+                emailText = emailText + obj.name;
+                if (countOfItems+1 < totalVeggieItems) {
+                    emailText = emailText + ", ";
+                }
+                else if (countOfItems+1 == totalVeggieItems) {
+                    emailText = emailText + " and ";
+                }
+                else if (countOfItems == totalVeggieItems) {
+                    emailText = emailText + ".";
+
+                }
             });
+
+            //emailText = emailText.slice(0, emailText.length-2);
+
+            emailText = emailText + "\n"   + "\t3. Place your order by 12 noon on " + veggieDeadline +".  (Watch the 'how-to' video at https://www.youtube.com/watch?v=Nfb6U_Ved7c)";
+
+            emailText = emailText + "\n"   + "\nAs always, veggies are free and they will be delivered by our delightful volunteer drivers in the coming week.";
 
             emailText = emailText + "\n\n";
 
-            emailText = emailText + "Cheers,\nLilith\n\n"
-                + "We are grateful to our local veggie suppliers.";
+            emailText = emailText + "Be in touch if you have any questions at all!\n"
+                + "Lilith";
+            emailText = emailText + "\n\nWe are grateful to our farmer and grocer partners for their generous donations."
 
-            emailText = emailText + "\n\nLilith Wyatt\nFood Access Coordinator\n\n";
+            emailText = emailText + "\n\nLilith Wyatt\nFood Access Coordinator\nCommunity Gardens Coordinator\n";
             emailText = emailText + "559 Bagot St.\nKingston, ON  K7K 3E1\nOffice:  613-507-8848\nCell:  613-893-6393\nfood@lovingspoonful.org\nwww.lovingspoonful.org"
 
             Meteor.call('sendBCCEmail',
@@ -96,7 +123,7 @@ Template.admin.events({
         });
         modalPopup.show();
     },
-    'submit .form-admin-meat-email-burst': function (event) {
+    'submit .form-admin-meat-email-blast': function (event) {
         event.preventDefault();
 
         const target = event.target;
@@ -164,10 +191,10 @@ Template.admin.events({
             }
             var emailText = "Hi friends,\n\nVisit the Carrot Top at carrot.lovingspoonful.org to place your meat order by 12 noon on " + meatDeadline + ". If you have any questions, please be in touch.\n\nSuppliers will deliver the meat and bill you directly. Beef and pork will be delivered Friday afternoon. Poultry delivered Wed-Fri -- specify your preference in your order notes.";
 
-            emailText = emailText + "\n\n" + "Here are this week's prices:\n\n"
+            emailText = emailText + "\n\n" + "Here are this week's prices:\n"
             for (var i=0; i < countOfItems; i++) {
 
-                emailText = emailText + "\n" + meatName[i] + " at $" + meatPrices[i] + "/" + meatUnits [i] + " from " + meatSupplier[i];
+                emailText = emailText + "\n\t· " + meatName[i] + " at $" + meatPrices[i] + "/" + meatUnits [i] + " from " + meatSupplier[i];
                 if (meatUnitsComments[i] != undefined) {
                     emailText = emailText + " -- " + meatUnitsComments[i];
                 }
@@ -178,7 +205,7 @@ Template.admin.events({
             emailText = emailText + "Cheers,\nLilith\n\n"
                 + "We are grateful to our local suppliers -- " + stringOfAllSuppliers + " -- for providing the discounted quality meat, and to the Community Foundation for Kingston & Area for making the program possible.";
 
-            emailText = emailText + "\n\nLilith Wyatt\nFood Access Coordinator\n\n";
+            emailText = emailText + "\n\nLilith Wyatt\nFood Access Coordinator\nCommunity Gardens Coordinator\n";
             emailText = emailText + "559 Bagot St.\nKingston, ON  K7K 3E1\nOffice:  613-507-8848\nCell:  613-893-6393\nfood@lovingspoonful.org\nwww.lovingspoonful.org"
 
             Meteor.call('sendBCCEmail',
