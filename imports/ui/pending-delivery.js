@@ -18,6 +18,7 @@ import './modalWindow.js'
  *                      This is primarily to assign to people that may not be using the system, but so that
  *                      they get an email.  They still need an account in the system (and hence pick up the
  *                      email account there)
+ *  mike    20nov2017   if no delivery notes, still add a newline to space out the email to the agencies a bit nicer
  */
 if (Meteor.isClient) {
 	FlowRouter.route('/pending-delivery/', {
@@ -572,7 +573,9 @@ Template.pendingDelivery.events({
                             + " for " + orderDetails[k].orderAmount + " " + orderDetails[k].orderQuantity
                             + " @ $" + orderDetails[k].orderCost
                             + " = $" + orderDetails[k].orderTotal ;
+
                         if (orderDetails[k].orderNotes == undefined) {
+                            agencyEmail = agencyEmail + "\n";
                         }
                         else {
                             agencyEmail = agencyEmail + "\nDelivery notes: " + orderDetails[k].orderNotes + "\n";
