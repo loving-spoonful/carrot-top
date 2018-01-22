@@ -19,7 +19,15 @@ import './modalWindow.js'
  *                      they get an email.  They still need an account in the system (and hence pick up the
  *                      email account there)
  *  mike    20nov2017   if no delivery notes, still add a newline to space out the email to the agencies a bit nicer
+ *
+ * 21Jan2018    mike    Adding in field for additional emails.  For some meat suppliers, the deliveries are
+ *                      done by third parties rather than by the supplier.  For any suppliers like this
+ *                      email both the supplier and these 3rd parties
+ *                      For these suppliers, the field delivery_contact_email_list will be defined as a
+ *                      semicolon separated list of emails (done via the supplier screen)
+ *
  */
+
 if (Meteor.isClient) {
 	FlowRouter.route('/pending-delivery/', {
         name: 'pending-delivery',
@@ -442,6 +450,8 @@ Template.pendingDelivery.events({
                 var emailOfSupplier = currentSupplier.primary_contact_email;
                 var contactNameOfSupplier = currentSupplier.primary_contact_name;
                 var nameOfSupplier = currentSupplier.name;
+                var deliveryContactEmailList = currentSupplier.delivery_contact_email_list;
+                var deliveryContactEmailArray = [];
 
                 var emailToAgencies = [ordersForSuppliersList[i].length];
                 emailString =
@@ -534,11 +544,27 @@ Template.pendingDelivery.events({
                     emailString = emailString + "\n\n" + "Thank you for helping get more good food to out Kingston neighbours who need it most!"
                         + "\n" + "Have questions? Call Lilith Wyatt, Food Access Coordinator, at 613-507-8848 or respond to this email."
                     // This is the email to the suppliers!
-                    Meteor.call('sendEmail',
-                        emailOfSupplier,
-                        CTOP_SMTP_SENDING_EMAIL_ACCOUNT,
-                        'Meat Order',
-                        emailString);
+
+                    if (deliveryContactEmailList == undefined) {
+                        Meteor.call('sendEmail',
+                            emailOfSupplier,
+                            CTOP_SMTP_SENDING_EMAIL_ACCOUNT,
+                            'Meat Order',
+                            emailString);
+                    }
+                    else {
+                        // this is for a meat supplier which has an email list set up for
+                        // others that delivery on their behalf!
+                        deliveryContactEmailArray = deliveryContactEmailList.split(";");
+
+                        Meteor.call('sendEmailWithCCList',
+                            emailOfSupplier,
+                            deliveryContactEmailArray,
+                            CTOP_SMTP_SENDING_EMAIL_ACCOUNT,
+                            'Meat Order',
+                            emailString);
+                    }
+
                 }
                 // else
                 // {

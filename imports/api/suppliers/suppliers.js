@@ -1,5 +1,12 @@
 /**
  * Created by mike on 2017-01-22.
+ *
+ * 21Jan2018    mike    Adding in field for additional emails.  For some meat suppliers, the deliveries are
+ *                      done by third parties rather than by the supplier.  For any suppliers like this
+ *                      email both the supplier and these 3rd parties
+ *                      For these suppliers, the field delivery_contact_email_list will be defined as a
+ *                      semicolon separated list of emails (done via the supplier screen)
+ *
  */
 
 import {Mongo} from 'meteor/mongo';
@@ -51,7 +58,12 @@ Suppliers.schema = new SimpleSchema({
     notes: {
         type: String,
         optional: true
-    }
+    },
+
+    delivery_contact_email_list: {
+        type: String,
+        optional: true
+    },
 });
 Suppliers.attachSchema(Suppliers.schema);
 

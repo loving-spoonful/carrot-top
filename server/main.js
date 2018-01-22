@@ -15,6 +15,13 @@ import '../imports/api/news/news.js'
 import '../imports/ui/private/private-const.js'
 
 /*
+ * 21Jan2018    mike    Adding in field for additional emails.  For some meat suppliers, the deliveries are
+ *                      done by third parties rather than by the supplier.  For any suppliers like this
+ *                      email both the supplier and these 3rd parties
+ *                      For these suppliers, the field delivery_contact_email_list will be defined as a
+ *                      semicolon separated list of emails (done via the supplier screen)
+ *                      Adding in new method for sending emails (with a string of ; separated email addresses)
+ *
  *  Mike    07Oct2017   added changeUserRole on server side.  Will need when fix issue where user registers as
  *                      one role, but picked the wrong one (or left it as select)
  *                      Added in methods to overload sending email - BCC emails, CC emails, etc
@@ -52,15 +59,18 @@ Meteor.methods({
         Roles.setUserRoles (Id, [newRole]);
     },
     sendBCCEmail: function (bcc, from, subject, text) {
-      Meteor.call('sendFullEmail', undefined, from, undefined, bcc, subject, text);
+      Meteor.call('sendFullEmail', undefined, from, undefined, bcc, subject, text, undefined);
     },
     sendEmail: function (to, from, subject, text) {
-        Meteor.call('sendFullEmail', to, from, undefined, undefined, subject,text);
+        Meteor.call('sendFullEmail', to, from, undefined, undefined, subject,text, undefined);
     },
     sendCCEmail: function (to, cc, from, subject, text) {
-        Meteor.call('sendFullEmail', to, from, cc, undefined, subject,text);
+        Meteor.call('sendFullEmail', to, from, cc, undefined, subject,text, undefined);
     },
-    sendFullEmail: function (to, from, cc, bcc, subject, text) {
+    sendEmailWithCCList: function (to, ccList, from, subject, text) {
+        Meteor.call('sendFullEmail', to, from, undefined, undefined, subject,text, ccList);
+    },
+    sendFullEmail: function (to, from, cc, bcc, subject, text, ccList) {
         //check([to, from, subject, text], [String]);
 
         // Let other method calls from the same client start running,
@@ -68,6 +78,13 @@ Meteor.methods({
         this.unblock();
 
 
+        // if there is a ccList, add cc to it and then set cc as ccList for the email
+        if (ccList != undefined) {
+            if (cc != undefined) {
+                ccList.push(cc);
+            }
+            cc = ccList;
+        }
 
         if (Boolean(CTOP_SEND_REAL_EMAILS)) {
             console.log("CTOP_SEND_REAL_EMAILS is true - sending real emails!");

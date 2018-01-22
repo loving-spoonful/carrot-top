@@ -1,6 +1,12 @@
 /**
  * Created by mike on 2017-01-22.
+ *
+ * 21Jan2018    mike    For some meat suppliers, the deliveries are done by third parties rather than by
+ *                      the supplier.  For any suppliers like this, email both the supplier and these 3rd parties
+ *                      For these suppliers, the field delivery_contact_email_list will be defined as a
+ *                      semicolon separated list of emails (done via the supplier screen)
  */
+
 import { Template } from 'meteor/templating';
 import { Mongo } from 'meteor/mongo';
 
@@ -40,6 +46,8 @@ Template.addSupplierOverlay.rendered = function() {
         $('input[name="google_maps_link"]').val(supplierObject.google_maps_link);
         $('textarea[name="notes"]').val(supplierObject.notes);
 
+        $('input[name="delivery_contact_email_list"]').val(supplierObject.delivery_contact_email_list);
+
         $('button[name="supplier_save_btn"]').text("Save");
 
     };
@@ -61,6 +69,7 @@ Template.addSupplierOverlay.events({
         const supplierGoogleMapsLink = target['google_maps_link'].value.trim();
         const purchasingProgram = target['purchasing_program'].value.trim();
         const notes = target['notes'].value.trim();
+        const deliveryContactEmailList = target['delivery_contact_email_list'].value.trim();
 
 		if (supplierName.length > 0) {
 
@@ -92,7 +101,8 @@ Template.addSupplierOverlay.events({
                                 google_maps_link: supplierGoogleMapsLink,
                                 updated_at: Date.now(),
                                 purchasing_program: purchasingProgram,
-                                notes: notes
+                                notes: notes,
+                                delivery_contact_email_list: deliveryContactEmailList
                             }
                         });
                     sAlert.info('Saved!');
@@ -126,7 +136,8 @@ Template.addSupplierOverlay.events({
                             purchasing_program: purchasingProgram,
                             created_at: Date.now(),
                             updated_at: Date.now(),
-                            notes: notes
+                            notes: notes,
+                            delivery_contact_email_list: deliveryContactEmailList
                         });
 
                         Overlay.close();
