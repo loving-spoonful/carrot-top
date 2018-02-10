@@ -26,6 +26,8 @@ import './modalWindow.js'
  *                      For these suppliers, the field delivery_contact_email_list will be defined as a
  *                      semicolon separated list of emails (done via the supplier screen)
  *
+ * 09Feb2018    mike    When there are no orders for a supplier, also send to the CC list (missed this scenario
+ *                      on 21Jan.
  */
 
 if (Meteor.isClient) {
@@ -463,13 +465,28 @@ Template.pendingDelivery.events({
                 var startNewEmail = true;
                 var orderNumber = 1;
 
+                // split the list into an array for the cc list
+                if (deliveryContactEmailList != undefined) {
+                    deliveryContactEmailArray = deliveryContactEmailList.split(";");
+                }
 
                 if (ordersForSuppliersList[i][0] == undefined) {
-                    Meteor.call('sendEmail',
-                        emailOfSupplier,
-                        CTOP_SMTP_SENDING_EMAIL_ACCOUNT,
-                        'Meat Order',
-                        emailString + "\nNo orders this week!");
+                    if (deliveryContactEmailList == undefined) {
+                        Meteor.call('sendEmail',
+                            emailOfSupplier,
+                            CTOP_SMTP_SENDING_EMAIL_ACCOUNT,
+                            'Meat Order',
+                            emailString + "\nNo orders this week!");
+                    }
+                    else {
+                        Meteor.call('sendEmailWithCCList',
+                            emailOfSupplier,
+                            deliveryContactEmailArray,
+                            CTOP_SMTP_SENDING_EMAIL_ACCOUNT,
+                            'Meat Order',
+                            emailString + "\nNo orders this week!");
+                    }
+
                     continue;
                 }
 
@@ -555,7 +572,6 @@ Template.pendingDelivery.events({
                     else {
                         // this is for a meat supplier which has an email list set up for
                         // others that delivery on their behalf!
-                        deliveryContactEmailArray = deliveryContactEmailList.split(";");
 
                         Meteor.call('sendEmailWithCCList',
                             emailOfSupplier,
