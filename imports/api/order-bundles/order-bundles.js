@@ -10,6 +10,14 @@ export const OrderBundles = new Mongo.Collection('orderBundles', {idGeneration: 
  *                      going to use the system.  Admin will assign to themselves (or another admin) and then
  *                      select the additional volunteer.  Both the admin and volunteer will get the email
  *                      as a CC.  It is addressed to the volunteer by name
+ *
+ * mike     10feb2018   the additional_volunteer_for_email_id has to be optional.  Its only intended to ever be set
+ *                      on the veggie ordering part of the system, not meat (the field isn't shown on meat)
+ *                      Noticed the behaviour when testing the email CC list; if you had multiple orders on the
+ *                      complete meat orders page, when you submitted the meat order, only 1 order completed (as the
+ *                      insert into this table failed as this field was not being set).  OrderBundles aren't that
+ *                      well used/important in the system, so the order completed regardless, and emails got sent out
+ *                      Now with it being option, functionality is back to what it should be.
  */
 if (Meteor.isServer) {
     Meteor.publish('order-bundles', function () {
@@ -24,7 +32,7 @@ OrderBundles.schema = new SimpleSchema({
     },
 
     owner_id: {type: String},
-    additional_volunteer_for_email_id: {type: String},
+    additional_volunteer_for_email_id: {type: String, optional: true},
 
     completed: {type: Boolean},
     purchasing_program: {type: String},
