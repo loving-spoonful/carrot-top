@@ -15,6 +15,11 @@ import '../imports/api/news/news.js'
 import '../imports/ui/private/private-const.js'
 
 /*
+ * 14Feb2018    mike    Adding in additional flag for sendfullemail to send as html or just as text (previous
+ *                      code would just send text.  All methods that call this will continue to just email as
+ *                      text (passing in false).  New method sendHTMLEmail is the only one that will send html
+ *                      formed email.
+ *
  * 21Jan2018    mike    Adding in field for additional emails.  For some meat suppliers, the deliveries are
  *                      done by third parties rather than by the supplier.  For any suppliers like this
  *                      email both the supplier and these 3rd parties
@@ -59,18 +64,21 @@ Meteor.methods({
         Roles.setUserRoles (Id, [newRole]);
     },
     sendBCCEmail: function (bcc, from, subject, text) {
-      Meteor.call('sendFullEmail', undefined, from, undefined, bcc, subject, text, undefined);
+      Meteor.call('sendFullEmail', undefined, from, undefined, bcc, subject, text, undefined, false);
     },
     sendEmail: function (to, from, subject, text) {
-        Meteor.call('sendFullEmail', to, from, undefined, undefined, subject,text, undefined);
+        Meteor.call('sendFullEmail', to, from, undefined, undefined, subject,text, undefined, false);
+    },
+    sendHTMLEmail: function (to, from, subject, text) {
+        Meteor.call('sendFullEmail', to, from, undefined, undefined, subject,text, undefined, true);
     },
     sendCCEmail: function (to, cc, from, subject, text) {
-        Meteor.call('sendFullEmail', to, from, cc, undefined, subject,text, undefined);
+        Meteor.call('sendFullEmail', to, from, cc, undefined, subject,text, undefined, false);
     },
     sendEmailWithCCList: function (to, ccList, from, subject, text) {
-        Meteor.call('sendFullEmail', to, from, undefined, undefined, subject,text, ccList);
+        Meteor.call('sendFullEmail', to, from, undefined, undefined, subject,text, ccList, false);
     },
-    sendFullEmail: function (to, from, cc, bcc, subject, text, ccList) {
+    sendFullEmail: function (to, from, cc, bcc, subject, text, ccList, asHTML) {
         //check([to, from, subject, text], [String]);
 
         // Let other method calls from the same client start running,
@@ -114,15 +122,29 @@ Meteor.methods({
         // always send all emails to food@lovingspoonful.org as a bcc
         toBCCUsers.push ("food@lovingspoonful.org");
 
-        Email.send({
-            to: to,
-            cc: cc,
-            bcc: toBCCUsers,
-            from: from,
+        if (asHTML) {
+            Email.send({
+                to: to,
+                cc: cc,
+                bcc: toBCCUsers,
+                from: from,
 
-            subject: subject,
-            text: text
-        });
+                subject: subject,
+                html: text
+            });
+        }
+        else {
+            Email.send({
+                to: to,
+                cc: cc,
+                bcc: toBCCUsers,
+                from: from,
+
+                subject: subject,
+                text: text
+            });
+
+        }
     },
 
     updateUserRemoteData: function (user) {
