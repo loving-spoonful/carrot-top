@@ -5,6 +5,8 @@ import { Items } from '../api/items/items.js';
 import { Suppliers } from '../api/suppliers/suppliers.js';
 import './admin.html'
 import './private/private-const.js'
+import { Orders } from '../api/orders/orders.js';
+
 
 /*
  * 30sep2017    mike    subscribe to news to allow editing for 'new' news
@@ -13,6 +15,11 @@ import './private/private-const.js'
  *                      person at each agency (one email done with BCC)
  *
  * 18nov2017    mike    change wording for veggie email blast
+ *
+ * 14jan2018    mike    Functionality to generate an html email (table) with all the meat order details.
+ *                      Include summary information (count and totals) by item and price (as the price
+ *                      changes over time)  Add in excel formula as well for calculating overall total
+ *
  */
 if (Meteor.isClient) {
 	FlowRouter.route('/admin/', {
@@ -30,7 +37,52 @@ Template.admin.onCreated(function () {
     Meteor.subscribe('Agencies');
     Meteor.subscribe('items');
     Meteor.subscribe('Suppliers');
+
+    Meteor.subscribe('orders');
 });
+
+
+var orderItemsMap = new Map();
+
+function OrderAndItemDetail (agency_id, created_at, updated_at, item_id, priceAtTime, quantity, total) {
+    this.agency = Agencies.findOne({_id: new Mongo.ObjectID(agency_id)}).name;
+    this.created_at = created_at;
+    this.updated_at =  updated_at;
+
+    this.itemname = Items.findOne({_id: new Mongo.ObjectID(item_id)}).name;
+
+    this.priceAtTime = priceAtTime;
+    this.quantity = quantity;
+
+    this.total = total;
+
+    // key on the itemname and the priceatthetime (with a # to easily parse this dual key)
+    // keep totals for each item for the price at the time (the value component of the items in the map)
+    if (orderItemsMap.has(this.itemname + "#" + this.priceAtTime)) {
+        var currentTotal = orderItemsMap.get(this.itemname + "#" +  this.priceAtTime);
+        currentTotal = currentTotal + this.total;
+
+        orderItemsMap.set(this.itemname+ "#" +  this.priceAtTime, currentTotal);
+    }
+    else {
+        orderItemsMap.set( this.itemname+ "#" + this.priceAtTime, this.total );
+    }
+}
+
+// compare method to help sort the order items - by name and then within name by price
+function compareOrderAndItemDetail(a,b) {
+    if (a.itemname < b.itemname)
+        return -1;
+    if (a.itemname > b.itemname)
+        return 1;
+
+    if (a.priceAtTime < b.priceAtTime)
+        return -1;
+    if (a.priceAtTime > b.priceAtTime)
+        return 1;
+
+    return 0;
+}
 
 Template.admin.helpers({
 	isAdmin: function() {
@@ -50,12 +102,12 @@ Template.admin.events({
         event.preventDefault();
 
         const target = event.target;
-        var text = $(event.target).find('[name=text]').val();
+        var text = $(event.target).find('[name=newsText]').val();
         const target2 = event.target;
 
         News.insert({text: text, date: new Date});
 
-        sAlert.info('Saved latest news' + text);
+        sAlert.info('Saved latest news: ' + text);
     },
 
     'submit .form-admin-veggie-email-blast': function (event) {
@@ -122,6 +174,131 @@ Template.admin.events({
                 emailText);
         });
         modalPopup.show();
+    },
+    'submit .form-admin-orderdetails' : function (event) {
+        event.preventDefault();
+        var programParam = "M";
+        var myList = [];
+        var origSortedList = [];
+        var tableAsEmail;
+
+        var rowWhereDataStarts = 2;
+        var numberOfOrders=0;
+
+        Orders.find({purchasing_program: programParam}, {sort: {created_at: 1}})
+            .forEach(function(ord) {
+                    for (var i = 0; i < ord.requests.length; i++) {
+                        tableAsEmail = tableAsEmail + "<tr>";
+                        var orderAndItemDetail = new OrderAndItemDetail(ord.agency_id, ord.created_at, ord.updated_at,
+                            ord.requests[i].item_id, ord.requests[i].priceAtTime, ord.requests[i].quantity,
+                            ord.requests[i].priceAtTime * ord.requests[i].quantity);
+                        myList.push(orderAndItemDetail);
+                        origSortedList.push(orderAndItemDetail);
+                        numberOfOrders = numberOfOrders + 1;
+                    }
+                }
+            )
+        tableAsEmail = "<table><br>";
+        tableAsEmail = tableAsEmail + "<tr>";
+        tableAsEmail = tableAsEmail + "<td>";
+        tableAsEmail = tableAsEmail + "=sum(G" + rowWhereDataStarts + ":G" + (numberOfOrders+rowWhereDataStarts) + ")";
+        tableAsEmail = tableAsEmail + "</td>";
+
+        tableAsEmail = tableAsEmail + "</tr>";
+
+        tableAsEmail = tableAsEmail + "<tr>";
+        tableAsEmail = tableAsEmail + "<th>Created Date</th><th>Submitted Date</th><th>Agency</th><th>Product</th><th>Amount</th><th>Price</th><th>Total</th><th></th><th></th><th></th><th>Price At Time</th><th>Total Weight</th><th>Total Price</th>";
+        tableAsEmail = tableAsEmail + "</tr>";
+
+        for (var i=0; i < myList.length; i++) {
+            tableAsEmail = tableAsEmail + "<tr>";
+            tableAsEmail = tableAsEmail + "<td>";
+            tableAsEmail = tableAsEmail + myList[i].created_at;
+
+            tableAsEmail = tableAsEmail + "</td>";
+
+            tableAsEmail = tableAsEmail + "<td>";
+            tableAsEmail = tableAsEmail + myList[i].updated_at;
+            tableAsEmail = tableAsEmail + "</td>";
+
+            tableAsEmail = tableAsEmail + "<td>";
+            tableAsEmail = tableAsEmail + myList[i].agency;
+            tableAsEmail = tableAsEmail + "</td>";
+
+            tableAsEmail = tableAsEmail + "<td>";
+            tableAsEmail = tableAsEmail + myList[i].itemname;
+            tableAsEmail = tableAsEmail + "</td>";
+
+            tableAsEmail = tableAsEmail + "<td>";
+            tableAsEmail = tableAsEmail + myList[i].priceAtTime;
+            tableAsEmail = tableAsEmail + "</td>";
+
+            tableAsEmail = tableAsEmail + "<td>";
+            tableAsEmail = tableAsEmail + myList[i].quantity;
+            tableAsEmail = tableAsEmail + "</td>";
+
+            tableAsEmail = tableAsEmail + "<td>";
+            tableAsEmail = tableAsEmail + myList[i].total;
+            tableAsEmail = tableAsEmail + "</td>";
+
+
+            if (i < orderItemsMap.size) {
+                tableAsEmail = tableAsEmail + "<td>";
+                tableAsEmail = tableAsEmail + "</td>";
+
+                tableAsEmail = tableAsEmail + "<td>";
+                tableAsEmail = tableAsEmail + "</td>";
+
+                var iter1 = orderItemsMap.keys();
+                var itemName;
+                var itemPriceAtTime;
+                for (var x = 0; x<=i; x++) {
+                    itemName = iter1.next().value;
+                    itemPriceAtTime = itemName.split("#")[1];
+                    itemName= itemName.split("#")[0];
+                }
+                tableAsEmail = tableAsEmail + "<td>";
+                tableAsEmail = tableAsEmail + itemName;
+                tableAsEmail = tableAsEmail + "</td>";
+
+                tableAsEmail = tableAsEmail + "<td>";
+                tableAsEmail = tableAsEmail + itemPriceAtTime;
+                tableAsEmail = tableAsEmail + "</td>";
+
+
+                var iter = orderItemsMap.values();
+                var itemTotalPrice;
+
+                for (var x = 0; x<=i; x++) {
+                    itemTotalPrice = iter.next().value;
+                }
+
+
+                tableAsEmail = tableAsEmail + "<td>";
+                tableAsEmail = tableAsEmail + itemTotalPrice / itemPriceAtTime;
+                tableAsEmail = tableAsEmail + "</td>";
+
+                tableAsEmail = tableAsEmail + "<td>";
+                tableAsEmail = tableAsEmail + itemTotalPrice;
+                tableAsEmail = tableAsEmail + "</td>";
+            }
+            //                   }
+            tableAsEmail = tableAsEmail + "</tr>";
+
+        }
+        tableAsEmail = tableAsEmail + "<br></table>";
+
+        debugger;
+        var currentUser = Meteor.users.findOne({_id: Meteor.user()._id});
+        var currentUserEmail = currentUser.emails[0].address;
+        Meteor.call('sendHTMLEmail',
+            currentUserEmail,
+            CTOP_SMTP_SENDING_EMAIL_ACCOUNT,
+            'Order Details',
+            tableAsEmail);
+
+        sAlert.info('Sent all the meat order details to ' + currentUserEmail);
+
     },
     'submit .form-admin-meat-email-blast': function (event) {
         event.preventDefault();
