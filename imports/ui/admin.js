@@ -20,6 +20,11 @@ import { Orders } from '../api/orders/orders.js';
  *                      Include summary information (count and totals) by item and price (as the price
  *                      changes over time)  Add in excel formula as well for calculating overall total
  *
+ * 03mar2018    mike    In prod, data problems exists where orders refer to items that no longer exist
+ *                      Code wasn't expecting this, so fetched the item and referenced its name attribute
+ *                      effectively generating an npe.
+ *                      Now check that item is undefined or not before referencing the name.  If it is, set name
+ *                      as unknown.  Function OrderAndItemDetail
  */
 if (Meteor.isClient) {
 	FlowRouter.route('/admin/', {
@@ -49,7 +54,14 @@ function OrderAndItemDetail (agency_id, created_at, updated_at, item_id, priceAt
     this.created_at = created_at;
     this.updated_at =  updated_at;
 
-    this.itemname = Items.findOne({_id: new Mongo.ObjectID(item_id)}).name;
+    this.item = Items.findOne({_id: new Mongo.ObjectID(item_id)});
+    if (this.item == undefined) {
+        this.itemname = "Unknown";
+    }
+    else {
+        this.itemname = this.item.name;
+    }
+
 
     this.priceAtTime = priceAtTime;
     this.quantity = quantity;
