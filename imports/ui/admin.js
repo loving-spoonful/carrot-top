@@ -173,12 +173,12 @@ Template.admin.events({
             emailText = emailText + "\n\n";
 
             emailText = emailText + "Be in touch if you have any questions at all!\n"
-                + "Alex";
+                + "Alexandra";
             // + "Lilith";
             emailText = emailText + "\n\nWe are grateful to our farmer and grocer partners for their generous donations."
 
 //            emailText = emailText + "\n\nLilith Wyatt\nFood Access Coordinator\nCommunity Gardens Coordinator\n";
-            emailText = emailText + "\n\nAlex Harper\nFood Skills Animator\nFood Access Animator\n";
+            emailText = emailText + "\n\nAlexandra Harper\nFood Skills Animator\nFood Access Animator\n";
             emailText = emailText + "559 Bagot St.\nKingston, ON  K7K 3E1\nOffice:  613-507-8848\nCell:  613-200-7186\nfood@lovingspoonful.org\nwww.lovingspoonful.org"
 
             Meteor.call('sendBCCEmail',
@@ -394,11 +394,11 @@ Template.admin.events({
             emailText = emailText + "\n\n";
 
             //emailText = emailText + "Cheers,\nLilith\n\n"
-            emailText = emailText + "Cheers,\nAlex\n\n"
+            emailText = emailText + "Cheers,\nAlexandra\n\n"
                 + "We are grateful to our local suppliers -- " + stringOfAllSuppliers + " -- for providing the discounted quality meat, and to the Community Foundation for Kingston & Area for making the program possible.";
 
             //emailText = emailText + "\n\nLilith Wyatt\nFood Access Coordinator\nCommunity Gardens Coordinator\n";
-            emailText = emailText + "\n\nAlex Harper\nFood Skills Animator\nFood Access Animator\n";
+            emailText = emailText + "\n\nAlexandra Harper\nFood Skills Animator\nFood Access Animator\n";
             emailText = emailText + "559 Bagot St.\nKingston, ON  K7K 3E1\nOffice:  613-507-8848\nCell:  613-893-6393\nfood@lovingspoonful.org\nwww.lovingspoonful.org"
 
             Meteor.call('sendBCCEmail',

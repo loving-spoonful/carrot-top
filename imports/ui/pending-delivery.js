@@ -560,7 +560,7 @@ Template.pendingDelivery.events({
                 {
                     // Lilith Wyatt, Food Access Coordinator
                     emailString = emailString + "\n\n" + "Thank you for helping get more good food to out Kingston neighbours who need it most!"
-                        + "\n" + "Have questions? Call Alex Harper, Food Access Animator, at 613-507-8848 or respond to this email."
+                        + "\n" + "Have questions? Call Alexandra Harper, Food Access Animator, at 613-507-8848 or respond to this email."
                     // This is the email to the suppliers!
 
                     if (deliveryContactEmailList == undefined) {
