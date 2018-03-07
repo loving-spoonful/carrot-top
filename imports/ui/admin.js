@@ -399,7 +399,7 @@ Template.admin.events({
 
             //emailText = emailText + "\n\nLilith Wyatt\nFood Access Coordinator\nCommunity Gardens Coordinator\n";
             emailText = emailText + "\n\nAlexandra Harper\nFood Skills Animator\nFood Access Animator\n";
-            emailText = emailText + "559 Bagot St.\nKingston, ON  K7K 3E1\nOffice:  613-507-8848\nCell:  613-893-6393\nfood@lovingspoonful.org\nwww.lovingspoonful.org"
+            emailText = emailText + "559 Bagot St.\nKingston, ON  K7K 3E1\nOffice:  613-507-8848\nCell:  613-200-7186\nfood@lovingspoonful.org\nwww.lovingspoonful.org"
 
             Meteor.call('sendBCCEmail',
                 toUsers,
