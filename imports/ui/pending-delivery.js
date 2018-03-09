@@ -28,7 +28,10 @@ import './modalWindow.js'
  *
  * 09Feb2018    mike    When there are no orders for a supplier, also send to the CC list (missed this scenario
  *                      on 21Jan.
- */
+ *
+ * 09Mar2018    mike    Adding in the order request's delivery instructions to the supplier's email
+ *                      
+*/
 
 if (Meteor.isClient) {
 	FlowRouter.route('/pending-delivery/', {
@@ -61,7 +64,7 @@ function getFormattedCurrency(amount, price) {
     return times100.substr(0, times100.length-2) + '.' + times100.substr(times100.length-2);
 }
 
-function MeatOrderDetails (itemName, amount, quantity_units, agency_id, price, submitterEmail, supplierId) {
+function MeatOrderDetails (itemName, amount, quantity_units, agency_id, price, submitterEmail, supplierId, deliveryNotes) {
     this.itemName = itemName;
     this.amount = amount;
     this.quantity_units = quantity_units;
@@ -69,6 +72,7 @@ function MeatOrderDetails (itemName, amount, quantity_units, agency_id, price, s
     this.price = price;
     this.submitterEmail = submitterEmail;
     this.supplierId = supplierId;
+    this.deliveryNotes = deliveryNotes;
 
 }
 
@@ -383,7 +387,7 @@ Template.pendingDelivery.events({
                     // TODO var orderOwner = Meteor.users.findOne({_id: new Mongo.ObjectId(currentObject.owner_id)});
 
 
-                    var meatOrderDetails = new MeatOrderDetails(myItem.name, currentRequest.quantity, myItem.quantity_units, currentObject.agency_id, currentRequest.priceAtTime, currentObject.owner_id, myItem.supplier_id);
+                    var meatOrderDetails = new MeatOrderDetails(myItem.name, currentRequest.quantity, myItem.quantity_units, currentObject.agency_id, currentRequest.priceAtTime, currentObject.owner_id, myItem.supplier_id, currentRequest.instructions);
                     var sup = myItem.supplier_id;
 
                     var supplierIndex = allSuppliers.indexOf(sup);
@@ -535,6 +539,10 @@ Template.pendingDelivery.events({
                         + "\n" + currentOrder.itemName + " in the amount of " + currentOrder.amount + " " + currentOrder.quantity_units
                         + " @ $" + getFormattedCurrency(1, currentOrder.price)
                         + " = $" + getFormattedCurrency(currentOrder.amount, currentOrder.price);
+
+                    // add in delivery instructions
+                    emailString = emailString + "\n" + "Delivery Instructions: " + currentOrder.deliveryNotes;
+
 
                     var emailForAgency = emailsForAgencies.findOne ({name:currentAgency });
 
