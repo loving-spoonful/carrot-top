@@ -30,7 +30,11 @@ import './modalWindow.js'
  *                      on 21Jan.
  *
  * 09Mar2018    mike    Adding in the order request's delivery instructions to the supplier's email
- *                      
+ *
+ * 23jun2019    mike    Changing system from 'Carrot Top' to The Meat Up; essentially rebranding, hiding any functionality
+ *                      for the veggies side (I disabled rather than removed), removed volunteer role as it was
+ *                      specific for veggies, added in terms and conditions to the registration process
+ *
 */
 
 if (Meteor.isClient) {
@@ -568,7 +572,7 @@ Template.pendingDelivery.events({
                 {
                     // Lilith Wyatt, Food Access Coordinator
                     emailString = emailString + "\n\n" + "Thank you for helping get more good food to out Kingston neighbours who need it most!"
-                        + "\n" + "Have questions? Call Alexandra Harper, Food Access Animator, at 613-507-8848 or respond to this email."
+                        + "\n" + "Have questions? Call Alex Harper, Food Access Animator, at 613-507-8848 or respond to this email."
                     // This is the email to the suppliers!
 
                     if (deliveryContactEmailList == undefined) {

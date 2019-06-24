@@ -18,7 +18,15 @@
         </div>
     </div>
 </template>
+<template name="checkboxForTermsAndConditions">
+    <div class="at-input number-input select-wrapper with-help">
 
+            I accept all terms and agreement
+            <a href="files/TermsAndConditions.html" id="at-fredd" class="at-link" target="_blank" >Terms and agreement</a>
+            <input title="fred1" id="at-field-{{_id}}" name="at-field-{{_id}}" type="checkbox"
+                   value="fred2" placeholder="fred3">
+    </div>
+</template>
 <template name="numberInputWithHelp">
     <div class="at-input number-input with-help">
         <label for="at-field-{{_id}}">{{displayName}}</label>

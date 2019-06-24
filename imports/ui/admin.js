@@ -25,6 +25,10 @@ import { Orders } from '../api/orders/orders.js';
  *                      effectively generating an npe.
  *                      Now check that item is undefined or not before referencing the name.  If it is, set name
  *                      as unknown.  Function OrderAndItemDetail
+ *
+ * 23jun2019    mike    Changing system from 'Carrot Top' to The Meat Up; essentially rebranding, hiding any functionality
+ *                      for the veggies side (I disabled rather than removed), removed volunteer role as it was
+ *                      specific for veggies, added in terms and conditions to the registration process
  */
 if (Meteor.isClient) {
 	FlowRouter.route('/admin/', {
@@ -173,12 +177,12 @@ Template.admin.events({
             emailText = emailText + "\n\n";
 
             emailText = emailText + "Be in touch if you have any questions at all!\n"
-                + "Alexandra";
+                + "Alex";
             // + "Lilith";
             emailText = emailText + "\n\nWe are grateful to our farmer and grocer partners for their generous donations."
 
 //            emailText = emailText + "\n\nLilith Wyatt\nFood Access Coordinator\nCommunity Gardens Coordinator\n";
-            emailText = emailText + "\n\nAlexandra Harper\nFood Skills Animator\nFood Access Animator\n";
+            emailText = emailText + "\n\nAlex Harper\nFood Skills Animator\nFood Access Animator\n";
             emailText = emailText + "559 Bagot St.\nKingston, ON  K7K 3E1\nOffice:  613-507-8848\nCell:  613-200-7186\nfood@lovingspoonful.org\nwww.lovingspoonful.org"
 
             Meteor.call('sendBCCEmail',
@@ -394,11 +398,11 @@ Template.admin.events({
             emailText = emailText + "\n\n";
 
             //emailText = emailText + "Cheers,\nLilith\n\n"
-            emailText = emailText + "Cheers,\nAlexandra\n\n"
+            emailText = emailText + "Cheers,\nAlex\n\n"
                 + "We are grateful to our local suppliers -- " + stringOfAllSuppliers + " -- for providing the discounted quality meat, and to the Community Foundation for Kingston & Area for making the program possible.";
 
             //emailText = emailText + "\n\nLilith Wyatt\nFood Access Coordinator\nCommunity Gardens Coordinator\n";
-            emailText = emailText + "\n\nAlexandra Harper\nFood Skills Animator\nFood Access Animator\n";
+            emailText = emailText + "\n\nAlex Harper\nFood Skills Animator\nFood Access Animator\n";
             emailText = emailText + "559 Bagot St.\nKingston, ON  K7K 3E1\nOffice:  613-507-8848\nCell:  613-200-7186\nfood@lovingspoonful.org\nwww.lovingspoonful.org"
 
             Meteor.call('sendBCCEmail',

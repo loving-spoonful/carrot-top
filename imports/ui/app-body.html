@@ -1,28 +1,31 @@
 <template name="appBody">
+
     <div class="wrapper-welcome">
-        <div class="title-welcome">Loving Spoonful Carrot TOP
-            <br>(Tool for Ordering Produce)
+        <div class="title-welcome">Loving Spoonful's Meat Up
+
         </div>
         <div id="react-render-target"></div>
         {{> sAlert}}
+
+
         <div class="description-welcome">
-            Welcome! This app allows local agencies to order from our inventory of fresh food donations, helping Loving
-            Spoonful volunteers to distribute fresh food more efficiently.
+            Welcome! This app allows Kingston-area agencies to order quality local meat from our generous supplier partners: Wallace Beef, Quinn's Meats, and Pig & Olive Premium Meats.
             <br>
             <br>
-            You will receive a notification when inventory is added.
+            You will receive a weekly notification of product pricing. Orders can be placed by 12 noon on Monday (or Tuesday following statutory holidays) for direct delivery later that week. Suppliers will invoice you directly. Agencies are responsible for safe food handling practices.
             <br>
             <br>
-            For more information contact Lilith Wyatt, Food Access Coordinator at
+            For more information contact Alex Harper, Fresh Food Delivery Coordinator at
             <a href="tel:613-507-8848">(613) 507-8848</a>
-            or
-            <a href="mailto:food@lovingspoonful.org?subject=Carrot Top Request">food@lovingspoonful.org</a>
+            or by email at
+            <a href="mailto:alex@lovingspoonful.org?subject=Carrot Top Request">alex@lovingspoonful.org</a>
 
             <br>
             <br>
             The app can be run on a mobile device, tablet, or computer. The app is adapted from the open source (MIT
             licensed) Meteor app example Local Market.
         </div>
+
 
         <!--<div class="description-welcome">-->
         <!--The app is designed to run on a physical device. You can also run it in a simulator, or in a desktop browser-->
@@ -111,7 +114,7 @@
                         {{/if}}
 
 
-                        {{#if isInRole 'agency,admin'}}
+                        {{#if isInRole 'hideVeggies_agency,hideVeggies_admin'}}
                             <div class="nav-spacer"></div>
                             <a href="/order?program=N" class="{{activePage 'order'}}">
                             <span class="wrapper-menu-item">
@@ -122,7 +125,7 @@
                             </a>
                         {{/if}}
 
-                        {{#if isInRole 'agency,admin'}}
+                        {{#if isInRole 'hideVeggies_agency,hideVeggies_admin'}}
                             <a href="/my-pending-ordersN?orderState=inprogress&program=N"
                                class="{{activePage 'my-pending-ordersN'}}">
                             <span class="wrapper-menu-item">
@@ -153,7 +156,7 @@
                             <!--<div class="nav-spacer"></div>-->
                         <!--{{/if}}-->
                     {{/if}}
-                    {{#if isInRole 'volunteer,admin'}}
+                    {{#if isInRole 'hideVeggies_volunteer,hideVeggies_admin'}}
                         {{#if isInRole 'volunteer'}}
                             <div class="nav-spacer"></div>
                         {{/if}}
@@ -215,7 +218,7 @@
                         </a>
                     {{/if}}
 
-                    {{#if isInRole 'volunteer, admin'}}
+                    {{#if isInRole 'hideVeggies_volunteer, hideVeggies_admin'}}
 
                         <a href="/inventoryN?type=N" class="{{activePage 'inventoryN'}}">
                             <span class="wrapper-menu-item">
@@ -223,6 +226,9 @@
                                 <span class="title-menu">Veggies Inventory</span>
                             </span>
                         </a>
+                    {{/if}}
+
+                    {{#if isInRole 'volunteer, admin'}}
                         {{#if isInRole 'admin'}}
                             <a href="/inventoryM?type=M" class="{{activePage 'inventoryM'}}">
                                 <span class="wrapper-menu-item">
