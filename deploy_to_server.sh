@@ -7,7 +7,7 @@ echo "--- Building ---"
 
 rm -r ../loving-spoonful-build
 mkdir ../loving-spoonful-build
-meteor build ../loving-spoonful-build --server-only --server carrot.lovingspoonful.org
+meteor build ../loving-spoonful-build --server-only --server meatup.lovingspoonful.org
 echo "--- Copying to Server ---"
 scp ../loving-spoonful-build/loving-spoonful.tar.gz lsapp@66.228.44.6:~
 echo "--- Connecting to Server ---"

@@ -154,7 +154,7 @@ Template.myPendingDeliveries.events({
                 console.log("two orderagencyone " + orderAgency);
                 var agencyEmail = orderAgency.primary_contact_email;
                 console.log(" agencyEmail " + agencyEmail);
-                var emailText = "One of our carrot top deliverers has prepared your order and will be delivering soon.  For details, please visit carrot.lovingspoonful.org.";
+                var emailText = "One of our deliverers has prepared your order and will be delivering soon.  For details, please visit meatup.lovingspoonful.org.";
                 Meteor.call('sendEmail',
                     agencyEmail,
                     CTOP_SMTP_SENDING_EMAIL_ACCOUNT,

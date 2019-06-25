@@ -31,7 +31,7 @@ import './modalWindow.js'
  *
  * 09Mar2018    mike    Adding in the order request's delivery instructions to the supplier's email
  *
- * 23jun2019    mike    Changing system from 'Carrot Top' to The Meat Up; essentially rebranding, hiding any functionality
+ * 23jun2019    mike    Changing system from 'Carrot Top' to the Meat Up; essentially rebranding, hiding any functionality
  *                      for the veggies side (I disabled rather than removed), removed volunteer role as it was
  *                      specific for veggies, added in terms and conditions to the registration process
  *
@@ -249,7 +249,7 @@ Template.pendingDelivery.events({
             emailText += "\n" + forAgency.primary_contact_name + " " + forAgency.primary_contact_email + " " + forAgency.primary_contact_phone;
             emailText += "\n" + forAgency.google_maps_link;
 
-            emailText += "\n\nPlease log in to carrot.lovingspoonful.org.";
+            emailText += "\n\nPlease log in to meatup.lovingspoonful.org.";
             Meteor.call('sendCCEmail',
                 volunteer.emails[0].address,
                 volunteerJustForEmail.emails[0].address,
@@ -572,7 +572,7 @@ Template.pendingDelivery.events({
                 {
                     // Lilith Wyatt, Food Access Coordinator
                     emailString = emailString + "\n\n" + "Thank you for helping get more good food to out Kingston neighbours who need it most!"
-                        + "\n" + "Have questions? Call Alex Harper, Food Access Animator, at 613-507-8848 or respond to this email."
+                        + "\n" + "Have questions? Contact Loving Spoonful at 613-507-8848 or respond to this email."
                     // This is the email to the suppliers!
 
                     if (deliveryContactEmailList == undefined) {

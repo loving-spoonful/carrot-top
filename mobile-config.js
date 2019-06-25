@@ -1,7 +1,7 @@
 App.info({
-  id: 'org.lovingspoonful.carrottop',
-  name: 'Carrot TOP',
-  description: 'An tool for ordering produce from the Loving Spoonful charity.',
+  id: 'org.lovingspoonful.meatup',
+  name: 'The Meat Up',
+  description: 'An tool for ordering meat and poultry from the Loving Spoonful charity.',
   author: 'David Lougheed, adapting open source code from Percolate Studio Team.',
   email: 'info@lovingspoonful.org',
   website: 'http://lovingspoonful.org/',

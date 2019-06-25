@@ -7,7 +7,7 @@ echo --- Building ---
 
 rmdir ..\loving-spoonful-build /s
 mkdir ..\loving-spoonful-build
-meteor build ..\loving-spoonful-build --server-only --server carrot.lovingspoonful.org
+meteor build ..\loving-spoonful-build --server-only --server meatup.lovingspoonful.org
 
 echo --- Copying to Server ---
 pscp -scp lsapp@66.228.44.6:~ ..\loving-spoonful-build\loving-spoonful.tar.gz

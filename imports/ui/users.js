@@ -13,7 +13,7 @@ import './users.html'
 import './modalWindow.js'
 
 /*
- * 23jun2019    mike    Changing system from 'Carrot Top' to The Meat Up; essentially rebranding, hiding any functionality
+ * 23jun2019    mike    Changing system from 'Carrot Top' to the Meat Up; essentially rebranding, hiding any functionality
  *                      for the veggies side (I disabled rather than removed), removed volunteer role as it was
  *                      specific for veggies, added in terms and conditions to the registration process
 */
@@ -93,7 +93,7 @@ Template.users.events({
                 userObject.emails[0].address,
                 CTOP_SMTP_SENDING_EMAIL_ACCOUNT,
                 'Approved',
-                'This email is confirming you are approved for Carrottop!  \nTo sign in, visit carrot.lovingspoonful.org.'
+                'This email is confirming you are approved for the Meat Up!  \nTo sign in, visit meatup.lovingspoonful.org.'
 			+ '\n\nTerms and Conditions for members of Loving Spoonful\'s Meat Up\n' +
                 '\n' +
                 'Becoming an agency partner in the Meat Up is open to any social service agency in Kingston and area who is helping to connect their clients with good food. Once approved as an agency partner, your organization will be granted access to the Meat Up (meatup.lovingspoonful.org), where you can purchase quality meat at an average of 50% of discount grocer prices from local suppliers: Wallace Beef, Quinn\'s Meats, and Pig & Olive Premium Meat, and occasionally other local farms. Loving Spoonful sends prices out at the end of each week, you submit you orders by 12 noon on Monday (or Tuesday in case of a statutory holiday), and deliveries are made by week\'s end. Suppliers will invoice you, and you pay them directly.\n' +
