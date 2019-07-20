@@ -19,7 +19,7 @@
             <!--{{> loginButtons}}-->
             {{#if currentUser }}
                 {{#if isInRole 'volunteer,admin'}}
-                    <a href="/pending-delivery" class="btn-primary js-make-deliveries">Make Some Deliveries!</a>
+                    <a href="/completeMeatOrder?program=M" class="btn-primary js-make-deliveries">Submit Orders!</a>
                 {{/if}}
                 {{#if isInRole 'agency'}}
                     <a href="/orderMeat?program=M" class="btn-primary js-buy-meat">Buy Meat Now!</a>

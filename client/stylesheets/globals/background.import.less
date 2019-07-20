@@ -2,9 +2,10 @@
 [class*=" bg-image"] {
   background-position: center center;
   background-repeat: no-repeat;
-  background-size: cover;
+  //background-size: cover;
   overflow: hidden;
   position: relative;
+
 
   &[class*="about"] {
     .background-image(
@@ -16,6 +17,7 @@
   &[class*="home"] {
     .background-image(
       //linear-gradient(top, rgba(0,0,0,.1) 0%, rgba(0,0,0,.4) 100%),
+
       url('img/app/bg-home.png')
     );
   }

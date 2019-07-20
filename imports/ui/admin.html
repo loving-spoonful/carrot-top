@@ -21,11 +21,13 @@
                             <button type="submit" class="btn-primary" id="btn-meat-blast" name="btn-meat-blast">Meat eMail Blast</button>
                         </form>
 
-                        <form class="form-admin-veggie-email-blast">
-                            <label>Week day deadline for next veggie delivery:</label>
-                            <input  name="veggieDeadline" type="text" value="Monday" />
-                            <button type="submit" class="btn-primary" id="btn-veggie-blast" name="btn-veggie-blast">Veggie eMail Blast</button>
-                        </form>
+                        {{#if isInRole 'hide_from_old_carrottop_admin'}}
+                            <form class="form-admin-veggie-email-blast">
+                                <label>Week day deadline for next veggie delivery:</label>
+                                <input  name="veggieDeadline" type="text" value="Monday" />
+                                <button type="submit" class="btn-primary" id="btn-veggie-blast" name="btn-veggie-blast">Veggie eMail Blast</button>
+                            </form>
+                        {{/if}}
 
                         <form class="form-admin-orderdetails">
                             <button type="submit" class="btn-primary" id="btn-getOrderDetails" name="btn-getOrderDetails">Get Order Details</button>
