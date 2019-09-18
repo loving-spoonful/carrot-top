@@ -11,4 +11,4 @@ sudo npm install > /dev/null
 sudo chown -R lsapp:lsapp /home/lsapp
 
 # Restart Service
-sudo restart lsapp
+sudo systemctl restart lsapp
