@@ -1,5 +1,9 @@
 /**
  * Created by mike on 2017-01-22.
+ *
+ * 19Sep2019 With MeatUp, there is only the 1 program (no longer supporting produce), so change default for
+ * purchasing program to "M" as the option to select either program is now removed from add-agency-overlay.html
+ *
  */
 
 import {Mongo} from 'meteor/mongo';
@@ -48,7 +52,7 @@ Agencies.schema = new SimpleSchema({
 
     purchasing_program: {
         type: String,
-        defaultValue: 'N'
+        defaultValue: 'M'
     },
 
 
